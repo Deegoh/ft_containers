@@ -8,15 +8,17 @@ endif
 RM = rm -rf
 CFLAGS = -Werror -Wall -Wextra
 CFLAGS += -std=c++98 -pedantic
-#CFLAGS += -g -fsanitize=address
+CFLAGS += -g -fsanitize=address
 
 SRC_DIR = src/
-_SRC =	main.cpp
+_SRC =	main.cpp\
+#		pdf.cpp
 
 SRC = $(addprefix $(SRC_DIR), $(_SRC))
 
 INC_DIR = inc/
-HEADER=
+HEADER=	iterator.hpp\
+		vector.hpp
 INC = $(addprefix $(INC_DIR), $(HEADER))
 
 NAME = a.out
@@ -25,7 +27,7 @@ OBJ_DIR = obj/
 _OBJ = $(_SRC:.cpp=.o)
 OBJ = $(addprefix $(OBJ_DIR), $(_OBJ))
 
-.PHONY: all clean fclean re run debug
+.PHONY: all clean fclean re run debug std
 
 all: $(NAME)
 
@@ -37,6 +39,12 @@ $(OBJ): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+
+$(OBJ_STD): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -DSTD=1 -I $(INC_DIR) -o $@ -c $<
+
+std: $(OBJ_STD)
+	$(CC) $(CFLAGS) -DSTD=1 $(OBJ) -o $(NAME)
 
 run:
 	./$(NAME)
