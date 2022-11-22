@@ -12,22 +12,50 @@ namespace ft {
 	public:
 		typedef T											value_type;
 		typedef Allocator									allocator_type;
-		typedef typename allocator_type::reference			reference;
-		typedef typename allocator_type::const_reference	const_reference;
-//		typedef implementation-defined						iterator;
-//		typedef implementation-defined						const_iterator;
-		typedef typename allocator_type::size_type			size_type;
-		typedef typename allocator_type::difference_type	difference_type;
-		typedef typename allocator_type::pointer			pointer;
-		typedef typename allocator_type::const_pointer		const_pointer;
+//		typedef typename allocator_type::reference			reference;
+//		typedef typename allocator_type::const_reference	const_reference;
+////		typedef implementation-defined						iterator;
+////		typedef implementation-defined						const_iterator;
+//		typedef typename allocator_type::size_type			size_type;
+//		typedef typename allocator_type::difference_type	difference_type;
+//		typedef typename allocator_type::pointer			pointer;
+//		typedef typename allocator_type::const_pointer		const_pointer;
+//
+//		pointer												begin;
+//		pointer												end;
 
-		pointer												begin;
-		pointer												end;
+	private:
+		value_type *_c;
+		size_t _size;
+		size_t _capacity;
 
+	public:
 		vector() {
-			begin = NULL;
-			end = NULL;
-//			size_type = 0;
+			_capacity = 0;
+			_size = 0;
+			allocator_type myAllocator;
+			_c = myAllocator.allocate(0);
+
+//			// allocator for string values
+//			allocator<string> myAllocator;
+//
+//			// allocate space for three strings
+//			string* str = myAllocator.allocate(3);
+//
+//			// construct these 3 strings
+//			myAllocator.construct(str, "Geeks");
+//			myAllocator.construct(str + 1, "for");
+//			myAllocator.construct(str + 2, "Geeks");
+//
+//			cout << str[0] << str[1] << str[2];
+//
+//			// destroy these 3 strings
+//			myAllocator.destroy(str);
+//			myAllocator.destroy(str + 1);
+//			myAllocator.destroy(str + 2);
+//
+//			// deallocate space for 3 strings
+//			myAllocator.deallocate(str, 3);
 		};
 
 		vector(const vector &src) {(*this) = src;};
@@ -40,24 +68,14 @@ namespace ft {
 			return (*this);
 		};
 
-//		size_type size() const; // std::distance(begin(), end())
-//		size_type capacity() const; // return allocated space
-//		size_type size() const {
-//			return static_cast<size_type>(this->__end_ - this->__begin_);
-//		}
 
-//		template <class _Tp, class _Allocator>
-//		inline _LIBCPP_INLINE_VISIBILITY
-//		void
-//		vector<_Tp, _Allocator>::push_back(value_type&& __x)
-//		{
-//			if (this->__end_ < this->__end_cap())
-//			{
-//				__construct_one_at_end(_VSTD::move(__x));
-//			}
-//			else
-//				__push_back_slow_path(_VSTD::move(__x));
-//		}
+
+//		size_type size() const; // std::distance(begin(), end())
+		size_t size() const {return (_size);}
+//		size_type capacity() const; // return allocated space
+		size_t capacity() const {return (_capacity);}
+
+
 //		void push_back(const value_type &value);
 //		void push_back(value_type &&value);
 	};

@@ -15,7 +15,8 @@ struct Buffer
 	char buff[BUFFER_SIZE];
 };
 
-#define COUNT (MAX_RAM / (int)sizeof(Buffer))
+#define COUNT (5)
+//#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 int main(/*int argc, char** argv*/) {
 //	if (argc != 2)
@@ -37,6 +38,8 @@ int main(/*int argc, char** argv*/) {
 
 	std::vector<Buffer> std_vector_buffer;
 	ft::vector<Buffer> ft_vector_buffer;
+	std::cout << "std_capacity: " << std_vector_buffer.capacity() << std::endl;
+	std::cout << "ft_capacity: " << ft_vector_buffer.capacity() << std::endl;
 
 	for (int i = 0; i < COUNT; i++)
 	{
@@ -44,7 +47,9 @@ int main(/*int argc, char** argv*/) {
 //		ft_vector_buffer.push_back(Buffer());
 	}
 	std::cout << "std_size: " << std_vector_buffer.size() << std::endl;
-//	std::cout << "ft_size: " << ft_vector_buffer.size() << std::endl;
+	std::cout << "std_capacity: " << std_vector_buffer.capacity() << std::endl;
+	std::cout << "ft_size: " << ft_vector_buffer.size() << std::endl;
+	std::cout << "ft_capacity: " << ft_vector_buffer.capacity() << std::endl;
 
 	for (int i = 0; i < COUNT; i++)
 	{
