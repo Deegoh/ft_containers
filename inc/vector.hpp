@@ -1,46 +1,62 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
+# include <iostream>
 # include <memory>
 //# include "iterator.hpp"
 //INSIDE ITERATOR
 # include <cstddef>
 
 namespace ft {
-	template <class T, class Allocator = std::allocator<T> >
+	template <typename T, class Allocator = std::allocator<T> >
 	class vector {
 	public:
+
+		// types
 		typedef T											value_type;
 		typedef Allocator									allocator_type;
-//		typedef typename allocator_type::reference			reference;
-//		typedef typename allocator_type::const_reference	const_reference;
-////		typedef implementation-defined						iterator;
-////		typedef implementation-defined						const_iterator;
-//		typedef typename allocator_type::size_type			size_type;
-//		typedef typename allocator_type::difference_type	difference_type;
-//		typedef typename allocator_type::pointer			pointer;
-//		typedef typename allocator_type::const_pointer		const_pointer;
-//
-//		pointer												begin;
-//		pointer												end;
+		typedef typename allocator_type::size_type			size_type;
+		typedef typename allocator_type::difference_type	difference_type;
+		typedef typename allocator_type::reference			reference;
+		typedef typename allocator_type::const_reference	const_reference;
+		typedef typename allocator_type::pointer			pointer;
+		typedef typename allocator_type::const_pointer		const_pointer;
+//		typedef implementation-defined <T>					iterator;
+//		typedef implementation-defined <T>					const_iterator;
+//		typedef ft::reverse_iterator<iterator>			reverse_iterator;
+//		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 	private:
 		value_type *_c;
-		size_t _size;
-		size_t _capacity;
+		size_type _size;
+		size_type _capacity;
 
-	public:
-		vector() {
-			_capacity = 0;
-			_size = 0;
-			allocator_type myAllocator;
-			_c = myAllocator.allocate(0);
+//		1. alloc a new block of memory
+//		2. copy / move old elems into new block
+//		3. delete
+		void reAlloc(size_type newCapacity) {
+			//TODO Change to allocator
+			if (newCapacity == 0)
+				newCapacity = 1;
+			T* newBlock = new T[newCapacity];
+
+			//downsize space
+			if (newCapacity < _size)
+				_size = newCapacity;
+
+			//upsize space
+			for (size_type i = 0; i < _size; ++i) {
+				newBlock[i] = _c[i];
+			}
+			delete[] _c;
+			_c = newBlock;
+			_capacity = newCapacity;
 
 //			// allocator for string values
-//			allocator<string> myAllocator;
+//			allocator<T> myAllocator;
 //
 //			// allocate space for three strings
-//			string* str = myAllocator.allocate(3);
+//			T* = myAllocator.allocate(newCapacity);
 //
 //			// construct these 3 strings
 //			myAllocator.construct(str, "Geeks");
@@ -56,27 +72,57 @@ namespace ft {
 //
 //			// deallocate space for 3 strings
 //			myAllocator.deallocate(str, 3);
+		}
+
+	public:
+		vector() {
+			_capacity = 0;
+			_size = 0;
+			_c = NULL;
 		};
 
-		vector(const vector &src) {(*this) = src;};
+		vector(const vector& src) {(*this) = src;};
 
 		~vector() {};
 
-		vector &operator=(const vector &rhs) {
+		vector& operator=(const vector& rhs) {
 			if (&rhs != this)
 				(*this) = rhs;
 			return (*this);
 		};
 
+		//iterator functions
+
+		T& operator[](size_type index) {
+			if (index >= _size)
+			{
+				// throw error ?
+				return (_c[_size - 1]);
+			}
+			return (_c[index]);
+		};
+		const T& operator[](size_type index) const {
+			if (index >= _size)
+			{
+				// throw error ?
+				return (_c[_size - 1]);
+			}
+			return (_c[index]);
+		};
+
+//		std::distance(begin(), end())
+//		return size
+		size_type size() const {return (_size);}
+//		return allocated space
+		size_type capacity() const {return (_capacity);}
 
 
-//		size_type size() const; // std::distance(begin(), end())
-		size_t size() const {return (_size);}
-//		size_type capacity() const; // return allocated space
-		size_t capacity() const {return (_capacity);}
-
-
-//		void push_back(const value_type &value);
+		void push_back(const value_type& value) {
+			if (_size >= _capacity)
+				reAlloc(_capacity * 2);
+			_c[_size] = value;
+			_size++;
+		}
 //		void push_back(value_type &&value);
 	};
 }
