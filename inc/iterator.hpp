@@ -5,6 +5,15 @@
 //# include <iterator>
 
 namespace ft {
+
+	//TAG_ITERATORS
+	struct input_iterator_tag { };
+	struct output_iterator_tag { };
+	struct forward_iterator_tag: public input_iterator_tag { };
+	struct bidirectional_iterator_tag: public forward_iterator_tag { };
+	struct random_access_iterator_tag: public bidirectional_iterator_tag { };
+	struct contiguous_iterator_tag: public random_access_iterator_tag { };
+
 	//ITERATOR
 	template<	class Category,
 				class T,
@@ -35,20 +44,23 @@ namespace ft {
 	template<class T>
 	struct iterator_traits<T*>
 	{
-		typedef ptrdiff_t difference_type;
+		typedef random_access_iterator_tag iterator_category;
 		typedef T value_type;
+		typedef ptrdiff_t difference_type;
 		typedef T* pointer;
 		typedef T& reference;
-		typedef random_access_iterator_tag iterator_category;
 	};
 
-	//TAG_ITERATORS
-	struct input_iterator_tag { };
-	struct output_iterator_tag { };
-	struct forward_iterator_tag: public input_iterator_tag { };
-	struct bidirectional_iterator_tag: public forward_iterator_tag { };
-	struct random_access_iterator_tag: public bidirectional_iterator_tag { };
-	struct contiguous_iterator_tag: public random_access_iterator_tag { };
+	//ITERATOR_TRAITS<const T *>
+	template<class T>
+	struct iterator_traits<const T *> {
+		typedef random_access_iterator_tag iterator_category;
+		typedef T value_type;
+		typedef ptrdiff_t difference_type;
+		typedef const T *pointer;
+		typedef const T& reference;
+	};
+
 }
 
 #endif

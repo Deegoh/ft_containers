@@ -11,15 +11,18 @@ CFLAGS += -std=c++98 -pedantic
 CFLAGS += -g -fsanitize=address
 
 SRC_DIR = src/
-_SRC =	main.cpp\
+_SRC =	main.cpp
 #		pdf.cpp
 
 SRC = $(addprefix $(SRC_DIR), $(_SRC))
 
 INC_DIR = inc/
-HEADER=	iterator.hpp\
-		vector.hpp
+HEADER=	vector.hpp\
+		iterator.hpp\
+		utils.hpp
 INC = $(addprefix $(INC_DIR), $(HEADER))
+
+STD = 0
 
 NAME = a.out
 
@@ -27,7 +30,7 @@ OBJ_DIR = obj/
 _OBJ = $(_SRC:.cpp=.o)
 OBJ = $(addprefix $(OBJ_DIR), $(_OBJ))
 
-.PHONY: all clean fclean re run debug std
+.PHONY: all clean fclean re run debug std ft comp
 
 all: $(NAME)
 
@@ -35,19 +38,28 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(OBJ): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I $(INC_DIR) -o $@ -c $<
+	$(CC) $(CFLAGS) -DSTD=$(STD) -I $(INC_DIR) -o $@ -c $<
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
-$(OBJ_STD): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -DSTD=1 -I $(INC_DIR) -o $@ -c $<
-
-std: $(OBJ_STD)
-	$(CC) $(CFLAGS) -DSTD=1 $(OBJ) -o $(NAME)
 
 run:
 	./$(NAME)
+
+ft: re
+	./$(NAME) > ft.txt
+	cat ft.txt
+
+std: STD = 1
+std: re
+	./$(NAME) > std.txt
+	cat std.txt
+
+comp:
+	$(MAKE) ft -C ./
+	$(MAKE) std -C ./
+	diff std.txt ft.txt
 
 debug: CFLAGS += -g -fsanitize=address
 debug: re

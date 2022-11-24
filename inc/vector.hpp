@@ -4,7 +4,7 @@
 # include <iostream>
 # include <memory>
 //# include "iterator.hpp"
-//INSIDE ITERATOR
+//# include "utils.hpp"
 # include <cstddef>
 
 namespace ft {
@@ -23,10 +23,11 @@ namespace ft {
 		typedef typename allocator_type::const_pointer		const_pointer;
 //		typedef implementation-defined <T>					iterator;
 //		typedef implementation-defined <T>					const_iterator;
-//		typedef ft::reverse_iterator<iterator>			reverse_iterator;
+//		typedef ft::reverse_iterator<iterator>				reverse_iterator;
 //		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 	private:
+		allocator_type _alloc;
 		value_type *_c;
 		size_type _size;
 		size_type _capacity;
@@ -34,8 +35,7 @@ namespace ft {
 //		1. alloc a new block of memory
 //		2. copy / move old elems into new block
 //		3. delete
-		void reAlloc(size_type newCapacity) {
-			//TODO Change to allocator
+		void reNew(size_type newCapacity) {
 			if (newCapacity == 0)
 				newCapacity = 1;
 			T* newBlock = new T[newCapacity];
@@ -51,34 +51,56 @@ namespace ft {
 			delete[] _c;
 			_c = newBlock;
 			_capacity = newCapacity;
+		}
 
-//			// allocator for string values
-//			allocator<T> myAllocator;
-//
-//			// allocate space for three strings
-//			T* = myAllocator.allocate(newCapacity);
-//
-//			// construct these 3 strings
-//			myAllocator.construct(str, "Geeks");
-//			myAllocator.construct(str + 1, "for");
-//			myAllocator.construct(str + 2, "Geeks");
-//
-//			cout << str[0] << str[1] << str[2];
-//
-//			// destroy these 3 strings
-//			myAllocator.destroy(str);
-//			myAllocator.destroy(str + 1);
-//			myAllocator.destroy(str + 2);
-//
-//			// deallocate space for 3 strings
-//			myAllocator.deallocate(str, 3);
+		void reAlloc(size_type newCapacity) {
+//			size_type oldCapacity = _capacity;
+			if (newCapacity == 0)
+				newCapacity = 1;
+
+			T* newBlock = _alloc.allocate(newCapacity);
+
+			//downsize space
+			if (newCapacity < _size)
+				_size = newCapacity;
+
+			//move space
+			for (size_type i = 0; i < _size; ++i) {
+				newBlock[i] = std::move(_c[i]);
+			}
+//			std::memmove(newBlock, _c, _size);
+//			std::uninitialized_copy(_c, _size, newBlock);
+
+			// destroy space _c
+			for (size_type i = 0; i < _size; ++i) {
+				_alloc.destroy(_c + i);
+			}
+
+			// deallocate space _c
+			_alloc.deallocate(_c, _size);
+
+			_c = _alloc.allocate(newCapacity);
+			for (size_type i = 0; i < newCapacity; ++i) {
+				_c[i] = std::move(newBlock[i]);
+			}
+//			memmove(_c, newBlock, newCapacity);
+//			std::uninitialized_copy(newBlock, newCapacity, _c);
+			_capacity = newCapacity;
+
+			// destroy space newblock
+			for (size_type i = 0; i < _size; ++i) {
+				_alloc.destroy(newBlock + i);
+			}
+			// deallocate space _c
+			_alloc.deallocate(newBlock, newCapacity);
 		}
 
 	public:
-		vector() {
+		vector() : _alloc() {
 			_capacity = 0;
 			_size = 0;
 			_c = NULL;
+//			_alloc = allocator_type();
 		};
 
 		vector(const vector& src) {(*this) = src;};
@@ -97,7 +119,7 @@ namespace ft {
 			if (index >= _size)
 			{
 				// throw error ?
-				return (_c[_size - 1]);
+				return (_c[0]);
 			}
 			return (_c[index]);
 		};
@@ -105,22 +127,40 @@ namespace ft {
 			if (index >= _size)
 			{
 				// throw error ?
-				return (_c[_size - 1]);
+				return (_c[0]);
 			}
 			return (_c[index]);
 		};
 
+//		Capacity:
+
 //		std::distance(begin(), end())
-//		return size
+//		Return size (public member function)
 		size_type size() const {return (_size);}
-//		return allocated space
+//		Return maximum size (public member function)
+		size_type max_size() const {return _alloc.max_size();}
+//		Change size (public member function)
+		void resize (size_type count) {
+			//1 reAlloc
+			//2 move
+			return count;
+		}
+//		Return size of allocated storage capacity (public member function)
 		size_type capacity() const {return (_capacity);}
+//		Test whether vector is empty (public member function)
+//		Request a change in capacity (public member function)
+//		Shrink to fit (public member function)
 
+//		Modifiers
 
+//		add elem to end of vector
 		void push_back(const value_type& value) {
-			if (_size >= _capacity)
+			if (_size >= _capacity) {
+//				reNew(_capacity * 2);
 				reAlloc(_capacity * 2);
-			_c[_size] = value;
+			}
+			_alloc.construct(_c + _size, value);
+//			_c[_size] = value;
 			_size++;
 		}
 //		void push_back(value_type &&value);

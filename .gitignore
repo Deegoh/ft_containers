@@ -2,6 +2,9 @@
 **/.idea
 **/containers_test/
 
+std.txt
+ft.txt
+
 # Prerequisites
 *.d
 
