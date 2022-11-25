@@ -30,10 +30,11 @@ bool equal(InputIt1 first1, InputIt1 last1,
 	return true;
 }
 
-//enable_if
+//enable_if<bool, T>
 template<bool B, class T = void>
 struct enable_if {};
 
+//enable_if<T>
 template<class T>
 struct enable_if<true, T> { typedef T type; };
 

@@ -3,7 +3,6 @@ Les nombreux containers du C++ ont de divers intérêts. Afin de bien les compre
 
 ## Mandatory
 - [ ] Vector
-  - [ ]
 - [ ] Map
   - [ ] Of course, for the implementation of std::map::value_compare, the keywordfriendis allowed.
 - [ ] Stack

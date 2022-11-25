@@ -31,53 +31,7 @@ struct Buffer
 #define COUNT (5)
 //#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
-template<typename T>
-void printVec(T &vec, std::string str) {
-	std::cout << str << "[";
-	for (size_t i = 0; i < vec.size(); i++)
-	{
-		std::cout << vec[i];
-		if (i < COUNT -1)
-			std::cout << ", ";
-	}
-	std::cout << "]" << std::endl;
-}
-
-template<>
-void printVec(ft::vector<Buffer> &vec, std::string str) {
-	std::cout << str << "[";
-	for (size_t i = 0; i < vec.size(); i++)
-	{
-		std::cout << vec[i].idx;
-		if (i < COUNT -1)
-			std::cout << ", ";
-	}
-	std::cout << "]" << std::endl;
-}
-
-template <typename T>
-std::string NumberToS ( T Number )
-{
-	std::ostringstream ss;
-	ss << Number;
-	return ss.str();
-}
-
-template <typename T>
-void printfComp(std::string str, T std_f) {
-	std::cout << str <<": " << std_f << std::endl;
-}
-
-void testMaxSize() {
-	ft::vector<int> vec;
-
-	// set some content in the vector:
-	for (int i=0; i<100; i++) vec.push_back(i);
-
-	std::cout << "size: " << vec.size() << "\n";
-	std::cout << "capacity: " << vec.capacity() << "\n";
-	std::cout << "max_size: " << vec.max_size() << "\n";
-}
+#include "mainUtils.hpp"
 
 int main() {
 	#if STD //CREATE A REAL STL EXAMPLE
@@ -87,36 +41,55 @@ int main() {
 	#endif
 	srand(10);
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
-
-	ft::vector<std::string> str_vec;
+	std::cout << "Construct" << std::endl;
+//	ft::vector<std::string> str_vec;
+//	ft::vector<int, NAlloc<int> > int_vec;
 	ft::vector<int> int_vec;
-	ft::vector<Buffer> buffer_vec;
+//	ft::vector<Buffer> buffer_vec;
 
-	printfComp("capacity", buffer_vec.capacity());
+//	printfComp("capacity", buffer_vec.capacity());
 
+	std::cout << "Push_back" << std::endl;
 	for (int i = 0; i < COUNT; i++)
 	{
 		//string
-		char c = i + 'a';
-		str_vec.push_back(NumberToS(c));
+//		char c = i + 'a';
+//		str_vec.push_back(NumberToS(c));
 		//int
 		int_vec.push_back(i * 10);
 		//Buffer
-		buffer_vec.push_back(Buffer());
+//		buffer_vec.push_back(Buffer());
 	}
-	printfComp("size", buffer_vec.size());
-	printfComp("capacity", buffer_vec.capacity());
+//	printfComp("size", buffer_vec.size());
+//	printfComp("capacity", buffer_vec.capacity());
 
 	for (int i = 0; i < COUNT; i++)
 	{
-		const int idx = rand() % COUNT;
-		buffer_vec[idx].idx = 5;
+//		const int idx = rand() % COUNT;
+//		buffer_vec[idx].idx = 5;
 	}
 
-	printVec(buffer_vec, "buffer");
-	printVec(str_vec, "string");
+//	printVec(buffer_vec, "buffer");
+//	printVec(str_vec, "string");
 	printVec(int_vec, "int");
+	std::cout << "Pop_back" << std::endl;
+	testMaxSize(int_vec);
+	int_vec.pop_back();
+	int_vec.pop_back();
+	printVec(int_vec, "int");
+//	std::cout << &int_vec << std::endl;
+//	std::cout << &int_vec[0] << std::endl;
 
-	testMaxSize();
+	std::cout << "Clear" << std::endl;
+	testMaxSize(int_vec);
+	std::cout << *int_vec.end() << std::endl;
+	int_vec.clear();
+	printVec(int_vec, "int");
+	testMaxSize(int_vec);
+//	int_vec.reAllocTest();
+//	std::cout << *int_vec.begin() << std::endl;
+//	ft::vector<float> float_vec;
+//	std::cout << *float_vec.begin() << std::endl;
+//	std::cout << *float_vec.end() << std::endl;
 	return (0);
 }

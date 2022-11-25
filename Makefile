@@ -1,14 +1,14 @@
 ifeq ($(shell uname), Linux)
 	CC = g++
-else ifeq ($(shell c++-12 -dumpversion), 12)
-	CC = g++-12
+#else ifeq ($(shell c++-12 -dumpversion), 12)
+#	CC = g++-12
 else
 	CC = c++
 endif
 RM = rm -rf
 CFLAGS = -Werror -Wall -Wextra
 CFLAGS += -std=c++98 -pedantic
-CFLAGS += -g -fsanitize=address
+CFLAGS += -g3 -fsanitize=address
 
 SRC_DIR = src/
 _SRC =	main.cpp
@@ -19,7 +19,9 @@ SRC = $(addprefix $(SRC_DIR), $(_SRC))
 INC_DIR = inc/
 HEADER=	vector.hpp\
 		iterator.hpp\
-		utils.hpp
+		utils.hpp\
+		Random_access_iterator.hpp
+
 INC = $(addprefix $(INC_DIR), $(HEADER))
 
 STD = 0
@@ -30,7 +32,7 @@ OBJ_DIR = obj/
 _OBJ = $(_SRC:.cpp=.o)
 OBJ = $(addprefix $(OBJ_DIR), $(_OBJ))
 
-.PHONY: all clean fclean re run debug std ft comp
+.PHONY: all clean fclean re run debug std ft comp leak
 
 all: $(NAME)
 
@@ -42,7 +44,6 @@ $(OBJ): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
-
 
 run:
 	./$(NAME)
@@ -61,8 +62,9 @@ comp:
 	$(MAKE) std -C ./
 	diff std.txt ft.txt
 
-debug: CFLAGS += -g -fsanitize=address
-debug: re
+leak: CFLAGS = -Werror -Wall -Wextra -std=c++98 -pedantic -g3
+leak: re
+	leaks -atExit -- ./$(NAME)
 
 clean:
 	$(RM) $(OBJ_DIR)
