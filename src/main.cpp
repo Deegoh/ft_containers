@@ -85,7 +85,10 @@ int main() {
 	std::cout << *int_vec.end() << std::endl;
 	int_vec.clear();
 	printVec(int_vec, "int");
-	testMaxSize(int_vec);
+	std::cout << "begin()" << *int_vec.begin() << std::endl;
+	std::cout << "end()" << *int_vec.end() << std::endl;
+//	testMaxSize(int_vec);
+	testErase();
 //	int_vec.reAllocTest();
 //	std::cout << *int_vec.begin() << std::endl;
 //	ft::vector<float> float_vec;

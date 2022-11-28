@@ -11,12 +11,29 @@ namespace ft {
 			class Reference = T&>
 	class Random_access_iterator : public iterator<T, Category> {
 	public:
-		Random_access_iterator(Pointer ptr)
-			: _ptr(ptr) {};
+		Random_access_iterator(Pointer ptr) : _ptr(ptr) {};
+
 		~Random_access_iterator() {};
+
 		Random_access_iterator(const Random_access_iterator &src) {
 			(*this) = src;
 		}
+
+		Random_access_iterator operator-(int index) {
+			return (_ptr - index);
+		}
+		Distance operator-(const Random_access_iterator &rhs) {
+			return (std::distance(rhs._ptr, _ptr));
+		}
+
+		Random_access_iterator operator+(int index) {
+			return (_ptr + index);
+		}
+
+		Distance operator+(const Random_access_iterator &rhs) {
+			return (std::distance(_ptr, rhs._ptr));
+		}
+
 		Random_access_iterator &operator=(const Random_access_iterator &rhs) {
 			if (&rhs != this)
 			{

@@ -1,5 +1,6 @@
 #ifndef MAIN_UTILS_HPP
 # define MAIN_UTILS_HPP
+#include <typeinfo>
 
 template <class Tp>
 struct NAlloc : public std::allocator<Tp>{
@@ -84,6 +85,47 @@ void testMaxSize(T &vec) {
 	std::cout << "size: " << vec.size() << "\n";
 	std::cout << "capacity: " << vec.capacity() << "\n";
 	std::cout << "max_size: " << vec.max_size() << "\n";
+}
+
+//template <typename T>
+void testErase() {
+	ft::vector<int> c;
+	c.push_back(0);
+	c.push_back(1);
+	c.push_back(2);
+	c.push_back(3);
+	c.push_back(4);
+	c.push_back(5);
+	c.push_back(6);
+	c.push_back(7);
+	c.push_back(8);
+	c.push_back(9);
+
+	printVec(c, "erase1");
+	std::cout << "resul1[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]" << std::endl;
+//	0 1 2 3 4 5 6 7 8 9
+
+	c.erase(c.begin());
+	printVec(c, "erase2");
+	std::cout << "resul2[1, 2, 3, 4, 5, 6, 7, 8, 9]" << std::endl;
+//	1 2 3 4 5 6 7 8 9
+
+	c.erase(c.begin() + 2, c.begin() + 5);
+	printVec(c, "erase3");
+	std::cout << "resul3[1, 2, 6, 7, 8, 9]" << std::endl;
+//	1 2 6 7 8 9
+
+//	// Erase all even numbers
+//	for (ft::vector<int>::iterator it = c.begin(); it != c.end();)
+//	{
+//	if (*it % 2 == 0)
+//	it = c.erase(it);
+//	else
+//	++it;
+//	}
+//	printVec(c, "erase");
+//	std::cout << "resul[1, 7, 9]" << std::endl;
+//	1 7 9
 }
 
 #endif

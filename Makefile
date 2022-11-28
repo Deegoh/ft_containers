@@ -1,7 +1,7 @@
 ifeq ($(shell uname), Linux)
 	CC = g++
-#else ifeq ($(shell c++-12 -dumpversion), 12)
-#	CC = g++-12
+else ifeq ($(shell c++-12 -dumpversion), 12)
+	CC = g++-12
 else
 	CC = c++
 endif
@@ -18,9 +18,10 @@ SRC = $(addprefix $(SRC_DIR), $(_SRC))
 
 INC_DIR = inc/
 HEADER=	vector.hpp\
-		iterator.hpp\
 		utils.hpp\
-		Random_access_iterator.hpp
+		iterator94.hpp
+#		iterator.hpp\
+#		Random_access_iterator.hpp
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
 

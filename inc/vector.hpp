@@ -5,9 +5,15 @@
 # include <memory>
 # include <cstddef>
 
+
 //# include "iterator.hpp"
 # include "Random_access_iterator.hpp"
 //# include "utils.hpp"
+
+//test
+//# include "iterator94.hpp"
+//# include <vector>
+//endTest
 
 namespace ft {
 	template <typename T, class Allocator = std::allocator<T> >
@@ -24,8 +30,6 @@ namespace ft {
 					std::cout << ", ";
 			}
 			std::cout << "]" << std::endl;
-//			std::cout << &block << std::endl;
-//			std::cout << &block[0] << std::endl;
 //			// destroy space _c
 			for (size_type i = 0; i < size; ++i) {
 				_alloc.destroy(block + i);
@@ -102,8 +106,18 @@ namespace ft {
 			_capacity = 0;
 			_size = 0;
 			_c = NULL;
+			_start = _alloc.allocate(0);
+			_end = _start;
 //			_alloc = allocator_type();
 		};
+
+		vector(size_type n, const T& value = T()) : _alloc() {
+			_start = _alloc.allocate(n);
+			uninitialized_fill_n(_start, n, value);
+			_end = _start + n;
+//			end_of_storage = finish;
+			_size = n;
+		}
 
 		vector(const vector& src) {(*this) = src;};
 
@@ -116,9 +130,9 @@ namespace ft {
 		};
 
 		vector& operator=(const vector& rhs) {
-//			if (&rhs != this)
-//				(*this) = rhs;
-			(void)rhs;
+			if (&rhs != this)
+				(*this) = rhs;
+//			(void)rhs;
 			return (*this);
 		};
 
@@ -142,11 +156,14 @@ namespace ft {
 		};
 
 //		Iterators
+//		returns an iterator to the beginning
 		iterator begin() {return iterator(_start);}
+//		returns an iterator to the beginning
 		const_iterator begin() const {return const_iterator(_start);}
-
+//		returns an iterator to the end
 		iterator end() {return iterator(_end);}
-//		const_iterator end() const {return iterator(_end);}
+//		returns an iterator to the end
+		const_iterator end() const {return iterator(_end);}
 
 //		Capacity
 //		checks whether the container is empty (public member function)
@@ -157,6 +174,7 @@ namespace ft {
 //		Return size (public member function)
 //		std::distance(begin(), end())
 		size_type size() const {
+//			std::distance(begin(), end());
 			return (_size);
 		}
 
@@ -172,6 +190,7 @@ namespace ft {
 				_alloc.deallocate(_start);
 				_end = tmp + size();
 				_start = tmp;
+//				end_of_storage = begin() + n;
 				_size = begin() + n;
 			}
 		}
@@ -186,7 +205,44 @@ namespace ft {
 				_alloc.destroy(_c + i);
 			}
 			_size = 0;
+			_start = _c;
+			_end = _c;
 		}
+		//TODO insert
+//		inserts elements (single element)
+//		iterator insert (iterator position, const_iterator first, const_iterator last);
+//		inserts elements (fill)
+//		void insert (iterator position, size_type n, const value_type& x);
+//		inserts elements (range)
+//		template <class InputIterator>
+//		void insert (iterator position, InputIterator first, InputIterator last);
+		//TODO erase
+//		erases elements
+		iterator erase(iterator position)
+		{
+			if (position + 1 != end())
+				std::copy(position + 1, end(), position);
+			_end--;
+			_size--;
+			_alloc.destroy(_c + _size);
+			return (_end);
+		}
+//		iterator erase( const_iterator pos );
+//		erases elements
+		iterator erase(iterator first, iterator last)
+		{
+			iterator it = std::copy(last, end(), first);
+			std::cout << _end - _start << std::endl;
+			for (; _size != (size_type)(_end - _start); _size--) {
+//				std::cout << *_c + (it - _start) << std::endl;
+//				erase(it);
+//				_alloc.destroy(_c + (size_type)(it - _start));
+//				pop_back();
+			}
+//			_end = _end - (last - first);
+			return (_end);
+		}
+//		iterator erase( const_iterator first, const_iterator last );
 
 //		Add element at the end (public member function)
 		void push_back(const value_type& value) {
@@ -206,13 +262,16 @@ namespace ft {
 				_alloc.destroy(_c + _size);
 			}
 		}
-
+	//	TODO resize
 //		Change size (public member function)
 		void resize (size_type count) {
 			//1 reAlloc
 			//2 move
 			return count;
 		}
+		//TODO swap
+//		swaps the contents
+//		void swap( vector& other );
 	};
 }
 
