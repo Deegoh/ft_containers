@@ -88,6 +88,22 @@ void testMaxSize(T &vec, std::string str) {
 	std::cout << "max_size: " << vec.max_size() << "\n";
 }
 
+void testResize() {
+	ft::vector<int> range_vec(7, 20);
+
+	ft::vector<int>::iterator it = range_vec.begin();
+	for (int i = 2; i < 7; ++i)
+		it[i] = (7 - i) * 3;
+	testMaxSize(range_vec, "resize");
+	printVec(range_vec, "resize");
+	range_vec.resize(10, 42);
+	testMaxSize(range_vec, "resize");
+	printVec(range_vec, "resize");
+//	range_vec.resize(7);
+//	testMaxSize(range_vec, "resize");
+//	printVec(range_vec, "resize");
+}
+
 //template <typename T>
 void testErase() {
 	ft::vector<int> c;
@@ -117,15 +133,15 @@ void testErase() {
 //	1 2 6 7 8 9
 
 //	// Erase all even numbers
-//	for (ft::vector<int>::iterator it = c.begin(); it != c.end();)
-//	{
-//	if (*it % 2 == 0)
-//	it = c.erase(it);
-//	else
-//	++it;
-//	}
-//	printVec(c, "erase");
-//	std::cout << "resul[1, 7, 9]" << std::endl;
+	for (ft::vector<int>::iterator it = c.begin(); it != c.end();)
+	{
+	if (*it % 2 == 0)
+	it = c.erase(it);
+	else
+	++it;
+	}
+	printVec(c, "erase");
+	std::cout << "resul[1, 7, 9]" << std::endl;
 //	1 7 9
 }
 
