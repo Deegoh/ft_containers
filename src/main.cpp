@@ -42,57 +42,51 @@ int main() {
 	srand(10);
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
 	std::cout << "Construct" << std::endl;
-//	ft::vector<std::string> str_vec;
+	ft::vector<std::string> str_vec;
 //	ft::vector<int, NAlloc<int> > int_vec;
 	ft::vector<int> int_vec;
-//	ft::vector<Buffer> buffer_vec;
+	ft::vector<Buffer> buffer_vec;
 
-//	printfComp("capacity", buffer_vec.capacity());
+	testMaxSize(buffer_vec, "buffer");
+	testMaxSize(int_vec, "int");
 
 	std::cout << "Push_back" << std::endl;
 	for (int i = 0; i < COUNT; i++)
 	{
 		//string
-//		char c = i + 'a';
-//		str_vec.push_back(NumberToS(c));
+		char c = i + 'a';
+		str_vec.push_back(NumberToS(c));
 		//int
 		int_vec.push_back(i * 10);
 		//Buffer
-//		buffer_vec.push_back(Buffer());
+		buffer_vec.push_back(Buffer());
 	}
-//	printfComp("size", buffer_vec.size());
-//	printfComp("capacity", buffer_vec.capacity());
+	printfComp("size", buffer_vec.size());
+	printfComp("capacity", buffer_vec.capacity());
 
 	for (int i = 0; i < COUNT; i++)
 	{
-//		const int idx = rand() % COUNT;
-//		buffer_vec[idx].idx = 5;
+		const int idx = rand() % COUNT;
+		buffer_vec[idx].idx = 5;
 	}
 
-//	printVec(buffer_vec, "buffer");
-//	printVec(str_vec, "string");
+	printVec(buffer_vec, "buffer");
+	printVec(str_vec, "string");
 	printVec(int_vec, "int");
 	std::cout << "Pop_back" << std::endl;
-	testMaxSize(int_vec);
+	testMaxSize(int_vec, "int");
 	int_vec.pop_back();
 	int_vec.pop_back();
 	printVec(int_vec, "int");
-//	std::cout << &int_vec << std::endl;
-//	std::cout << &int_vec[0] << std::endl;
 
 	std::cout << "Clear" << std::endl;
-	testMaxSize(int_vec);
+	testMaxSize(int_vec, "int");
 	std::cout << *int_vec.end() << std::endl;
 	int_vec.clear();
 	printVec(int_vec, "int");
 	std::cout << "begin()" << *int_vec.begin() << std::endl;
 	std::cout << "end()" << *int_vec.end() << std::endl;
-//	testMaxSize(int_vec);
+	testMaxSize(int_vec, "int");
 	testErase();
-//	int_vec.reAllocTest();
-//	std::cout << *int_vec.begin() << std::endl;
-//	ft::vector<float> float_vec;
-//	std::cout << *float_vec.begin() << std::endl;
-//	std::cout << *float_vec.end() << std::endl;
 	return (0);
 }

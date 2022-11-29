@@ -18,25 +18,6 @@
 namespace ft {
 	template <typename T, class Allocator = std::allocator<T> >
 	class vector {
-	public: //test delete after
-		void reAllocTest() {
-			size_type size = 5;
-			T *block = _alloc.allocate(size);
-			std::cout << "alloc[";
-			for (size_type i = 0; i < size; ++i) {
-				block[i] = _c[i];
-				std::cout << block[i];
-				if (i < 5 -1)
-					std::cout << ", ";
-			}
-			std::cout << "]" << std::endl;
-//			// destroy space _c
-			for (size_type i = 0; i < size; ++i) {
-				_alloc.destroy(block + i);
-			}
-//			// deallocate space _c
-			_alloc.deallocate(block, size);
-		}
 	public:
 		// types
 		typedef T											value_type;
@@ -57,66 +38,38 @@ namespace ft {
 		value_type *_c;
 		size_type _size;
 		size_type _capacity;
-		iterator _start;
-		iterator _end;
 
-//		https://web.archive.org/web/20160304114243/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/VECTOR.H
-//		void reserve(size_type n) {
-//			if (capacity() < n) {
-//				iterator tmp = static_allocator.allocate(n);
-//				uninitialized_copy(begin(), end(), tmp);
-//				destroy(start, finish);
-//				static_allocator.deallocate(start);
-//				finish = tmp + size();
-//				start = tmp;
-//				end_of_storage = begin() + n;
-//			}
-//		}
 	public:
-//		1. alloc a new block of memory
-//		2. copy / move old elems into new block
-//		3. delete
 		void reAlloc(size_type newCapacity) {
 			if (newCapacity == 0)
 				newCapacity = 1;
 			T* newBlock = _alloc.allocate(newCapacity);
-//			downsize space
 			if (newCapacity < _size)
 				_size = newCapacity;
-//			cpy value
 			for (size_type i = 0; i < _size; ++i) {
 				newBlock[i] = _c[i];
 			}
-//			destroy content _c
 			for (size_type i = 0; i < _size; ++i) {
 				_alloc.destroy(_c + i);
 			}
-//			deallocate space _c
 			if (_c)
 				_alloc.deallocate(_c, _capacity);
-//			cpy
 			_c = newBlock;
-			_start = _c;
-			_end = _c + _size;
 			_capacity = newCapacity;
 		}
 
 //		Constructor
-		vector() : _alloc(), _start(NULL), _end(NULL) {
+		vector() : _alloc() {
 			_capacity = 0;
 			_size = 0;
 			_c = NULL;
-			_start = _alloc.allocate(0);
-			_end = _start;
-//			_alloc = allocator_type();
 		};
 
 		vector(size_type n, const T& value = T()) : _alloc() {
-			_start = _alloc.allocate(n);
-			uninitialized_fill_n(_start, n, value);
-			_end = _start + n;
-//			end_of_storage = finish;
+			_c = _alloc.allocate(n);
+			uninitialized_fill_n(_c, n, value);
 			_size = n;
+			_capacity = n;
 		}
 
 		vector(const vector& src) {(*this) = src;};
@@ -131,8 +84,13 @@ namespace ft {
 
 		vector& operator=(const vector& rhs) {
 			if (&rhs != this)
-				(*this) = rhs;
-//			(void)rhs;
+			{
+				_size = rhs._size;
+				_alloc = rhs._alloc;
+				_capacity = rhs._capacity;
+				_c = rhs._c;
+
+			}
 			return (*this);
 		};
 
@@ -157,13 +115,13 @@ namespace ft {
 
 //		Iterators
 //		returns an iterator to the beginning
-		iterator begin() {return iterator(_start);}
+		iterator begin() {return iterator(_c);}
 //		returns an iterator to the beginning
-		const_iterator begin() const {return const_iterator(_start);}
+		const_iterator begin() const {return const_iterator(_c);}
 //		returns an iterator to the end
-		iterator end() {return iterator(_end);}
+		iterator end() {return iterator(_c + _size);}
 //		returns an iterator to the end
-		const_iterator end() const {return iterator(_end);}
+		const_iterator end() const {return const_iterator(_c + _size);}
 
 //		Capacity
 //		checks whether the container is empty (public member function)
@@ -183,15 +141,17 @@ namespace ft {
 
 //		reserves storage (public member function)
 		void reserve(size_type n) {
-			if (capacity() < n) {
-				iterator tmp = _alloc.allocate(n);
-				uninitialized_copy(begin(), end(), tmp);
-				destroy(_start, _end);
-				_alloc.deallocate(_start);
-				_end = tmp + size();
-				_start = tmp;
-//				end_of_storage = begin() + n;
-				_size = begin() + n;
+			if (n == 0)
+				n = 1;
+			if (_capacity < n) {
+				value_type *tmp = _alloc.allocate(n);
+				std::uninitialized_copy(this->begin(), this->end(), tmp);
+				for (size_type i = 0; i < _size; ++i) {
+					_alloc.destroy(_c + i);
+				}
+				_alloc.deallocate(_c, _capacity);
+				_c = tmp;
+				_capacity = n;
 			}
 		}
 
@@ -205,8 +165,6 @@ namespace ft {
 				_alloc.destroy(_c + i);
 			}
 			_size = 0;
-			_start = _c;
-			_end = _c;
 		}
 		//TODO insert
 //		inserts elements (single element)
@@ -222,43 +180,36 @@ namespace ft {
 		{
 			if (position + 1 != end())
 				std::copy(position + 1, end(), position);
-			_end--;
 			_size--;
 			_alloc.destroy(_c + _size);
-			return (_end);
+			return (iterator(_c + _size));
 		}
 //		iterator erase( const_iterator pos );
 //		erases elements
 		iterator erase(iterator first, iterator last)
 		{
 			iterator it = std::copy(last, end(), first);
-			std::cout << _end - _start << std::endl;
-			for (; _size != (size_type)(_end - _start); _size--) {
-//				std::cout << *_c + (it - _start) << std::endl;
-//				erase(it);
-//				_alloc.destroy(_c + (size_type)(it - _start));
-//				pop_back();
+			for (; it != end() ; it++) {
+				_alloc.destroy(_c + (it - begin()));
 			}
-//			_end = _end - (last - first);
-			return (_end);
+			_size = _size - (last - first);
+			return (iterator(_c + _size));
 		}
 //		iterator erase( const_iterator first, const_iterator last );
 
 //		Add element at the end (public member function)
 		void push_back(const value_type& value) {
 			if (_size >= _capacity) {
-				reAlloc(_capacity * 2);
+				reserve(_capacity * 2);
 			}
 			_alloc.construct(_c + _size, value);
 			_size++;
-			_end++;
 		}
 //		removes the last element (public member function)
 		void pop_back() {
 			if (_size > 0)
 			{
 				_size--;
-				_end--;
 				_alloc.destroy(_c + _size);
 			}
 		}
@@ -271,7 +222,7 @@ namespace ft {
 		}
 		//TODO swap
 //		swaps the contents
-//		void swap( vector& other );
+//		void swap(vector& other);
 	};
 }
 

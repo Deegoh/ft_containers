@@ -76,6 +76,11 @@ namespace ft {
 		bool operator!=(const Random_access_iterator &rhs) const {
 			return !(*this == rhs);
 		}
+//		const Random_access_iterator &operator=(Random_access_iterator &rhs) {
+//			if (this != &rhs)
+//				_ptr = rhs._ptr;
+//			return (*this);
+//		}
 	private:
 		Pointer _ptr;
 	};

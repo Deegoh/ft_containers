@@ -81,7 +81,8 @@ void printfComp(std::string str, T std_f) {
 }
 
 template <typename T>
-void testMaxSize(T &vec) {
+void testMaxSize(T &vec, std::string str) {
+	std::cout << str << "\n";
 	std::cout << "size: " << vec.size() << "\n";
 	std::cout << "capacity: " << vec.capacity() << "\n";
 	std::cout << "max_size: " << vec.max_size() << "\n";
