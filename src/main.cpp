@@ -41,53 +41,66 @@ int main() {
 	#endif
 	srand(10);
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
-	std::cout << "Construct" << std::endl;
-	ft::vector<std::string> str_vec;
-//	ft::vector<int, NAlloc<int> > int_vec;
-	ft::vector<int> int_vec;
-	ft::vector<Buffer> buffer_vec;
+//	std::cout << "Construct" << std::endl;
+//	ft::vector<std::string> str_vec;
+////	ft::vector<int, NAlloc<int> > int_vec;
+//	ft::vector<int> int_vec;
+//	ft::vector<Buffer> buffer_vec;
+//
+//	testMaxSize(buffer_vec, "buffer");
+//	testMaxSize(int_vec, "int");
+//
+//	std::cout << "Push_back" << std::endl;
+//	for (int i = 0; i < COUNT; i++)
+//	{
+//		//string
+//		char c = i + 'a';
+//		str_vec.push_back(NumberToS(c));
+//		//int
+//		int_vec.push_back(i * 10);
+//		//Buffer
+//		buffer_vec.push_back(Buffer());
+//	}
+//	printfComp("size", buffer_vec.size());
+//	printfComp("capacity", buffer_vec.capacity());
+//
+//	for (int i = 0; i < COUNT; i++)
+//	{
+//		const int idx = rand() % COUNT;
+//		buffer_vec[idx].idx = 5;
+//	}
+//
+//	printVec(buffer_vec, "buffer");
+//	printVec(str_vec, "string");
+//	printVec(int_vec, "int");
+//	std::cout << "Pop_back" << std::endl;
+//	testMaxSize(int_vec, "int");
+//	int_vec.pop_back();
+//	int_vec.pop_back();
+//	printVec(int_vec, "int");
+//
+//	std::cout << "Clear" << std::endl;
+//	testMaxSize(int_vec, "int");
+//	std::cout << *int_vec.end() << std::endl;
+//	int_vec.clear();
+//	printVec(int_vec, "int");
+//	std::cout << "begin()" << *int_vec.begin() << std::endl;
+//	std::cout << "end()" << *int_vec.end() << std::endl;
+//	testMaxSize(int_vec, "int");
+//	testErase();
+//	testResize();
 
-	testMaxSize(buffer_vec, "buffer");
-	testMaxSize(int_vec, "int");
-
-	std::cout << "Push_back" << std::endl;
-	for (int i = 0; i < COUNT; i++)
-	{
-		//string
-		char c = i + 'a';
-		str_vec.push_back(NumberToS(c));
-		//int
-		int_vec.push_back(i * 10);
-		//Buffer
-		buffer_vec.push_back(Buffer());
-	}
-	printfComp("size", buffer_vec.size());
-	printfComp("capacity", buffer_vec.capacity());
-
-	for (int i = 0; i < COUNT; i++)
-	{
-		const int idx = rand() % COUNT;
-		buffer_vec[idx].idx = 5;
-	}
-
-	printVec(buffer_vec, "buffer");
-	printVec(str_vec, "string");
-	printVec(int_vec, "int");
-	std::cout << "Pop_back" << std::endl;
-	testMaxSize(int_vec, "int");
-	int_vec.pop_back();
-	int_vec.pop_back();
-	printVec(int_vec, "int");
-
-	std::cout << "Clear" << std::endl;
-	testMaxSize(int_vec, "int");
-	std::cout << *int_vec.end() << std::endl;
-	int_vec.clear();
-	printVec(int_vec, "int");
-	std::cout << "begin()" << *int_vec.begin() << std::endl;
-	std::cout << "end()" << *int_vec.end() << std::endl;
-	testMaxSize(int_vec, "int");
-	testErase();
-	testResize();
+//	ft::vector<int> vct(7);
+//	ft::vector<int> vct2;
+//
+//	for (unsigned long int i = 0; i < vct.size(); ++i)
+//		vct[i] = (vct.size() - i) * 3;
+//	vct2.assign(vct.begin(), vct.end());
+//	printVec(vct, "vct");
+//	printVec(vct2, "vct2");
+//	vct2.assign(2, 42);
+//	printVec(vct2, "vct2");
+//	testMaxSize(vct2, "");
+//	std::cout << ft::is_integral_v<int> << std::endl;
 	return (0);
 }

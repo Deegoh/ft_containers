@@ -4,11 +4,12 @@
 # include <iostream>
 # include <memory>
 # include <cstddef>
+# include <stdexcept>
 
 
-//# include "iterator.hpp"
+# include "iterator.hpp"
 # include "Random_access_iterator.hpp"
-//# include "utils.hpp"
+# include "utils.hpp"
 
 //test
 //# include "iterator94.hpp"
@@ -40,23 +41,6 @@ namespace ft {
 		size_type _capacity;
 
 	public:
-		void reAlloc(size_type newCapacity) {
-			if (newCapacity == 0)
-				newCapacity = 1;
-			T* newBlock = _alloc.allocate(newCapacity);
-			if (newCapacity < _size)
-				_size = newCapacity;
-			for (size_type i = 0; i < _size; ++i) {
-				newBlock[i] = _c[i];
-			}
-			for (size_type i = 0; i < _size; ++i) {
-				_alloc.destroy(_c + i);
-			}
-			if (_c)
-				_alloc.deallocate(_c, _capacity);
-			_c = newBlock;
-			_capacity = newCapacity;
-		}
 
 //		Constructor
 		vector() : _alloc() {
@@ -65,6 +49,12 @@ namespace ft {
 			_c = NULL;
 		};
 
+		vector(const allocator_type& alloc) : _alloc(alloc) {
+			_capacity = 0;
+			_size = 0;
+			_c = NULL;
+		}
+
 		vector(size_type n, const T& value = T()) : _alloc() {
 			_c = _alloc.allocate(n);
 			std::uninitialized_fill_n(_c, n, value);
@@ -72,29 +62,119 @@ namespace ft {
 			_capacity = n;
 		}
 
-		vector(const vector& src) {(*this) = src;};
+		vector(size_type n) {
+			_c = _alloc.allocate(n);
+			std::uninitialized_fill_n(_c, n, T());
+			_size = n;
+			_capacity = n;
+		}
 
+		template<class InputIt>
+		vector(InputIt first, InputIt last,
+						  const Allocator& alloc = Allocator() ) : _alloc (alloc){
+			size_type n = last - first;
+			if (n < 0)
+				n = 0;
+			_c = _alloc.allocate(n);
+			for (size_type i = 0; i < n; ++i) {
+				_c[i] = (first + i);
+			}
+			_size = n;
+			_capacity = n;
+		}
+
+//		copy
+		vector(const vector& src) {
+			(*this) = src;
+		};
+
+//		destructor
 		~vector() {
-			for (size_type i = 0; i < _size; ++i) {
-				_alloc.destroy(_c + i);
-			}
 			if (_c)
-				_alloc.deallocate(_c, _capacity);
-		};
-
-		vector& operator=(const vector& rhs) {
-			if (&rhs != this)
 			{
-				_size = rhs._size;
-				_alloc = rhs._alloc;
-				_capacity = rhs._capacity;
-				_c = rhs._c;
+				for (size_type i = 0; i < _size; ++i) {
+					_alloc.destroy(_c + i);
+				}
+				_alloc.deallocate(_c, _capacity);
 			}
-			return (*this);
 		};
 
-//		iterator overload
+//		operator=
+		vector& operator=(const vector& rhs) {
+			if (&rhs == this)
+				return (*this);
+			if (rhs.size() > this->capacity()) {
+				for (size_type i = 0; i < this->size(); ++i) {
+					_alloc.destroy(_c + i);
+				}
+				_alloc.deallocate(_c, this->size());
+				_c = _alloc.allocate(rhs.end() - rhs.begin());
+				for (size_type i = 0; i < rhs.size(); ++i) {
+					_c[i] = rhs._c[i];
+				}
+			} else if (this->size() >= rhs.size()) {
+				iterator i = std::copy(rhs.begin(), rhs.end(), this->begin());
+//				TODO change it to vec and destroy
+//				while (i != this->end()) {
+//					_alloc.destroy(*i);
+//					i++;
+//				}
+//				destroy(i, finish);
+//				// work around for destroy(copy(rhs.begin(), rhs.end(), begin()), finish);
+			}// else {
+//				copy(rhs.begin(), rhs.begin() + size(), begin());
+//				uninitialized_copy(rhs.begin() + size(), rhs.end(), begin() + size());
+//			}
+			return *this;
 
+//			if (&rhs != this)
+//			{
+//				if (_c)
+//				{
+//					for (size_type i = 0; i < _size; ++i) {
+//						_alloc.destroy(_c + i);
+//					}
+//					_alloc.deallocate(_c, _capacity);
+//					_c = NULL;
+//				}
+//				_size = rhs._size;
+//				_capacity = rhs._capacity;
+//				_alloc = rhs._alloc;
+////				reserve(_capacity);
+//				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
+//			}
+//			return (*this);
+		};
+
+
+//		assigns values to the container
+		void assign(size_type count, const value_type & value) {
+			for (size_type i = 0; i < count ; ++i) {
+				push_back(value);
+			}
+		}
+
+//		std::is_integral<int>::value
+//		template<class InputIt, ft::enable_if_t<std::is_integral<InputIt>::value, bool> = true>
+//		void assign(InputIt first, InputIt last) {
+//			for (; first != last ; first++) {
+//				push_back(*first);
+//			}
+//		}
+
+//		returns the associated allocator
+		allocator_type get_allocator() const {
+			return (_alloc);
+		}
+
+//		Element access
+
+//TODO AT
+//		access specified element with bounds checking
+//		reference at( size_type pos );
+//		const_reference at( size_type pos ) const;
+
+//		access specified element
 		T& operator[](size_type index) {
 			if (index >= _size)
 			{
@@ -111,6 +191,21 @@ namespace ft {
 			}
 			return (_c[index]);
 		};
+//		TODO front
+//		access the first element
+//		reference front();
+//		const_reference front() const;
+
+//		TODO back
+//		access the last element
+//		reference back();
+//		const_reference back() const;
+
+//		todo data
+//		If size() is 0, data() may or may not return a null pointer.
+//		direct access to the underlying array
+//		T* data();
+//		const T* data() const;
 
 //		Iterators
 //		returns an iterator to the beginning
@@ -125,7 +220,7 @@ namespace ft {
 //		Capacity
 //		checks whether the container is empty (public member function)
 		bool empty() const {
-			return (begin() == end());
+			return (_size == 0);
 		}
 
 //		Return size (public member function)
@@ -140,11 +235,23 @@ namespace ft {
 
 //		reserves storage (public member function)
 		void reserve(size_type n) {
+			if (n > max_size())
+				throw std::length_error("Size error");
 			if (n == 0)
 				n = 1;
 			if (_capacity < n) {
 				value_type *tmp = _alloc.allocate(n);
 				std::uninitialized_copy(this->begin(), this->end(), tmp);
+				for (size_type i = 0; i < _size; ++i) {
+					_alloc.destroy(_c + i);
+				}
+				_alloc.deallocate(_c, _capacity);
+				_c = tmp;
+				_capacity = n;
+			} else
+			{
+				value_type *tmp = _alloc.allocate(n);
+				std::uninitialized_copy(begin(), begin() + n, tmp);
 				for (size_type i = 0; i < _size; ++i) {
 					_alloc.destroy(_c + i);
 				}
@@ -173,7 +280,7 @@ namespace ft {
 //		inserts elements (range)
 //		template <class InputIterator>
 //		void insert (iterator position, InputIterator first, InputIterator last);
-		//TODO erase
+
 //		erases elements
 		iterator erase(iterator position)
 		{
@@ -194,7 +301,6 @@ namespace ft {
 			_size = _size - (last - first);
 			return (iterator(_c + _size));
 		}
-//		iterator erase( const_iterator first, const_iterator last );
 
 //		Add element at the end (public member function)
 		void push_back(const value_type& value) {
@@ -218,7 +324,12 @@ namespace ft {
 			{
 				if (_capacity < count)
 					reserve(_capacity * 2);
-				std::uninitialized_fill_n(_c + _size, count - _size, value);
+//				std::uninitialized_fill_n(_c + _size, count - _size, *value);
+//				std::uninitialized_copy();
+				for (size_type i = _size; i < (count) ; ++i) {
+					_c[i] = value;
+//					std::cout << "size[" << i << "]" << value << std::endl;
+				}
 				_size = count;
 			}
 			else if (count < _size)
@@ -229,7 +340,9 @@ namespace ft {
 		}
 		//TODO swap
 //		swaps the contents
-//		void swap(vector& other);
+//		void swap(vector& other) {
+//
+//		}
 	};
 }
 

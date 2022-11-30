@@ -44,7 +44,7 @@ template <class T, class U>
 bool operator!=(const NAlloc<T>&, const NAlloc<U>&) { return false; }
 
 template<typename T>
-void printVec(T &vec, std::string str) {
+void printVec(ft::vector<T> &vec, std::string str) {
 	std::cout << str << "[";
 	for (size_t i = 0; i < vec.size(); i++)
 	{
@@ -89,19 +89,46 @@ void testMaxSize(T &vec, std::string str) {
 }
 
 void testResize() {
-	ft::vector<int> range_vec(7, 20);
+	const int start_size = 7;
 
-	ft::vector<int>::iterator it = range_vec.begin();
+	ft::vector<int> vct(start_size, 20);
+	ft::vector<int> vct2;
+	ft::vector<int>::iterator it = vct.begin();
+
 	for (int i = 2; i < 7; ++i)
 		it[i] = (7 - i) * 3;
-	testMaxSize(range_vec, "resize");
-	printVec(range_vec, "resize");
-	range_vec.resize(10, 42);
-	testMaxSize(range_vec, "resize");
-	printVec(range_vec, "resize");
-//	range_vec.resize(7);
-//	testMaxSize(range_vec, "resize");
-//	printVec(range_vec, "resize");
+
+	printVec(vct, "vct");
+
+	vct.resize(10, 42);
+	printVec(vct, "vct");
+
+	vct.resize(18, 43);
+	printVec(vct, "vct");
+	vct.resize(10);
+	printVec(vct, "vct");
+	vct.resize(23, 44);
+	printVec(vct, "vct");
+	vct.resize(5);
+	printVec(vct, "vct");
+	vct.reserve(5);
+	vct.reserve(3);
+	printVec(vct, "vct");
+	vct.resize(87);
+	exit(0);
+	vct.resize(5);
+	printVec(vct, "vct");
+
+	std::cout << "vct2 is empty " << vct2.empty() << std::endl;
+	vct2 = vct;
+	std::cout << "vct2 is empty " << vct2.empty() << std::endl;
+	vct.reserve(vct.capacity() + 1);
+	printVec(vct, "vct");
+	printVec(vct2, "vct2");
+
+	vct2.resize(0);
+	std::cout << "vct2 is empty " << vct2.empty() << std::endl;
+	printVec(vct2, "vct2");
 }
 
 //template <typename T>

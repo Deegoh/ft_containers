@@ -5,6 +5,54 @@
 
 namespace ft {
 
+//	struct false_type {
+//		const static bool value = false;
+//		operator bool() const { return value; }
+//		// There is more here, but it doesn't really matter for your question
+//	};
+//
+//	struct true_type {
+//		const static bool value = true;
+//		operator bool() const { return value; }
+//		// There is more here, but it doesn't really matter for your question
+//	};
+//
+//	template<class T, T v>
+//	struct integral_constant {
+//		static T value = v;
+//		typedef T					value_type;
+//		typedef integral_constant	type; // using injected-class-name
+//		operator value_type() const { return value; }
+//		value_type operator()() const { return value; } // since c++14
+//	};
+//
+//	template< class T >
+//	struct is_integral
+//	{
+//		static const bool value /* = true if T is integral, false otherwise */;
+//		typedef ft::integral_constant<bool, value> type;
+//	};
+
+//	template<typename>
+//	struct is_integral
+//			: public false_type { };
+//
+//	template<>
+//	struct __is_integral_helper<bool>
+//			: public true_type { };
+//
+//	template<>
+//	struct __is_integral_helper<char>
+//			: public true_type { };
+//
+//	template<>
+//	struct __is_integral_helper<signed char>
+//			: public true_type { };
+//
+//	template<>
+//	struct __is_integral_helper<unsigned char>
+//			: public true_type { };
+
 	//TAG_ITERATORS
 	struct input_iterator_tag { };
 	struct output_iterator_tag { };
