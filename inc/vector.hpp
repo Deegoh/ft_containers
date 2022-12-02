@@ -62,8 +62,13 @@ namespace ft {
 //		range
 		template<class InputIt>
 		vector(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first,
-			   InputIt last, const allocator_type& alloc = allocator_type() ) : _alloc (alloc){
-			size_type n = last - first;
+			   InputIt last, const allocator_type& alloc = allocator_type() ) : _alloc (alloc) {
+			size_type n = 0;
+			while (first != last)
+			{
+				n++;
+				first++;
+			}
 			if (n < 0)
 				n = 0;
 			_c = _alloc.allocate(n);
@@ -76,7 +81,10 @@ namespace ft {
 		}
 
 //		copy
-		vector(const vector& src) {
+		vector(const vector& src) : _alloc() {
+			_capacity = 0;
+			_size = 0;
+			_c = NULL;
 			(*this) = src;
 		};
 
@@ -99,37 +107,18 @@ namespace ft {
 				for (size_type i = 0; i < this->size(); ++i) {
 					_alloc.destroy(_c + i);
 				}
-				_alloc.deallocate(_c, this->size());
+				_alloc.deallocate(_c, this->capacity());
 				_c = _alloc.allocate(rhs._size);
 				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
-//				_size = rhs._size;
-//				_capacity = rhs._capacity;
-//				for (size_type i = 0; i < rhs.size(); ++i) {
-//					_c[i] = rhs._c[i];
-//				}
-			} else if (this->size() >= rhs.size()) {
-				size_type i = 0;
-//				iterator it = std::copy(rhs.begin(), rhs.end(), this->begin());
-				for (; i < rhs.size(); ++i) {
-					_c[i] = rhs._c[i];
-				}
-//				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
-				for (; i < this->size(); ++i) {
+				_capacity = rhs._capacity;
+			} else/*if (this->size() >= rhs.size())*/ {
+				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
+				for (size_type i = rhs.size() - 1; i < this->size(); ++i) {
 					_alloc.destroy(_c + i);
 				}
-				_alloc.deallocate(_c, this->size());
-//				_size = rhs._size;
-//				_capacity = rhs._capacity;
-			} else {
-//				size_type i = 0;
-//				for (; i < this->size(); ++i) {
-//					_c[i] = rhs._c[i];
-//				}
-//				//maybe change it
-//				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 			}
 			_size = rhs._size;
-			_capacity = rhs._capacity;
+//			_capacity = rhs._capacity;
 			return *this;
 		};
 
@@ -145,7 +134,7 @@ namespace ft {
 //		assigns values to the container
 		template<class InputIt>
 		void assign(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
-			size_type diff = last - first;
+			size_type diff = diffIt(first, last);
 			if (diff > capacity())
 				reserve(diff);
 			for (size_type i = 0; first != last ; first++, i++) {
@@ -161,43 +150,41 @@ namespace ft {
 
 //		Element access
 
-//TODO AT
 //		access specified element with bounds checking
-//		reference at( size_type pos );
-//		const_reference at( size_type pos ) const;
+		reference at(size_type pos) {
+			if (pos >= size())
+				throw std::out_of_range("out_of_range exception");
+			return (*(_c + pos));
+		}
+		const_reference at(size_type pos) const {
+			if (pos >= size())
+				throw std::out_of_range("out_of_range exception");
+			return (*(_c + pos));
+		}
 
 //		access specified element
 		T& operator[](size_type index) {
-			if (index >= _size)
-			{
-				// throw error ?
-				return (_c[0]);
-			}
 			return (_c[index]);
 		};
 		const T& operator[](size_type index) const {
-			if (index >= _size)
-			{
-				// throw error ?
-				return (_c[0]);
-			}
 			return (_c[index]);
 		};
-//		TODO front
+
 //		access the first element
-//		reference front();
-//		const_reference front() const;
+		reference front() {
+			return (*_c);
+		}
+		const_reference front() const {
+			return (*_c);
+		}
 
-//		TODO back
 //		access the last element
-//		reference back();
-//		const_reference back() const;
-
-//		todo data
-//		If size() is 0, data() may or may not return a null pointer.
-//		direct access to the underlying array
-//		T* data();
-//		const T* data() const;
+		reference back() {
+			return (*(_c + size() - 1));
+		}
+		const_reference back() const {
+			return (*(_c + size() - 1));
+		}
 
 //		Iterators
 //		returns an iterator to the beginning
@@ -208,6 +195,18 @@ namespace ft {
 		iterator end() {return iterator(_c + _size);}
 //		returns an iterator to the end
 		const_iterator end() const {return const_iterator(_c + _size);}
+
+//		return distance
+		template<typename inputIt>
+		size_type diffIt(inputIt it, inputIt ite) {
+			size_type n = 0;
+			while (it != ite)
+			{
+				n++;
+				it++;
+			}
+			return (n);
+		}
 
 //		Capacity
 //		checks whether the container is empty (public member function)
@@ -266,9 +265,18 @@ namespace ft {
 		}
 		//TODO insert
 //		inserts elements (single element)
-//		iterator insert (iterator position, const_iterator first, const_iterator last);
+		iterator insert(iterator pos, const value_type& val) {
+			size_type n = 0;
+			for (iterator it = begin(); it != pos; it++) {
+				n++;
+			}
+			*(_c + n) = val;
+			return (iterator(_c + n));
+		}
 //		inserts elements (fill)
-//		void insert (iterator position, size_type n, const value_type& x);
+//		void insert(iterator pos, size_type n, const value_type& val) {
+//
+//		}
 //		inserts elements (range)
 //		template <class InputIterator>
 //		void insert (iterator position, InputIterator first, InputIterator last);
@@ -332,9 +340,22 @@ namespace ft {
 		}
 		//TODO swap
 //		swaps the contents
-//		void swap(vector& other) {
-//
-//		}
+		void swap(vector &other) {
+			allocator_type alloc = other._alloc;
+			value_type *c = other._c;
+			size_type size = other._size;
+			size_type capacity = other._capacity;
+
+			other._alloc = this->_alloc;
+			other._c = this->_c;
+			other._size = this->_size;
+			other._capacity = this->_capacity;
+
+			this->_alloc = alloc;
+			this->_c = c;
+			this->_size = size;
+			this->_capacity = capacity;
+		}
 	};
 }
 

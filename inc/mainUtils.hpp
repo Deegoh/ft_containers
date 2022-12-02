@@ -235,6 +235,18 @@ void testCopy() {
 	printTest(vct_copy);
 }
 
+void insertTest() {
+	ft::vector<int> c1(3, 100);
+	printVec(c1, "1");
+
+	ft::vector<int>::iterator it = c1.begin();
+	it = c1.insert(it, 200);
+	printVec(c1, "2");
+//	c1.insert(it, 2, 300);
+	printVec(c1, "3");
+//	TODO finish test (https://en.cppreference.com/w/cpp/container/vector/insert)
+}
+
 #endif
 
 

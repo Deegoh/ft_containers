@@ -93,5 +93,6 @@ int main() {
 //	testErase();
 //	testResize();
 //	testAssign();
-	testCopy();
+//	testCopy();
+//	insertTest();
 }
