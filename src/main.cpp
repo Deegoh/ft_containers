@@ -42,11 +42,14 @@ int main() {
 	srand(10);
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
 //	std::cout << "Construct" << std::endl;
-//	ft::vector<std::string> str_vec;
+	ft::vector<std::string> str_vec;
 ////	ft::vector<int, NAlloc<int> > int_vec;
-//	ft::vector<int> int_vec;
-//	ft::vector<Buffer> buffer_vec;
-//
+	ft::vector<int> int_vec;
+	ft::vector<Buffer> buffer_vec;
+
+	ft::vector<int> int_vec2(10, 5);
+	ft::vector<int> int_vec3(int_vec2.begin(), int_vec2.end());
+
 //	testMaxSize(buffer_vec, "buffer");
 //	testMaxSize(int_vec, "int");
 //
@@ -89,18 +92,6 @@ int main() {
 //	testMaxSize(int_vec, "int");
 //	testErase();
 //	testResize();
-
-//	ft::vector<int> vct(7);
-//	ft::vector<int> vct2;
-//
-//	for (unsigned long int i = 0; i < vct.size(); ++i)
-//		vct[i] = (vct.size() - i) * 3;
-//	vct2.assign(vct.begin(), vct.end());
-//	printVec(vct, "vct");
-//	printVec(vct2, "vct2");
-//	vct2.assign(2, 42);
-//	printVec(vct2, "vct2");
-//	testMaxSize(vct2, "");
-//	std::cout << ft::is_integral_v<int> << std::endl;
-	return (0);
+//	testAssign();
+	testCopy();
 }

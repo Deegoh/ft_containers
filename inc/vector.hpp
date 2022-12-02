@@ -43,42 +43,34 @@ namespace ft {
 	public:
 
 //		Constructor
-		vector() : _alloc() {
-			_capacity = 0;
-			_size = 0;
-			_c = NULL;
-		};
-
-		vector(const allocator_type& alloc) : _alloc(alloc) {
+//		default
+		explicit vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc) {
 			_capacity = 0;
 			_size = 0;
 			_c = NULL;
 		}
 
-		vector(size_type n, const T& value = T()) : _alloc() {
+//		fill
+		explicit vector(size_type n, const value_type& value = value_type(),
+						const allocator_type& alloc = allocator_type()) : _alloc(alloc) {
 			_c = _alloc.allocate(n);
 			std::uninitialized_fill_n(_c, n, value);
 			_size = n;
 			_capacity = n;
 		}
 
-		vector(size_type n) {
-			_c = _alloc.allocate(n);
-			std::uninitialized_fill_n(_c, n, T());
-			_size = n;
-			_capacity = n;
-		}
-
+//		range
 		template<class InputIt>
-		vector(InputIt first, InputIt last,
-						  const Allocator& alloc = Allocator() ) : _alloc (alloc){
+		vector(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first,
+			   InputIt last, const allocator_type& alloc = allocator_type() ) : _alloc (alloc){
 			size_type n = last - first;
 			if (n < 0)
 				n = 0;
 			_c = _alloc.allocate(n);
-			for (size_type i = 0; i < n; ++i) {
-				_c[i] = (first + i);
-			}
+//			for (size_type i = 0; i < n; ++i) {
+//				_c[i] = *(first + i);
+//			}
+			std::uninitialized_copy(first, last, _c);
 			_size = n;
 			_capacity = n;
 		}
@@ -108,59 +100,59 @@ namespace ft {
 					_alloc.destroy(_c + i);
 				}
 				_alloc.deallocate(_c, this->size());
-				_c = _alloc.allocate(rhs.end() - rhs.begin());
-				for (size_type i = 0; i < rhs.size(); ++i) {
-					_c[i] = rhs._c[i];
-				}
-			} else if (this->size() >= rhs.size()) {
-				iterator i = std::copy(rhs.begin(), rhs.end(), this->begin());
-//				TODO change it to vec and destroy
-//				while (i != this->end()) {
-//					_alloc.destroy(*i);
-//					i++;
-//				}
-//				destroy(i, finish);
-//				// work around for destroy(copy(rhs.begin(), rhs.end(), begin()), finish);
-			}// else {
-//				copy(rhs.begin(), rhs.begin() + size(), begin());
-//				uninitialized_copy(rhs.begin() + size(), rhs.end(), begin() + size());
-//			}
-			return *this;
-
-//			if (&rhs != this)
-//			{
-//				if (_c)
-//				{
-//					for (size_type i = 0; i < _size; ++i) {
-//						_alloc.destroy(_c + i);
-//					}
-//					_alloc.deallocate(_c, _capacity);
-//					_c = NULL;
-//				}
+				_c = _alloc.allocate(rhs._size);
+				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 //				_size = rhs._size;
 //				_capacity = rhs._capacity;
-//				_alloc = rhs._alloc;
-////				reserve(_capacity);
+//				for (size_type i = 0; i < rhs.size(); ++i) {
+//					_c[i] = rhs._c[i];
+//				}
+			} else if (this->size() >= rhs.size()) {
+				size_type i = 0;
+//				iterator it = std::copy(rhs.begin(), rhs.end(), this->begin());
+				for (; i < rhs.size(); ++i) {
+					_c[i] = rhs._c[i];
+				}
 //				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
-//			}
-//			return (*this);
+				for (; i < this->size(); ++i) {
+					_alloc.destroy(_c + i);
+				}
+				_alloc.deallocate(_c, this->size());
+//				_size = rhs._size;
+//				_capacity = rhs._capacity;
+			} else {
+//				size_type i = 0;
+//				for (; i < this->size(); ++i) {
+//					_c[i] = rhs._c[i];
+//				}
+//				//maybe change it
+//				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
+			}
+			_size = rhs._size;
+			_capacity = rhs._capacity;
+			return *this;
 		};
 
 
 //		assigns values to the container
 		void assign(size_type count, const value_type & value) {
-			for (size_type i = 0; i < count ; ++i) {
-				push_back(value);
-			}
+			if (count > capacity())
+				reserve(count);
+			std::uninitialized_fill_n(begin() , count, value);
+			_size = count;
 		}
 
-//		std::is_integral<int>::value
-//		template<class InputIt, ft::enable_if_t<std::is_integral<InputIt>::value, bool> = true>
-//		void assign(InputIt first, InputIt last) {
-//			for (; first != last ; first++) {
-//				push_back(*first);
-//			}
-//		}
+//		assigns values to the container
+		template<class InputIt>
+		void assign(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
+			size_type diff = last - first;
+			if (diff > capacity())
+				reserve(diff);
+			for (size_type i = 0; first != last ; first++, i++) {
+				_c[i] = *first;
+			}
+			_size = diff;
+		}
 
 //		returns the associated allocator
 		allocator_type get_allocator() const {

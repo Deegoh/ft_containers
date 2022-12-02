@@ -5,53 +5,31 @@
 
 namespace ft {
 
-//	struct false_type {
-//		const static bool value = false;
-//		operator bool() const { return value; }
-//		// There is more here, but it doesn't really matter for your question
-//	};
-//
-//	struct true_type {
-//		const static bool value = true;
-//		operator bool() const { return value; }
-//		// There is more here, but it doesn't really matter for your question
-//	};
-//
-//	template<class T, T v>
-//	struct integral_constant {
-//		static T value = v;
-//		typedef T					value_type;
-//		typedef integral_constant	type; // using injected-class-name
-//		operator value_type() const { return value; }
-//		value_type operator()() const { return value; } // since c++14
-//	};
-//
-//	template< class T >
-//	struct is_integral
-//	{
-//		static const bool value /* = true if T is integral, false otherwise */;
-//		typedef ft::integral_constant<bool, value> type;
-//	};
+	struct false_type {
+		const static bool value = false;
+		operator bool() const {return value;}
+	};
 
-//	template<typename>
-//	struct is_integral
-//			: public false_type { };
-//
-//	template<>
-//	struct __is_integral_helper<bool>
-//			: public true_type { };
-//
-//	template<>
-//	struct __is_integral_helper<char>
-//			: public true_type { };
-//
-//	template<>
-//	struct __is_integral_helper<signed char>
-//			: public true_type { };
-//
-//	template<>
-//	struct __is_integral_helper<unsigned char>
-//			: public true_type { };
+	struct true_type {
+		const static bool value = true;
+		operator bool() const {return value;}
+	};
+
+	template<typename> struct is_integral: ft::false_type {};
+
+	template<> struct is_integral<short> : ft::true_type {};
+	template<> struct is_integral<bool> : ft::true_type {};
+	template<> struct is_integral<char> : ft::true_type {};
+	template<> struct is_integral<wchar_t> : ft::true_type {};
+	template<> struct is_integral<signed char> : ft::true_type {};
+	template<> struct is_integral<int> : ft::true_type {};
+	template<> struct is_integral<long int> : ft::true_type {};
+	template<> struct is_integral<unsigned char> : ft::true_type {};
+	template<> struct is_integral<unsigned short int> : ft::true_type {};
+	template<> struct is_integral<unsigned int> : ft::true_type {};
+	template<> struct is_integral<unsigned long int> : ft::true_type {};
+
+//	template<typename T> struct is_integral: is_integral_base<std::remove_cv_t<T> > {};
 
 	//TAG_ITERATORS
 	struct input_iterator_tag { };

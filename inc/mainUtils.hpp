@@ -88,6 +88,35 @@ void testMaxSize(T &vec, std::string str) {
 	std::cout << "max_size: " << vec.max_size() << "\n";
 }
 
+template <typename T>
+void printTest(T &vec) {
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << ((vec.size() <= vec.capacity()) ? "OK" : "KO") << std::endl;
+	std::cout << "max_size: " << vec.max_size() << std::endl;
+	std::cout << std::endl;
+	std::cout << "Content is:" << std::endl;
+	for (size_t i = 0; i < vec.size(); i++)
+	{
+		std::cout << "- " << vec[i] << std::endl;
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
+void testAssign() {
+	ft::vector<int> vct(7);
+	ft::vector<int> vct2;
+
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+		vct[i] = (vct.size() - i) * 3;
+	vct2.assign(vct.begin(), vct.end());
+	printVec(vct, "vct");
+//	printVec(vct2, "vct2");
+	vct.assign(2, 42);
+	vct.assign(10, 42);
+	printVec(vct, "vct");
+	testMaxSize(vct, "");
+}
+
 void testResize() {
 	const int start_size = 7;
 
@@ -115,7 +144,6 @@ void testResize() {
 	vct.reserve(3);
 	printVec(vct, "vct");
 	vct.resize(87);
-	exit(0);
 	vct.resize(5);
 	printVec(vct, "vct");
 
@@ -170,6 +198,41 @@ void testErase() {
 	printVec(c, "erase");
 	std::cout << "resul[1, 7, 9]" << std::endl;
 //	1 7 9
+}
+
+void testCopy() {
+	ft::vector<int> vct(5);
+	ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
+
+	std::cout << "len: " << (ite - it) << std::endl;
+	for (; it != ite; ++it)
+		*it = (ite - it);
+
+	it = vct.begin();
+	ft::vector<int> vct_range(it, --(--ite));
+	for (int i = 0; it != ite; ++it)
+		*it = ++i * 5;
+
+	it = vct.begin();
+	ft::vector<int> vct_copy(vct);
+	for (int i = 0; it != ite; ++it)
+		*it = ++i * 7;
+	vct_copy.push_back(42);
+	vct_copy.push_back(21);
+
+	std::cout << "\t-- PART ONE --" << std::endl;
+	printTest(vct);
+	printTest(vct_range);
+	printTest(vct_copy);
+
+	vct = vct_copy;
+	vct_copy = vct_range;
+	vct_range.clear();
+
+	std::cout << "\t-- PART TWO --" << std::endl;
+	printTest(vct);
+	printTest(vct_range);
+	printTest(vct_copy);
 }
 
 #endif
