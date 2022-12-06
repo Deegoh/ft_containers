@@ -2,46 +2,51 @@
 # define MAIN_UTILS_HPP
 #include <typeinfo>
 
-template <class Tp>
-struct NAlloc : public std::allocator<Tp>{
-	typedef Tp					value_type;
-	NAlloc() {};
-	template <class T> NAlloc(const NAlloc<T>&) {}
 
-	Tp* allocate(std::size_t n)
-	{
-		n *= sizeof(Tp);
-		Tp* p = static_cast<Tp*>(::operator new(n));
-//		std::cout << "allocating " << n << " bytes @ " << p << '\n';
-		std::cout << "allocating " << n << " bytes" << std::endl;
-		return p;
-	}
+#if STD == 0 //CREATE A REAL STL EXAMPLE
 
-	void construct(Tp* p, const Tp& val)
-	{
-		*p = val;
-	}
+	template <class Tp>
+	struct NAlloc : public std::allocator<Tp>{
+		typedef Tp					value_type;
+		NAlloc() {};
+		template <class T> NAlloc(const NAlloc<T>&) {}
 
-	void destroy(Tp* p)
-	{
-		std::cout << "destroy " << sizeof(p) << " bytes" << "\n";
-		if (std::string("NSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE").compare(typeid(*p).name()) == 0)
+		Tp* allocate(std::size_t n)
 		{
-			//*p = "";
+			n *= sizeof(Tp);
+			Tp* p = static_cast<Tp*>(::operator new(n));
+	//		std::cout << "allocating " << n << " bytes @ " << p << '\n';
+			std::cout << "allocating " << n << " bytes" << std::endl;
+			return p;
 		}
-	}
 
-	void deallocate(Tp* p, std::size_t n)
-	{
-//		std::cout << "deallocating " << n*sizeof*p << " bytes @ " << p << "\n\n";
-		std::cout << "deallocating " << n*sizeof*p << " bytes" << std::endl;
-		::operator delete(p);
-	}
-};
-template <class T, class U>
-bool operator==(const NAlloc<T>&, const NAlloc<U>&) { return true; }
-template <class T, class U>
-bool operator!=(const NAlloc<T>&, const NAlloc<U>&) { return false; }
+		void construct(Tp* p, const Tp& val)
+		{
+			*p = val;
+		}
+
+		void destroy(Tp* p)
+		{
+			std::cout << "destroy " << sizeof(p) << " bytes" << "\n";
+			if (std::string("NSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE").compare(typeid(*p).name()) == 0)
+			{
+				//*p = "";
+			}
+		}
+
+		void deallocate(Tp* p, std::size_t n)
+		{
+	//		std::cout << "deallocating " << n*sizeof*p << " bytes @ " << p << "\n\n";
+			std::cout << "deallocating " << n*sizeof*p << " bytes" << std::endl;
+			::operator delete(p);
+		}
+	};
+	template <class T, class U>
+	bool operator==(const NAlloc<T>&, const NAlloc<U>&) { return true; }
+	template <class T, class U>
+	bool operator!=(const NAlloc<T>&, const NAlloc<U>&) { return false; }
+
+#endif
 
 template<typename T>
 void printVec(ft::vector<T> &vec, std::string str) {
@@ -122,10 +127,10 @@ void testResize() {
 
 	ft::vector<int> vct(start_size, 20);
 	ft::vector<int> vct2;
-	ft::vector<int>::iterator it = vct.begin();
+//	ft::vector<int>::iterator it = vct.begin();
 
 	for (int i = 2; i < 7; ++i)
-		it[i] = (7 - i) * 3;
+		vct[i] = (7 - i) * 3;
 
 	printVec(vct, "vct");
 
@@ -223,16 +228,16 @@ void testCopy() {
 	std::cout << "\t-- PART ONE --" << std::endl;
 	printTest(vct);
 	printTest(vct_range);
-	printTest(vct_copy);
-
-	vct = vct_copy;
-	vct_copy = vct_range;
-	vct_range.clear();
-
-	std::cout << "\t-- PART TWO --" << std::endl;
-	printTest(vct);
-	printTest(vct_range);
-	printTest(vct_copy);
+//	printTest(vct_copy);
+//
+//	vct = vct_copy;
+//	vct_copy = vct_range;
+//	vct_range.clear();
+//
+//	std::cout << "\t-- PART TWO --" << std::endl;
+//	printTest(vct);
+//	printTest(vct_range);
+//	printTest(vct_copy);
 }
 
 void insertTest() {

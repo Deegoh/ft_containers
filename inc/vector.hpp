@@ -63,18 +63,15 @@ namespace ft {
 		template<class InputIt>
 		vector(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first,
 			   InputIt last, const allocator_type& alloc = allocator_type() ) : _alloc (alloc) {
-			size_type n = 0;
-			while (first != last)
-			{
-				n++;
-				first++;
-			}
+			size_type n = diffIt(first, last);
 			if (n < 0)
-				n = 0;
+			{
+				_size = 0;
+				_capacity = 0;
+				_c = NULL;
+				return;
+			}
 			_c = _alloc.allocate(n);
-//			for (size_type i = 0; i < n; ++i) {
-//				_c[i] = *(first + i);
-//			}
 			std::uninitialized_copy(first, last, _c);
 			_size = n;
 			_capacity = n;
@@ -108,7 +105,7 @@ namespace ft {
 					_alloc.destroy(_c + i);
 				}
 				_alloc.deallocate(_c, this->capacity());
-				_c = _alloc.allocate(rhs._size);
+				this->_c = _alloc.allocate(rhs._size);
 				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 				_capacity = rhs._capacity;
 			} else/*if (this->size() >= rhs.size())*/ {
@@ -118,8 +115,7 @@ namespace ft {
 				}
 			}
 			_size = rhs._size;
-//			_capacity = rhs._capacity;
-			return *this;
+			return (*this);
 		};
 
 
@@ -239,16 +235,6 @@ namespace ft {
 				_alloc.deallocate(_c, _capacity);
 				_c = tmp;
 				_capacity = n;
-			} else
-			{
-				value_type *tmp = _alloc.allocate(n);
-				std::uninitialized_copy(begin(), begin() + n, tmp);
-				for (size_type i = 0; i < _size; ++i) {
-					_alloc.destroy(_c + i);
-				}
-				_alloc.deallocate(_c, _capacity);
-				_c = tmp;
-				_capacity = n;
 			}
 		}
 
@@ -320,16 +306,11 @@ namespace ft {
 		}
 //		Change size (public member function)
 		void resize(size_type count, T value = T()) {
-			if (count > _size)
+			if (count >= _size)
 			{
-				if (_capacity < count)
-					reserve(_capacity * 2);
-//				std::uninitialized_fill_n(_c + _size, count - _size, *value);
-//				std::uninitialized_copy();
-				for (size_type i = _size; i < (count) ; ++i) {
-					_c[i] = value;
-//					std::cout << "size[" << i << "]" << value << std::endl;
-				}
+				int oldSize = _size;
+				reserve(count);
+				std::uninitialized_fill_n(_c + oldSize, count - oldSize, value);
 				_size = count;
 			}
 			else if (count < _size)

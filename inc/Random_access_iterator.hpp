@@ -19,11 +19,32 @@ namespace ft {
 			(*this) = src;
 		}
 
+		operator Random_access_iterator<const T>() const {
+			return (Random_access_iterator<const T>(this->_ptr));
+		}
+
 		Random_access_iterator operator-(int index) {
 			return (_ptr - index);
 		}
-		Distance operator-(const Random_access_iterator &rhs) {
-			return (std::distance(rhs._ptr, _ptr));
+
+		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
+			return (lhs._ptr - rhs._ptr);
+		}
+
+		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
+			return (lhs._ptr - rhs._ptr);
+		}
+
+		Random_access_iterator operator-(size_t n) {
+			Random_access_iterator tmp = *this;
+			tmp -= n;
+			return (tmp);
+		}
+
+		const Random_access_iterator operator-(size_t n) const {
+			Random_access_iterator tmp = *this;
+			tmp -= n;
+			return (tmp);
 		}
 
 		Random_access_iterator operator+(int index) {
@@ -63,8 +84,6 @@ namespace ft {
 			return (*(_ptr + index));
 		}
 		Reference operator*() {
-//			if (!_ptr)
-//				return (0);
 			return (*_ptr);
 		}
 		Pointer operator->() {

@@ -19,9 +19,8 @@ SRC = $(addprefix $(SRC_DIR), $(_SRC))
 INC_DIR = inc/
 HEADER=	vector.hpp\
 		utils.hpp\
-		iterator94.hpp
-#		iterator.hpp\
-#		Random_access_iterator.hpp
+		iterator.hpp\
+		Random_access_iterator.hpp
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
 

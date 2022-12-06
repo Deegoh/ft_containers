@@ -9,14 +9,14 @@
 # define STD 0
 #endif
 #if STD //CREATE A REAL STL EXAMPLE
-#include <map>
-	# include <stack>
-	# include <vector>
+	#include <map>
+	#include <stack>
+	#include <vector>
 	namespace ft = std;
 #else
 //# include <map.hpp>
 //# include <stack.hpp>
-# include <vector.hpp>
+	#include <vector.hpp>
 #endif
 
 #define MAX_RAM 4294967296
@@ -95,4 +95,9 @@ int main() {
 //	testAssign();
 //	testCopy();
 //	insertTest();
+	ft::vector<int> vec;
+	for (int i=1; i<=10; i++) vec.push_back(i);
+	printVec(vec, "erase");
+	vec.erase(vec.begin(), vec.begin() + 5);
+	printVec(vec, "erase");
 }
