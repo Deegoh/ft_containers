@@ -7,10 +7,10 @@ Les nombreux containers du C++ ont de divers intérêts. Afin de bien les compre
   - [ ] Of course, for the implementation of std::map::value_compare, the keywordfriendis allowed.
 - [ ] Stack
 - utils
-  - [ ] std::iterator_traits
+  - [x] std::iterator_traits
   - [ ] std::reverse_iterator
-  - [ ] std::enable_if
-  - [ ] std::is_integral
+  - [x] std::enable_if
+  - [x] std::is_integral
   - [x] std::equal and/or std::lexicographical_compare
   - [ ] std::pair
   - [ ] std::make_pair

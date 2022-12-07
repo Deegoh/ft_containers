@@ -25,7 +25,7 @@ namespace ft {
 			   InputIt2 first2)
 	{
 		for (; first1 != last1; ++first1, ++first2) {
-			if (!(*first1 == *first2)) {
+			if (*first1 != *first2) {
 				return false;
 			}
 		}

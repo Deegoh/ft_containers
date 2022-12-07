@@ -31,7 +31,7 @@ struct Buffer
 #define COUNT (5)
 //#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
-#include "mainUtils.hpp"
+#include "tester.hpp"
 
 int main() {
 	#if STD //CREATE A REAL STL EXAMPLE

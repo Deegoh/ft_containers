@@ -5,6 +5,7 @@
 
 namespace ft {
 
+//	IS_INTEGRAL
 	struct false_type {
 		const static bool value = false;
 		operator bool() const {return value;}

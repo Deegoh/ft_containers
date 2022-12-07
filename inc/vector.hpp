@@ -9,7 +9,7 @@
 
 # include "iterator.hpp"
 # include "Random_access_iterator.hpp"
-# include "utils.hpp"
+# include "comparators.hpp"
 
 //test
 //# include "iterator94.hpp"
@@ -255,19 +255,24 @@ namespace ft {
 		}
 //		inserts elements (single element)
 		iterator insert(iterator pos, const value_type& val) {
-//			value_type *tmp;
-//			_alloc.allocate(_c + 1);
-//			if (_size + 1 > _capacity)
-			reserve(_size + 1);
-			size_type n = 0;
-			for (iterator it = begin(); it != end(); it++) {
-				if (it == pos)
-					*it = val;
-				n++;
-			}
-			return (iterator(_c + n));
+			size_type diff = diffIt(begin(), pos);
+			size_type newCapacity;
+			if (_size + 1 > _capacity)
+				newCapacity = _capacity * 2;
+			else
+				newCapacity = _size + 1;
+			value_type *tmp = _alloc.allocate(_capacity);
+			std::uninitialized_copy(begin(), pos, tmp);
+			*(tmp + diff) = val;
+			std::uninitialized_copy(pos, end(), tmp + diff + 1);
+			_alloc.deallocate(_c, _capacity);
+			_c = tmp;
+			_size++;
+			_capacity = newCapacity;
+			return (iterator(_c + diff));
 		}
 
+		//TODO insert
 //		iterator insert(iterator position, const value_type& val) {
 //			size_type diff = position - this->begin();
 //			size_type old_capacity = _capacity;
