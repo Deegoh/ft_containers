@@ -95,9 +95,36 @@ int main() {
 //	testAssign();
 //	testCopy();
 //	insertTest();
-	ft::vector<int> vec;
-	for (int i=1; i<=10; i++) vec.push_back(i);
-	printVec(vec, "erase");
-	vec.erase(vec.begin(), vec.begin() + 5);
-	printVec(vec, "erase");
+//	ft::vector<int> vec;
+//	for (int i=1; i<=10; i++) vec.push_back(i);
+//	printVec(vec, "erase");
+//	vec.erase(vec.begin(), vec.begin() + 5);
+//	printVec(vec, "erase");
+
+	ft::vector<int> myvector (3,100);
+	ft::vector<int>::iterator it;
+
+	printTest(myvector);
+	std::cout << myvector.capacity() << std::endl;
+
+	it = myvector.begin();
+	it = myvector.insert ( it , 200 );
+	printTest(myvector);
+	std::cout << myvector.capacity() << std::endl;
+
+//	it = myvector.begin();
+//	it = myvector.insert ( it , 300 );
+//	printTest(myvector);
+//	std::cout << myvector.capacity() << std::endl;
+//
+//	it = myvector.begin();
+//	it = myvector.insert ( it , 400 );
+//	printTest(myvector);
+//	std::cout << myvector.capacity() << std::endl;
+//
+//	it = myvector.begin();
+//	it = myvector.insert ( it , 500 );
+//	printTest(myvector);
+//	std::cout << myvector.capacity() << std::endl;
+
 }

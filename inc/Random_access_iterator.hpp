@@ -11,41 +11,48 @@ namespace ft {
 			class Reference = T&>
 	class Random_access_iterator : public iterator<T, Category> {
 	public:
-		Random_access_iterator(Pointer ptr) : _ptr(ptr) {};
 
-		~Random_access_iterator() {};
+		Random_access_iterator() : _ptr(NULL) {}
+
+		Random_access_iterator(Pointer ptr) : _ptr(ptr) {}
+
+		~Random_access_iterator() {}
 
 		Random_access_iterator(const Random_access_iterator &src) {
 			(*this) = src;
 		}
 
-		operator Random_access_iterator<const T>() const {
-			return (Random_access_iterator<const T>(this->_ptr));
+//		operator Random_access_iterator<const T, Category>() const {
+//			return (Random_access_iterator<const T, Category>(this->_ptr));
+//		}
+
+//		const Random_access_iterator operator-(int index) const {
+//			return (_ptr - index);
+//		}
+
+		Distance operator-(const Random_access_iterator &rhs) {
+			return (std::distance(rhs._ptr, _ptr));
 		}
 
-		Random_access_iterator operator-(int index) {
-			return (_ptr - index);
-		}
+//		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
+//			return (lhs._ptr - rhs._ptr);
+//		}
+//
+//		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
+//			return (lhs._ptr - rhs._ptr);
+//		}
 
-		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
-			return (lhs._ptr - rhs._ptr);
-		}
-
-		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
-			return (lhs._ptr - rhs._ptr);
-		}
-
-		Random_access_iterator operator-(size_t n) {
-			Random_access_iterator tmp = *this;
-			tmp -= n;
-			return (tmp);
-		}
-
-		const Random_access_iterator operator-(size_t n) const {
-			Random_access_iterator tmp = *this;
-			tmp -= n;
-			return (tmp);
-		}
+//		Random_access_iterator operator-(size_t n) {
+//			Random_access_iterator tmp = *this;
+//			tmp -= n;
+//			return (tmp);
+//		}
+//
+//		const Random_access_iterator operator-(size_t n) const {
+//			Random_access_iterator tmp = *this;
+//			tmp -= n;
+//			return (tmp);
+//		}
 
 		Random_access_iterator operator+(int index) {
 			return (_ptr + index);

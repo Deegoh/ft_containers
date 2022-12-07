@@ -236,6 +236,10 @@ namespace ft {
 				_c = tmp;
 				_capacity = n;
 			}
+			else // should i do ?
+			{
+				reserve(_capacity * 2);
+			}
 		}
 
 //		returns the number of elements that can be held in currently allocated storage (public member function)
@@ -249,23 +253,47 @@ namespace ft {
 			}
 			_size = 0;
 		}
-		//TODO insert
 //		inserts elements (single element)
 		iterator insert(iterator pos, const value_type& val) {
+//			value_type *tmp;
+//			_alloc.allocate(_c + 1);
+//			if (_size + 1 > _capacity)
+			reserve(_size + 1);
 			size_type n = 0;
-			for (iterator it = begin(); it != pos; it++) {
+			for (iterator it = begin(); it != end(); it++) {
+				if (it == pos)
+					*it = val;
 				n++;
 			}
-			*(_c + n) = val;
 			return (iterator(_c + n));
 		}
-//		inserts elements (fill)
-//		void insert(iterator pos, size_type n, const value_type& val) {
+
+//		iterator insert(iterator position, const value_type& val) {
+//			size_type diff = position - this->begin();
+//			size_type old_capacity = _capacity;
 //
+//			if (_size + 1 > _capacity) {
+//				_capacity *= 2;
+//			}
+//			value_type *temp = _alloc.allocate(_capacity);
+//			_size++;
+//			std::uninitialized_copy(this->begin(), position, temp);
+//			temp[position - this->begin()] = val;
+//			std::uninitialized_copy(position, this->end(), temp + (position - this->begin() + 1));
+//			_alloc.deallocate(_vector, old_capacity);
+//			_vector = temp;
+//			return (iterator(_vector + diff));
 //		}
+//		inserts elements (fill)
+		void insert(iterator pos, size_type n, const value_type& val) {
+			std::uninitialized_fill_n(pos, n,val);
+		}
+		//TODO insert
 //		inserts elements (range)
 //		template <class InputIterator>
-//		void insert (iterator position, InputIterator first, InputIterator last);
+//		void insert (iterator position, InputIterator first, InputIterator last) {
+//
+//		}
 
 //		erases elements
 		iterator erase(iterator position)
