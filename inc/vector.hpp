@@ -255,13 +255,13 @@ namespace ft {
 		}
 //		inserts elements (single element)
 		iterator insert(iterator pos, const value_type& val) {
-			size_type diff = diffIt(begin(), pos);
+			size_type diff = diffIt(pos, begin());
 			size_type newCapacity;
 			if (_size + 1 > _capacity)
 				newCapacity = _capacity * 2;
 			else
-				newCapacity = _size + 1;
-			value_type *tmp = _alloc.allocate(_capacity);
+				newCapacity = _capacity;
+			value_type *tmp = _alloc.allocate(newCapacity);
 			std::uninitialized_copy(begin(), pos, tmp);
 			*(tmp + diff) = val;
 			std::uninitialized_copy(pos, end(), tmp + diff + 1);

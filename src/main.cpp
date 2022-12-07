@@ -108,23 +108,23 @@ int main() {
 	std::cout << myvector.capacity() << std::endl;
 
 	it = myvector.begin();
-	it = myvector.insert ( it , 200 );
+	it = myvector.insert(it, 200);
 	printTest(myvector);
 	std::cout << myvector.capacity() << std::endl;
 
-//	it = myvector.begin();
-//	it = myvector.insert ( it , 300 );
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
-//
-//	it = myvector.begin();
-//	it = myvector.insert ( it , 400 );
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
-//
-//	it = myvector.begin();
-//	it = myvector.insert ( it , 500 );
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
+	it = myvector.begin();
+	it = myvector.insert ( it , 300 );
+	printTest(myvector);
+	std::cout << myvector.capacity() << std::endl;
+
+	it = myvector.begin();
+	it = myvector.insert ( it , 400 );
+	printTest(myvector);
+	std::cout << myvector.capacity() << std::endl;
+
+	it = myvector.begin();
+	it = myvector.insert ( it , 500 );
+	printTest(myvector);
+	std::cout << myvector.capacity() << std::endl;
 
 }
