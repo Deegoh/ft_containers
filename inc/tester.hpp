@@ -96,7 +96,7 @@ void testMaxSize(T &vec, std::string str) {
 template <typename T>
 void printTest(T &vec) {
 	std::cout << "size: " << vec.size() << std::endl;
-	std::cout << "capacity: " << ((vec.size() <= vec.capacity()) ? "OK" : "KO") << std::endl;
+	std::cout << "capacity: " << vec.capacity() << " " << ((vec.size() <= vec.capacity()) ? "OK" : "KO") << std::endl;
 	std::cout << "max_size: " << vec.max_size() << std::endl;
 	std::cout << std::endl;
 	std::cout << "Content is:" << std::endl;
@@ -241,15 +241,52 @@ void testCopy() {
 }
 
 void insertTest() {
-	ft::vector<int> c1(3, 100);
-	printVec(c1, "1");
-
-	ft::vector<int>::iterator it = c1.begin();
-	it = c1.insert(it, 200);
-	printVec(c1, "2");
+//	ft::vector<int> c1(3, 100);
+//	printVec(c1, "1");
+//
+//	ft::vector<int>::iterator it = c1.begin();
+//	it = c1.insert(it, 200);
+//	printVec(c1, "2");
+//
 //	c1.insert(it, 2, 300);
-	printVec(c1, "3");
-//	TODO finish test (https://en.cppreference.com/w/cpp/container/vector/insert)
+//	printVec(c1, "3");
+//
+//	it = c1.begin();
+//
+//	ft::vector<int> c2(2, 400);
+//	c1.insert(it + 2, c2.begin(), c2.end());
+//	printVec(c1, "4");
+	ft::vector<int> vct(10);
+	ft::vector<int> vct2;
+	ft::vector<int> vct3;
+
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+		vct[i] = (vct.size() - i) * 3;
+	printTest(vct);
+
+	vct2.insert(vct2.end(), 42);
+	vct2.insert(vct2.begin(), 2, 21);
+	printTest(vct2);
+
+	vct2.insert(vct2.end() - 2, 42);
+	printTest(vct2);
+
+	vct2.insert(vct2.end(), 2, 84); //segfault
+	printTest(vct2);
+
+	vct2.resize(4);
+	printTest(vct2);
+
+	vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
+	vct.clear();
+	printTest(vct2);
+
+	printTest(vct);
+
+	for (int i = 0; i < 5; ++i)
+		vct3.insert(vct3.end(), i);
+	vct3.insert(vct3.begin() + 1, 2, 111);
+	printTest(vct3);
 }
 
 #endif

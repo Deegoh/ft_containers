@@ -43,6 +43,7 @@ namespace ft {
 	public:
 
 //		Constructor
+
 //		default
 		explicit vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc) {
 			_capacity = 0;
@@ -88,12 +89,7 @@ namespace ft {
 //		destructor
 		~vector() {
 			if (_c)
-			{
-				for (size_type i = 0; i < _size; ++i) {
-					_alloc.destroy(_c + i);
-				}
-				_alloc.deallocate(_c, _capacity);
-			}
+				cleanPointer();
 		};
 
 //		operator=
@@ -101,10 +97,7 @@ namespace ft {
 			if (&rhs == this)
 				return (*this);
 			if (rhs.size() > this->capacity()) {
-				for (size_type i = 0; i < this->size(); ++i) {
-					_alloc.destroy(_c + i);
-				}
-				_alloc.deallocate(_c, this->capacity());
+				cleanPointer();
 				this->_c = _alloc.allocate(rhs._size);
 				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 				_capacity = rhs._capacity;
@@ -117,7 +110,6 @@ namespace ft {
 			_size = rhs._size;
 			return (*this);
 		};
-
 
 //		assigns values to the container
 		void assign(size_type count, const value_type & value) {
@@ -195,12 +187,10 @@ namespace ft {
 //		return distance
 		template<typename inputIt>
 		size_type diffIt(inputIt it, inputIt ite) {
+			inputIt tmp = it;
 			size_type n = 0;
-			while (it != ite)
-			{
+			while (tmp++ != ite)
 				n++;
-				it++;
-			}
 			return (n);
 		}
 
@@ -229,10 +219,7 @@ namespace ft {
 			if (_capacity < n) {
 				value_type *tmp = _alloc.allocate(n);
 				std::uninitialized_copy(this->begin(), this->end(), tmp);
-				for (size_type i = 0; i < _size; ++i) {
-					_alloc.destroy(_c + i);
-				}
-				_alloc.deallocate(_c, _capacity);
+				cleanPointer();
 				_c = tmp;
 				_capacity = n;
 			}
@@ -246,6 +233,15 @@ namespace ft {
 		size_type capacity() const {return (_capacity);}
 
 //		Modifiers
+
+//		Destroy and deallocate
+		void cleanPointer() {
+			for (size_type i = 0; i < _size; ++i) {
+				_alloc.destroy(_c + i);
+			}
+			_alloc.deallocate(_c, _capacity);
+		}
+
 //		Clear content (public member function)
 		void clear() {
 			for (size_type i = 0; i < _size; ++i) {
@@ -253,52 +249,122 @@ namespace ft {
 			}
 			_size = 0;
 		}
+
 //		inserts elements (single element)
 		iterator insert(iterator pos, const value_type& val) {
-			size_type diff = diffIt(pos, begin());
+			size_type diff = diffIt(begin(), pos);
+
 			size_type newCapacity;
-			if (_size + 1 > _capacity)
+			size_type n = 1;
+
+			newCapacity = _capacity;
+			if (_size + n > _capacity * 2 || _capacity == 0)
+				newCapacity = _size + n;
+			else if (_size + n > _capacity)
 				newCapacity = _capacity * 2;
+
+			if (_capacity < newCapacity)
+			{
+				value_type *tmp = _alloc.allocate(newCapacity);
+				std::uninitialized_copy(begin(), pos, tmp);
+				*(tmp + diff) = val;
+				std::uninitialized_copy(begin() + diff, end(), tmp + diff + 1);
+				cleanPointer();
+				_c = tmp;
+			}
 			else
-				newCapacity = _capacity;
-			value_type *tmp = _alloc.allocate(newCapacity);
-			std::uninitialized_copy(begin(), pos, tmp);
-			*(tmp + diff) = val;
-			std::uninitialized_copy(pos, end(), tmp + diff + 1);
-			_alloc.deallocate(_c, _capacity);
-			_c = tmp;
+			{
+				for (iterator ite = end(); ite != pos ; ite--) {
+					*ite = *(ite - 1);
+				}
+				*(_c + diff) = val;
+			}
+
 			_size++;
 			_capacity = newCapacity;
 			return (iterator(_c + diff));
 		}
 
-		//TODO insert
-//		iterator insert(iterator position, const value_type& val) {
-//			size_type diff = position - this->begin();
-//			size_type old_capacity = _capacity;
-//
-//			if (_size + 1 > _capacity) {
-//				_capacity *= 2;
-//			}
-//			value_type *temp = _alloc.allocate(_capacity);
-//			_size++;
-//			std::uninitialized_copy(this->begin(), position, temp);
-//			temp[position - this->begin()] = val;
-//			std::uninitialized_copy(position, this->end(), temp + (position - this->begin() + 1));
-//			_alloc.deallocate(_vector, old_capacity);
-//			_vector = temp;
-//			return (iterator(_vector + diff));
-//		}
 //		inserts elements (fill)
 		void insert(iterator pos, size_type n, const value_type& val) {
-			std::uninitialized_fill_n(pos, n,val);
+
+
+//			if (end_of_storage - finish >= n) {
+//				if (end() - position > n) {
+//					uninitialized_copy(end() - n, end(), end());
+//					copy_backward(position, end() - n, end());
+//					fill(position, position + n, x);
+//				} else {
+//					uninitialized_copy(position, end(), position + n);
+//					fill(position, end(), x);
+//					uninitialized_fill_n(end(), n - (end() - position), x);
+//				}
+//				finish += n;
+//			}
+
+			if (n == 0)
+				return;
+
+			size_type diff = diffIt(begin(), pos);
+			size_type newCapacity;
+
+			newCapacity = _capacity;
+			if (_size + n > _capacity * 2 || _capacity == 0)
+				newCapacity = _size + n;
+			else if (_size + n > _capacity)
+				newCapacity = _capacity * 2;
+
+			if (_capacity < newCapacity)
+			{
+				value_type *tmp = _alloc.allocate(newCapacity);
+				std::uninitialized_copy(begin(), pos, tmp);
+				std::uninitialized_fill_n(tmp + diff, n,val);
+				std::uninitialized_copy(pos, end(), tmp + diff + n);
+				cleanPointer();
+				_c = tmp;
+			}
+			else
+			{
+				for (iterator ite = end() + n; ite != pos ; ite--) {
+					*ite = *(ite - n);
+				}
+				std::uninitialized_fill_n(_c + diff, n,val);
+			}
+
+			_size += n;
+			_capacity = newCapacity;
 		}
-		//TODO insert
+
 //		inserts elements (range)
-//		template <class InputIterator>
-//		void insert (iterator position, InputIterator first, InputIterator last) {
-//
-//		}
+		template <class InputIt>
+		void insert(iterator pos, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
+			size_type diff = diffIt(first, last);
+			size_type diffCpy = diffIt(begin(), pos);
+			size_type newCapacity;
+
+			newCapacity = _capacity;
+			if (_size + diff > _capacity * 2 || _capacity == 0)
+				newCapacity = _size + diff;
+			else if (_size + diff > _capacity)
+				newCapacity = _capacity * 2;
+
+			if (_capacity < newCapacity) {
+				value_type *tmp = _alloc.allocate(newCapacity);
+				std::uninitialized_copy(begin(), pos, tmp);
+				std::uninitialized_copy(first, last, tmp + diffCpy);
+				std::uninitialized_copy(pos, end(), tmp + diff + diffCpy);
+				cleanPointer();
+				_c = tmp;
+			}
+			else
+			{
+				std::uninitialized_copy(begin(), pos, _c);
+				std::uninitialized_copy(first, last, _c + diffCpy);
+				std::uninitialized_copy(pos, end(), _c + diff + diffCpy);
+			}
+			_size += diff;
+			_capacity = newCapacity;
+		}
 
 //		erases elements
 		iterator erase(iterator position)
@@ -309,7 +375,10 @@ namespace ft {
 			_alloc.destroy(_c + _size);
 			return (iterator(_c + _size));
 		}
+
+//		TODO erase
 //		iterator erase( const_iterator pos );
+
 //		erases elements
 		iterator erase(iterator first, iterator last)
 		{
@@ -339,7 +408,7 @@ namespace ft {
 		}
 //		Change size (public member function)
 		void resize(size_type count, T value = T()) {
-			if (count >= _size)
+			if (count > _size)
 			{
 				int oldSize = _size;
 				reserve(count);

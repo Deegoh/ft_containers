@@ -12,6 +12,13 @@ namespace ft {
 	class Random_access_iterator : public iterator<T, Category> {
 	public:
 
+//		typedef typename iterator<T, Category>::value_type	value_type;
+
+		typedef Distance	difference_type;
+		typedef Pointer		pointer;
+		typedef Reference	reference;
+		typedef Category	iterator_category;
+
 		Random_access_iterator() : _ptr(NULL) {}
 
 		Random_access_iterator(Pointer ptr) : _ptr(ptr) {}
@@ -22,37 +29,13 @@ namespace ft {
 			(*this) = src;
 		}
 
-//		operator Random_access_iterator<const T, Category>() const {
-//			return (Random_access_iterator<const T, Category>(this->_ptr));
-//		}
-
-//		const Random_access_iterator operator-(int index) const {
-//			return (_ptr - index);
-//		}
+		const Random_access_iterator operator-(int index) const {
+			return (_ptr - index);
+		}
 
 		Distance operator-(const Random_access_iterator &rhs) {
 			return (std::distance(rhs._ptr, _ptr));
 		}
-
-//		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
-//			return (lhs._ptr - rhs._ptr);
-//		}
-//
-//		friend Distance operator-(Random_access_iterator &lhs, const Random_access_iterator &rhs) {
-//			return (lhs._ptr - rhs._ptr);
-//		}
-
-//		Random_access_iterator operator-(size_t n) {
-//			Random_access_iterator tmp = *this;
-//			tmp -= n;
-//			return (tmp);
-//		}
-//
-//		const Random_access_iterator operator-(size_t n) const {
-//			Random_access_iterator tmp = *this;
-//			tmp -= n;
-//			return (tmp);
-//		}
 
 		Random_access_iterator operator+(int index) {
 			return (_ptr + index);
@@ -90,9 +73,11 @@ namespace ft {
 		Reference operator[](size_t index) {
 			return (*(_ptr + index));
 		}
-		Reference operator*() {
+
+		Reference operator*() const {
 			return (*_ptr);
 		}
+
 		Pointer operator->() {
 			return (_ptr);
 		}
@@ -102,9 +87,11 @@ namespace ft {
 		bool operator!=(const Random_access_iterator &rhs) const {
 			return !(*this == rhs);
 		}
-//		const Random_access_iterator &operator=(Random_access_iterator &rhs) {
-//			if (this != &rhs)
+//		Random_access_iterator &operator=(const Random_access_iterator &rhs) {
+//			if (&rhs != this)
+//			{
 //				_ptr = rhs._ptr;
+//			}
 //			return (*this);
 //		}
 	private:
