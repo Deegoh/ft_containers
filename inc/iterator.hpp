@@ -41,37 +41,37 @@ namespace ft {
 	struct contiguous_iterator_tag: public random_access_iterator_tag { };
 
 	//ITERATOR
-	template<	class Category,
-				class T,
+	template<	class T,
+				class Category,
 				class Distance = ptrdiff_t,
 				class Pointer = T*,
 				class Reference = T&>
 	struct iterator
 	{
 		typedef T			value_type;
+		typedef Category	iterator_category;
 		typedef Distance	difference_type;
 		typedef Pointer		pointer;
 		typedef Reference	reference;
-		typedef Category	iterator_category;
 	};
 
 	//ITERATOR_TRAITS
 	template<class Iterator>
 	struct iterator_traits
 	{
-		typedef typename Iterator::difference_type		difference_type;
 		typedef typename Iterator::value_type			value_type;
+		typedef typename Iterator::iterator_category	iterator_category;
+		typedef typename Iterator::difference_type		difference_type;
 		typedef typename Iterator::pointer				pointer;
 		typedef typename Iterator::reference			reference;
-		typedef typename Iterator::iterator_category	iterator_category;
 	};
 
 	//ITERATOR_TRAITS<T*>
 	template<class T>
 	struct iterator_traits<T*>
 	{
-		typedef random_access_iterator_tag	iterator_category;
 		typedef T							value_type;
+		typedef random_access_iterator_tag	iterator_category;
 		typedef ptrdiff_t					difference_type;
 		typedef T*							pointer;
 		typedef T&							reference;
@@ -80,12 +80,24 @@ namespace ft {
 	//ITERATOR_TRAITS<const T *>
 	template<class T>
 	struct iterator_traits<const T*> {
-		typedef random_access_iterator_tag	iterator_category;
 		typedef T							value_type;
+		typedef random_access_iterator_tag	iterator_category;
 		typedef ptrdiff_t					difference_type;
 		typedef const T*					pointer;
 		typedef const T&					reference;
 	};
+
+	template<class It>
+	typename ft::iterator_traits<It>::difference_type
+	distance(It first, It last)
+	{
+		typename ft::iterator_traits<It>::difference_type result = 0;
+		while (first != last) {
+			++first;
+			++result;
+		}
+		return result;
+	}
 
 }
 

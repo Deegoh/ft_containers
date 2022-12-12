@@ -109,17 +109,39 @@ void printTest(T &vec) {
 
 void testAssign() {
 	ft::vector<int> vct(7);
-	ft::vector<int> vct2;
+	ft::vector<int> vct_two(4);
+	ft::vector<int> vct_three;
+	ft::vector<int> vct_four;
 
 	for (unsigned long int i = 0; i < vct.size(); ++i)
 		vct[i] = (vct.size() - i) * 3;
-	vct2.assign(vct.begin(), vct.end());
-	printVec(vct, "vct");
-//	printVec(vct2, "vct2");
-	vct.assign(2, 42);
-	vct.assign(10, 42);
-	printVec(vct, "vct");
-	testMaxSize(vct, "");
+	for (unsigned long int i = 0; i < vct_two.size(); ++i)
+		vct_two[i] = (vct_two.size() - i) * 5;
+	printTest(vct);
+	printTest(vct_two);
+
+	vct_three.assign(vct.begin(), vct.end());
+	vct.assign(vct_two.begin(), vct_two.end());
+	vct_two.assign(2, 42);
+	vct_four.assign(4, 21);
+
+	std::cout << "\t### After assign(): ###" << std::endl;
+
+	printTest(vct);
+	printTest(vct_two);
+	printTest(vct_three);
+	printTest(vct_four);
+
+	vct_four.assign(6, 84);
+	printTest(vct_four);
+
+	std::cout << "\t### assign() on enough capacity and low size: ###" << std::endl;
+
+	vct.assign(5, 53);
+	vct_two.assign(vct_three.begin(), vct_three.begin() + 3);
+
+	printTest(vct);
+	printTest(vct_two);
 }
 
 void testResize() {

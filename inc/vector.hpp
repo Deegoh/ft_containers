@@ -64,7 +64,7 @@ namespace ft {
 		template<class InputIt>
 		vector(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first,
 			   InputIt last, const allocator_type& alloc = allocator_type() ) : _alloc (alloc) {
-			size_type n = diffIt(first, last);
+			size_type n = distance(first, last);
 			if (n < 0)
 			{
 				_size = 0;
@@ -115,14 +115,14 @@ namespace ft {
 		void assign(size_type count, const value_type & value) {
 			if (count > capacity())
 				reserve(count);
-			std::uninitialized_fill_n(begin() , count, value);
+			std::uninitialized_fill_n(_c , count, value);
 			_size = count;
 		}
 
 //		assigns values to the container
 		template<class InputIt>
 		void assign(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
-			size_type diff = diffIt(first, last);
+			size_type diff = distance(first, last);
 			if (diff > capacity())
 				reserve(diff);
 			for (size_type i = 0; first != last ; first++, i++) {
@@ -184,16 +184,6 @@ namespace ft {
 //		returns an iterator to the end
 		const_iterator end() const {return const_iterator(_c + _size);}
 
-//		return distance
-		template<typename inputIt>
-		size_type diffIt(inputIt it, inputIt ite) {
-			inputIt tmp = it;
-			size_type n = 0;
-			while (tmp++ != ite)
-				n++;
-			return (n);
-		}
-
 //		Capacity
 //		checks whether the container is empty (public member function)
 		bool empty() const {
@@ -252,7 +242,7 @@ namespace ft {
 
 //		inserts elements (single element)
 		iterator insert(iterator pos, const value_type& val) {
-			size_type diff = diffIt(begin(), pos);
+			size_type diff = distance(begin(), pos);
 
 			size_type newCapacity;
 			size_type n = 1;
@@ -305,7 +295,7 @@ namespace ft {
 			if (n == 0)
 				return;
 
-			size_type diff = diffIt(begin(), pos);
+			size_type diff = distance(begin(), pos);
 			size_type newCapacity;
 
 			newCapacity = _capacity;
@@ -325,9 +315,7 @@ namespace ft {
 			}
 			else
 			{
-				for (iterator ite = end() + n; ite != pos ; ite--) {
-					*ite = *(ite - n);
-				}
+				std::copy_backward(_c, _c + _size, _c + _size + n);
 				std::uninitialized_fill_n(_c + diff, n,val);
 			}
 
@@ -338,8 +326,8 @@ namespace ft {
 //		inserts elements (range)
 		template <class InputIt>
 		void insert(iterator pos, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
-			size_type diff = diffIt(first, last);
-			size_type diffCpy = diffIt(begin(), pos);
+			size_type diff = distance(first, last);
+			size_type diffCpy = distance(begin(), pos);
 			size_type newCapacity;
 
 			newCapacity = _capacity;

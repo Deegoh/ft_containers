@@ -12,12 +12,18 @@ namespace ft {
 	class Random_access_iterator : public iterator<T, Category> {
 	public:
 
-//		typedef typename iterator<T, Category>::value_type	value_type;
+//		typedef typename iterator<T, Category>::value_type			value_type;
+//		typedef typename iterator<T, Category>::difference_type		difference_type;
+//		typedef typename iterator<T, Category>::pointer				pointer;
+//		typedef typename iterator<T, Category>::reference			reference;
+//		typedef typename iterator<T, Category>::iterator_category	iterator_category;
 
+		typedef T			value_type;
+
+		typedef Category	iterator_category;
 		typedef Distance	difference_type;
 		typedef Pointer		pointer;
 		typedef Reference	reference;
-		typedef Category	iterator_category;
 
 		Random_access_iterator() : _ptr(NULL) {}
 
