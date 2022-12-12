@@ -94,8 +94,8 @@ int main() {
 //	testResize();
 //	testAssign();
 //	testCopy();
-	insertTest();
-
+//	insertTest();
+//	bidirectTest();
 
 //	ft::vector<int> myvector (3,100);
 //	ft::vector<int>::iterator it;

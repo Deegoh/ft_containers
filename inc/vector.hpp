@@ -64,7 +64,7 @@ namespace ft {
 		template<class InputIt>
 		vector(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first,
 			   InputIt last, const allocator_type& alloc = allocator_type() ) : _alloc (alloc) {
-			size_type n = distance(first, last);
+			size_type n = ft::distance(first, last);
 			if (n < 0)
 			{
 				_size = 0;
@@ -122,7 +122,7 @@ namespace ft {
 //		assigns values to the container
 		template<class InputIt>
 		void assign(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
-			size_type diff = distance(first, last);
+			size_type diff = ft::distance(first, last);
 			if (diff > capacity())
 				reserve(diff);
 			for (size_type i = 0; first != last ; first++, i++) {
@@ -191,10 +191,8 @@ namespace ft {
 		}
 
 //		Return size (public member function)
-//		std::distance(begin(), end())
 		size_type size() const {
-//			std::distance(begin(), end());
-			return (_size);
+			return (ft::distance(begin(), end()));
 		}
 
 //		returns the maximum possible number of elements (public member function)
@@ -242,7 +240,7 @@ namespace ft {
 
 //		inserts elements (single element)
 		iterator insert(iterator pos, const value_type& val) {
-			size_type diff = distance(begin(), pos);
+			size_type diff = ft::distance(begin(), pos);
 
 			size_type newCapacity;
 			size_type n = 1;
@@ -295,7 +293,7 @@ namespace ft {
 			if (n == 0)
 				return;
 
-			size_type diff = distance(begin(), pos);
+			size_type diff = ft::distance(begin(), pos);
 			size_type newCapacity;
 
 			newCapacity = _capacity;
@@ -326,8 +324,8 @@ namespace ft {
 //		inserts elements (range)
 		template <class InputIt>
 		void insert(iterator pos, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last) {
-			size_type diff = distance(first, last);
-			size_type diffCpy = distance(begin(), pos);
+			size_type diff = ft::distance(first, last);
+			size_type diffCpy = ft::distance(begin(), pos);
 			size_type newCapacity;
 
 			newCapacity = _capacity;
