@@ -41,14 +41,13 @@ int main() {
 	#endif
 	srand(10);
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
-//	std::cout << "Construct" << std::endl;
-	ft::vector<std::string> str_vec;
-////	ft::vector<int, NAlloc<int> > int_vec;
-	ft::vector<int> int_vec;
-	ft::vector<Buffer> buffer_vec;
 
-	ft::vector<int> int_vec2(10, 5);
-	ft::vector<int> int_vec3(int_vec2.begin(), int_vec2.end());
+//	ft::vector<std::string> str_vec;
+//	ft::vector<int> int_vec;
+//	ft::vector<Buffer> buffer_vec;
+//
+//	ft::vector<int> int_vec2(10, 5);
+//	ft::vector<int> int_vec3(int_vec2.begin(), int_vec2.end());
 
 //	testMaxSize(buffer_vec, "buffer");
 //	testMaxSize(int_vec, "int");
@@ -89,38 +88,16 @@ int main() {
 //	printVec(int_vec, "int");
 //	std::cout << "begin()" << *int_vec.begin() << std::endl;
 //	std::cout << "end()" << *int_vec.end() << std::endl;
+
 //	testMaxSize(int_vec, "int");
-//	testErase();
+	testErase();
 //	testResize();
 //	testAssign();
 //	testCopy();
-//	insertTest();
-//	bidirectTest();
-
-//	ft::vector<int> myvector (3,100);
-//	ft::vector<int>::iterator it;
-//
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
-//
-//	it = myvector.begin();
-//	it = myvector.insert(it, 200);
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
-//
-//	it = myvector.begin();
-//	it = myvector.insert ( it , 300 );
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
-//
-//	it = myvector.begin();
-//	it = myvector.insert ( it , 400 );
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
-//
-//	it = myvector.begin();
-//	it = myvector.insert ( it , 500 );
-//	printTest(myvector);
-//	std::cout << myvector.capacity() << std::endl;
+//	testInsert();
+//	testBidirect();
+//	testIte();
+//	testIteArrow();
+//	testRelOp();
 
 }

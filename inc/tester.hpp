@@ -2,52 +2,6 @@
 # define MAIN_UTILS_HPP
 #include <typeinfo>
 
-
-#if STD == 0 //CREATE A REAL STL EXAMPLE
-
-	template <class Tp>
-	struct NAlloc : public std::allocator<Tp>{
-		typedef Tp					value_type;
-		NAlloc() {};
-		template <class T> NAlloc(const NAlloc<T>&) {}
-
-		Tp* allocate(std::size_t n)
-		{
-			n *= sizeof(Tp);
-			Tp* p = static_cast<Tp*>(::operator new(n));
-	//		std::cout << "allocating " << n << " bytes @ " << p << '\n';
-			std::cout << "allocating " << n << " bytes" << std::endl;
-			return p;
-		}
-
-		void construct(Tp* p, const Tp& val)
-		{
-			*p = val;
-		}
-
-		void destroy(Tp* p)
-		{
-			std::cout << "destroy " << sizeof(p) << " bytes" << "\n";
-			if (std::string("NSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE").compare(typeid(*p).name()) == 0)
-			{
-				//*p = "";
-			}
-		}
-
-		void deallocate(Tp* p, std::size_t n)
-		{
-	//		std::cout << "deallocating " << n*sizeof*p << " bytes @ " << p << "\n\n";
-			std::cout << "deallocating " << n*sizeof*p << " bytes" << std::endl;
-			::operator delete(p);
-		}
-	};
-	template <class T, class U>
-	bool operator==(const NAlloc<T>&, const NAlloc<U>&) { return true; }
-	template <class T, class U>
-	bool operator!=(const NAlloc<T>&, const NAlloc<U>&) { return false; }
-
-#endif
-
 template<typename T>
 void printVec(ft::vector<T> &vec, std::string str) {
 	std::cout << str << "[";
@@ -149,7 +103,6 @@ void testResize() {
 
 	ft::vector<int> vct(start_size, 20);
 	ft::vector<int> vct2;
-//	ft::vector<int>::iterator it = vct.begin();
 
 	for (int i = 2; i < 7; ++i)
 		vct[i] = (7 - i) * 3;
@@ -186,45 +139,41 @@ void testResize() {
 	printVec(vct2, "vct2");
 }
 
-//template <typename T>
-void testErase() {
-	ft::vector<int> c;
-	c.push_back(0);
-	c.push_back(1);
-	c.push_back(2);
-	c.push_back(3);
-	c.push_back(4);
-	c.push_back(5);
-	c.push_back(6);
-	c.push_back(7);
-	c.push_back(8);
-	c.push_back(9);
+void	checkErase(ft::vector<std::string> const &vct,
+				   ft::vector<std::string>::const_iterator const &it)
+{
+	static int i = 0;
+	std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
+	printTest(vct);
+}
 
-	printVec(c, "erase1");
-	std::cout << "resul1[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]" << std::endl;
-//	0 1 2 3 4 5 6 7 8 9
+void	testErase(void)
+{
+	ft::vector<std::string> vct(10);
 
-	c.erase(c.begin());
-	printVec(c, "erase2");
-	std::cout << "resul2[1, 2, 3, 4, 5, 6, 7, 8, 9]" << std::endl;
-//	1 2 3 4 5 6 7 8 9
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+		vct[i] = std::string((vct.size() - i), i + 65);
+	printTest(vct);
 
-	c.erase(c.begin() + 2, c.begin() + 5);
-	printVec(c, "erase3");
-	std::cout << "resul3[1, 2, 6, 7, 8, 9]" << std::endl;
-//	1 2 6 7 8 9
+	checkErase(vct, vct.erase(vct.begin() + 2));
 
-//	// Erase all even numbers
-	for (ft::vector<int>::iterator it = c.begin(); it != c.end();)
-	{
-	if (*it % 2 == 0)
-	it = c.erase(it);
-	else
-	++it;
-	}
-	printVec(c, "erase");
-	std::cout << "resul[1, 7, 9]" << std::endl;
-//	1 7 9
+	checkErase(vct, vct.erase(vct.begin()));
+	checkErase(vct, vct.erase(vct.end() - 1));
+
+	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
+	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
+
+	vct.push_back("Hello");
+	vct.push_back("Hi there");
+	printTest(vct);
+	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
+
+	vct.push_back("ONE");
+	vct.push_back("TWO");
+	vct.push_back("THREE");
+	vct.push_back("FOUR");
+	printTest(vct);
+	checkErase(vct, vct.erase(vct.begin(), vct.end()));
 }
 
 void testCopy() {
@@ -262,22 +211,7 @@ void testCopy() {
 //	printTest(vct_copy);
 }
 
-void insertTest() {
-//	ft::vector<int> c1(3, 100);
-//	printVec(c1, "1");
-//
-//	ft::vector<int>::iterator it = c1.begin();
-//	it = c1.insert(it, 200);
-//	printVec(c1, "2");
-//
-//	c1.insert(it, 2, 300);
-//	printVec(c1, "3");
-//
-//	it = c1.begin();
-//
-//	ft::vector<int> c2(2, 400);
-//	c1.insert(it + 2, c2.begin(), c2.end());
-//	printVec(c1, "4");
+void testInsert() {
 	ft::vector<int> vct(10);
 	ft::vector<int> vct2;
 	ft::vector<int> vct3;
@@ -311,26 +245,200 @@ void insertTest() {
 	printTest(vct3);
 }
 
-#include <list>
+//#include <list>
+//
+//void testBidirect() {
+//	std::list<int> lst;
+//	std::list<int>::iterator lst_it;
+//	for (int i = 1; i < 5; ++i)
+//		lst.push_back(i * 3);
+//
+//	ft::vector<int> vct(lst.begin(), lst.end());
+//	printTest(vct);
+//
+//	lst_it = lst.begin();
+//	for (int i = 1; lst_it != lst.end(); ++i)
+//		*lst_it++ = i * 5;
+//	vct.assign(lst.begin(), lst.end());
+//	printTest(vct);
+//
+//	vct.insert(vct.end(), lst.rbegin(), lst.rend());
+//	printTest(vct);
+//}
 
-void bidirectTest() {
-	std::list<int> lst;
-	std::list<int>::iterator lst_it;
-	for (int i = 1; i < 5; ++i)
-		lst.push_back(i * 3);
+void	prepost_incdec(ft::vector<int> &vct)
+{
+	ft::vector<int>::iterator it = vct.begin();
+	ft::vector<int>::iterator it_tmp;
 
-	ft::vector<int> vct(lst.begin(), lst.end());
-	printTest(vct);
+	std::cout << "Pre inc" << std::endl;
+	it_tmp = ++it;
+	std::cout << *it_tmp << " | " << *it << std::endl;
 
-	lst_it = lst.begin();
-	for (int i = 1; lst_it != lst.end(); ++i)
-		*lst_it++ = i * 5;
-	vct.assign(lst.begin(), lst.end());
-	printTest(vct);
+	std::cout << "Pre dec" << std::endl;
+	it_tmp = --it;
+	std::cout << *it_tmp << " | " << *it << std::endl;
 
-	vct.insert(vct.end(), lst.rbegin(), lst.rend());
+	std::cout << "Post inc" << std::endl;
+	it_tmp = it++;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Post dec" << std::endl;
+	it_tmp = it--;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+	std::cout << "###############################################" << std::endl;
+}
+
+
+void testIte() {
+	const int size = 5;
+	ft::vector<int> vct(size);
+	ft::vector<int>::iterator it = vct.begin();
+	ft::vector<int>::const_iterator ite = vct.begin();
+
+	for (int i = 0; i < size; ++i)
+		it[i] = (size - i) * 5;
+	prepost_incdec(vct);
+
+	it = it + 5;
+	it = 1 + it;
+	it = it - 4;
+	std::cout << *(it += 2) << std::endl;
+	std::cout << *(it -= 1) << std::endl;
+
+	*(it -= 2) = 42;
+	*(it += 2) = 21;
+
+	std::cout << "const_ite +=: " << *(ite += 2) << std::endl;
+	std::cout << "const_ite -=: " << *(ite -= 2) << std::endl;
+
+	std::cout << "(it == const_it): " << (ite == it) << std::endl;
+	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+
 	printTest(vct);
 }
+
+#include "base.hpp"
+
+void testIteArrow() {
+	const int size = 5;
+	ft::vector<foo<int> > vct(size);
+	ft::vector<foo<int> >::iterator it(vct.begin());
+	ft::vector<foo<int> >::const_iterator ite(vct.end());
+
+	for (int i = 1; it != ite; ++i)
+		*it++ = i;
+	printTest(vct);
+
+	it = vct.begin();
+	ite = vct.begin();
+
+	std::cout << *(++ite) << std::endl;
+	std::cout << *(ite++) << std::endl;
+	std::cout << *ite++ << std::endl;
+	std::cout << *++ite << std::endl;
+
+	it->m();
+	ite->m();
+
+	std::cout << *(++it) << std::endl;
+	std::cout << *(it++) << std::endl;
+	std::cout << *it++ << std::endl;
+	std::cout << *++it << std::endl;
+
+	std::cout << *(--ite) << std::endl;
+	std::cout << *(ite--) << std::endl;
+	std::cout << *--ite << std::endl;
+	std::cout << *ite-- << std::endl;
+
+	(*it).m();
+	(*ite).m();
+
+	std::cout << *(--it) << std::endl;
+	std::cout << *(it--) << std::endl;
+	std::cout << *it-- << std::endl;
+	std::cout << *--it << std::endl;
+}
+
+void	testRiteEqOpe()
+{
+//	const int size = 5;
+//	ft::vector<foo<int> > vct(size);
+//	ft::vector<foo<int> >::reverse_iterator it_0(vct.rbegin());
+//	ft::vector<foo<int> >::reverse_iterator it_1(vct.rend());
+//	ft::vector<foo<int> >::reverse_iterator it_mid;
+//
+//	ft::vector<foo<int> >::const_reverse_iterator cit_0 = vct.rbegin();
+//	ft::vector<foo<int> >::const_reverse_iterator cit_1;
+//	ft::vector<foo<int> >::const_reverse_iterator cit_mid;
+//
+//	for (int i = size; it_0 != it_1; --i)
+//		*it_0++ = i;
+//	printSize(vct, 1);
+//	it_0 = vct.rbegin();
+//	cit_1 = vct.rend();
+//	it_mid = it_0 + 3;
+//	cit_mid = it_0 + 3; cit_mid = cit_0 + 3; cit_mid = it_mid;
+//
+//	std::cout << std::boolalpha;
+//	std::cout << ((it_0 + 3 == cit_0 + 3) && (cit_0 + 3 == it_mid)) << std::endl;
+//
+//	std::cout << "\t\tft_eq_ope:" << std::endl;
+//	// regular it
+//	ft_eq_ope(it_0 + 3, it_mid);
+//	ft_eq_ope(it_0, it_1);
+//	ft_eq_ope(it_1 - 3, it_mid);
+//	// const it
+//	ft_eq_ope(cit_0 + 3, cit_mid);
+//	ft_eq_ope(cit_0, cit_1);
+//	ft_eq_ope(cit_1 - 3, cit_mid);
+//	// both it
+//	ft_eq_ope(it_0 + 3, cit_mid);
+//	ft_eq_ope(it_mid, cit_0 + 3);
+//	ft_eq_ope(it_0, cit_1);
+//	ft_eq_ope(it_1, cit_0);
+//	ft_eq_ope(it_1 - 3, cit_mid);
+//	ft_eq_ope(it_mid, cit_1 - 3);
+
+}
+
+template <class T, class Alloc>
+void	cmp(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
+{
+	static int i = 0;
+
+	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
+	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
+	std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
+	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
+}
+
+void testRelOp(void)
+{
+	ft::vector<int> vct(4);
+	ft::vector<int> vct2(4);
+
+	cmp(vct, vct);  // 0
+	cmp(vct, vct2); // 1
+
+	vct2.resize(10);
+
+	cmp(vct, vct2); // 2
+	cmp(vct2, vct); // 3
+
+	vct[2] = 42;
+
+	cmp(vct, vct2); // 4
+	cmp(vct2, vct); // 5
+
+	swap(vct, vct2);
+
+	cmp(vct, vct2); // 6
+	cmp(vct2, vct); // 7
+
+}
+
 
 #endif
 

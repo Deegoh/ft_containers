@@ -3,34 +3,19 @@
 
 # include <cstddef>
 
+//+---------------+-------------------------------------------------------------------------+
+//|               |                      PROPERTIES                                         |
+//|   ITERATOR    +------------+------+-------+----------------------+----------------------+
+//|               | ACCESS     | READ | WRITE | ITERATE              | COMPARE              |
+//+---------------+------------+------+-------+----------------------+----------------------+
+//| Input         | ->         | =*i  |       | ++                   | ==, !=               |
+//| Output        |            |      | *i=   | ++                   |                      |
+//| Forward       | ->         | =*i  | *i=   | ++                   | ==, !=               |
+//| Bidirectional |            | =*i  | *i=   | ++, --               | ==, !=               |
+//| Random-Access | ->, []     | =*i  | *i=   | ++, --, +=, -=, +, - | ==, !=, <, >, <=, >= |
+//+---------------+------------+------+-------+----------------------+----------------------+
+
 namespace ft {
-
-//	IS_INTEGRAL
-	struct false_type {
-		const static bool value = false;
-		operator bool() const {return value;}
-	};
-
-	struct true_type {
-		const static bool value = true;
-		operator bool() const {return value;}
-	};
-
-	template<typename> struct is_integral: ft::false_type {};
-
-	template<> struct is_integral<short> : ft::true_type {};
-	template<> struct is_integral<bool> : ft::true_type {};
-	template<> struct is_integral<char> : ft::true_type {};
-	template<> struct is_integral<wchar_t> : ft::true_type {};
-	template<> struct is_integral<signed char> : ft::true_type {};
-	template<> struct is_integral<int> : ft::true_type {};
-	template<> struct is_integral<long int> : ft::true_type {};
-	template<> struct is_integral<unsigned char> : ft::true_type {};
-	template<> struct is_integral<unsigned short int> : ft::true_type {};
-	template<> struct is_integral<unsigned int> : ft::true_type {};
-	template<> struct is_integral<unsigned long int> : ft::true_type {};
-
-//	template<typename T> struct is_integral: is_integral_base<std::remove_cv_t<T> > {};
 
 	//TAG_ITERATORS
 	struct input_iterator_tag { };

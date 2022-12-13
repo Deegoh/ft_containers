@@ -20,7 +20,10 @@ INC_DIR = inc/
 HEADER=	vector.hpp\
 		comparators.hpp\
 		iterator.hpp\
-		Random_access_iterator.hpp
+		random_access_iterator.hpp\
+		reverse_iterator.hpp\
+		base.hpp
+
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
 
