@@ -160,20 +160,25 @@ void	testErase(void)
 	checkErase(vct, vct.erase(vct.begin()));
 	checkErase(vct, vct.erase(vct.end() - 1));
 
-	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
-	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
-
-	vct.push_back("Hello");
-	vct.push_back("Hi there");
 	printTest(vct);
-	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
-
-	vct.push_back("ONE");
-	vct.push_back("TWO");
-	vct.push_back("THREE");
-	vct.push_back("FOUR");
+	ft::vector<std::string>::iterator it = vct.erase(vct.begin(), vct.begin() + 3);
+	std::cout << *it << std::endl;
 	printTest(vct);
-	checkErase(vct, vct.erase(vct.begin(), vct.end()));
+
+//	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
+//	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
+//
+//	vct.push_back("Hello");
+//	vct.push_back("Hi there");
+//	printTest(vct);
+//	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
+//
+//	vct.push_back("ONE");
+//	vct.push_back("TWO");
+//	vct.push_back("THREE");
+//	vct.push_back("FOUR");
+//	printTest(vct);
+//	checkErase(vct, vct.erase(vct.begin(), vct.end()));
 }
 
 void testCopy() {
@@ -437,6 +442,27 @@ void testRelOp(void)
 	cmp(vct, vct2); // 6
 	cmp(vct2, vct); // 7
 
+}
+
+void testRite() {
+	ft::vector<int> vct;
+	ft::vector<int>::iterator it = vct.begin();
+	ft::vector<int>::const_iterator cit = vct.begin();
+
+	ft::vector<int>::reverse_iterator rit(it);
+//
+//	ft::vector<int>::const_reverse_iterator crit(rit);
+//	ft::vector<int>::const_reverse_iterator crit_(it);
+//	ft::vector<int>::const_reverse_iterator crit_2(cit);
+
+	/* error expected
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator rit_(crit);
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator rit2(cit);
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::iterator it2(rit);
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator cit2(crit);
+		*/
+
+	std::cout << "OK" << std::endl;
 }
 
 

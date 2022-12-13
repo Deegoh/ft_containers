@@ -5,6 +5,36 @@
 #include "random_access_iterator.hpp"
 
 namespace ft {
+
+	template <class T,
+			  class Category = random_access_iterator_tag,
+			  class Distance = std::ptrdiff_t,
+			  class Pointer = T*,
+			  class Reference = T&>
+	class reverse_iterator : public iterator<T, Category> {
+	protected:
+		Pointer _ptr;
+
+	public:
+		typedef T			value_type;
+		typedef Category	iterator_category;
+		typedef Distance	difference_type;
+		typedef Pointer		pointer;
+		typedef Reference	reference;
+
+
+		reverse_iterator() : _ptr(NULL) {}
+		reverse_iterator(Pointer ptr) : _ptr(ptr) {}
+		~reverse_iterator() {}
+		reverse_iterator(const reverse_iterator &src) {
+			(*this) = src;
+		}
+		reverse_iterator &operator=(const reverse_iterator &rhs) {
+			if (&rhs != this)
+				_ptr = rhs._ptr;
+			return (*this);
+		}
+	};
 	// template code
 //	template <class RandomAccessIterator,
 //			  class T,

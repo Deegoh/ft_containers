@@ -8,7 +8,7 @@
 
 
 # include "iterator.hpp"
-//# include "reverse_iterator.hpp"
+# include "reverse_iterator.hpp"
 # include "random_access_iterator.hpp"
 # include "comparators.hpp"
 
@@ -33,7 +33,7 @@ namespace ft {
 //		typedef ft::reverse_iterator<iterator, value_type,
 //				reference, difference_type>						reverse_iterator;
 
-//		typedef ft::reverse_iterator<iterator>				reverse_iterator;
+		typedef ft::reverse_iterator<value_type>				reverse_iterator;
 //		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 	protected:
@@ -342,12 +342,12 @@ namespace ft {
 //		erases elements
 		iterator erase(iterator pos) {
 			if (pos == end())
-				return (iterator (_c + _size));
+				return (pos);
 			if (pos + 1 != end())
 				std::copy(pos + 1, end(), pos);
 			_size--;
 			_alloc.destroy(_c + _size);
-			return (iterator(_c + _size));
+			return (pos);
 		}
 
 ////		TODO erase
@@ -371,7 +371,7 @@ namespace ft {
 				_alloc.destroy(_c + (it - begin()));
 			}
 			_size = _size - diff;
-			return (iterator(_c + _size));
+			return (last);
 		}
 
 //		iterator erase(const_iterator first, const_iterator last) {
