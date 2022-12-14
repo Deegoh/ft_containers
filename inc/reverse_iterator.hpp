@@ -1,30 +1,39 @@
 #ifndef REVERSE_ITERATOR_HPP
 # define REVERSE_ITERATOR_HPP
 
-#include "iterator.hpp"
 #include "random_access_iterator.hpp"
+#include "iterator.hpp"
 
 namespace ft {
 
-	template <class T,
-			  class Category = random_access_iterator_tag,
-			  class Distance = std::ptrdiff_t,
-			  class Pointer = T*,
-			  class Reference = T&>
-	class reverse_iterator : public iterator<T, Category> {
+//	template <class RandomAccessIterator,
+//			  class T,
+//			  class Reference,
+//			  class Distance>
+//	// Reference = T&
+//	// Distance = ptrdiff_t
+//
+//	class reverse_iterator : public random_access_iterator<T, Distance> {
+//		typedef reverse_iterator<RandomAccessIterator, T, Reference, Distance>
+//				self;
+
+	template <class T, class Category = random_access_iterator_tag>
+	class reverse_iterator : public random_access_iterator<T, Category> {
+	public:
+		typedef random_access_iterator<T, Category>						iterator_type;
+		typedef typename iterator_type::difference_type		difference_type;
+		typedef typename iterator_type::value_type			value_type;
+		typedef typename iterator_type::pointer				pointer;
+		typedef typename iterator_type::reference			reference;
+		typedef typename iterator_type::iterator_category	iterator_category;
+
 	protected:
-		Pointer _ptr;
+		pointer _ptr;
 
 	public:
-		typedef T			value_type;
-		typedef Category	iterator_category;
-		typedef Distance	difference_type;
-		typedef Pointer		pointer;
-		typedef Reference	reference;
-
-
 		reverse_iterator() : _ptr(NULL) {}
-		reverse_iterator(Pointer ptr) : _ptr(ptr) {}
+		reverse_iterator(pointer ptr) : _ptr(ptr) {}
+		reverse_iterator(iterator_type ptr) : _ptr(reverse_iterator(ptr)) {}
 		~reverse_iterator() {}
 		reverse_iterator(const reverse_iterator &src) {
 			(*this) = src;
@@ -34,8 +43,96 @@ namespace ft {
 				_ptr = rhs._ptr;
 			return (*this);
 		}
+
+		operator reverse_iterator<const T>() const {
+			return (reverse_iterator<const T>(this->_ptr));
+		}
+
+		reference operator*() const {
+			return (*_ptr);
+		}
+		pointer operator->() const {
+			return (_ptr);
+		}
+
+		reference operator[](difference_type diff) const {
+			return (*(_ptr + diff));
+		}
+
+		reverse_iterator& operator++() {
+			_ptr--;
+			return (*_ptr);
+		}
+
+		reverse_iterator operator++(int) {
+			reverse_iterator tmp = *this;
+			(*this)--;
+			return (*tmp);
+		}
+		reverse_iterator& operator--() {
+			_ptr++;
+			return (*_ptr);
+		}
+		reverse_iterator operator--(int) {
+			reverse_iterator tmp = *this;
+			(*this)++;
+			return (*tmp);
+		}
+		reverse_iterator& operator+=(difference_type diff) {
+			_ptr -= diff;
+			return (*this);
+		}
+		reverse_iterator operator+(difference_type diff) const
+		{
+			return (_ptr - diff);
+		}
+		reverse_iterator& operator-=(difference_type diff) {
+			_ptr += diff;
+			return (*this);
+		}
+		reverse_iterator operator-(difference_type diff) const {
+			return (_ptr - diff);
+		}
 	};
-	// template code
+
+//	https://www.ibm.com/docs/en/zos/2.2.0?topic=ri-synopsis
+//	template<class RanIt>
+//	class reverse_iterator : public iterator<
+//			typename iterator_traits<RanIt>::iterator_category,
+//			typename iterator_traits<RanIt>::value_type,
+//			typename iterator_traits<RanIt>::difference_type,
+//			typename iterator_traits<RanIt>::pointer,
+//			typename iterator_traits<RanIt>::reference> {
+//		typedef typename iterator_traits<RanIt>::difference_type
+//				Dist;
+//		typedef typename iterator_traits<RanIt>::pointer
+//				Ptr;
+//		typedef typename iterator_traits<RanIt>::reference
+//				Ref;
+//	public:
+//		typedef RanIt iterator_type;
+//		reverse_iterator();
+//		explicit reverse_iterator(RanIt x);
+//		template<class U>
+//		reverse_iterator(const reverse_iterator<U>& x);
+//		RanIt base() const;
+//		Ref operator*() const;
+//		Ptr operator->() const;
+//		reverse_iterator& operator++();
+//		reverse_iterator operator++(int);
+//		reverse_iterator& operator--();
+//		reverse_iterator operator--();
+//		reverse_iterator& operator+=(Dist n);
+//		reverse_iterator operator+(Dist n) const;
+//		reverse_iterator& operator-=(Dist n);
+//		reverse_iterator operator-(Dist n) const;
+//		Ref operator[](Dist n) const;
+//	protected:
+//		RanIt current;
+//	};
+
+// template code
+
 //	template <class RandomAccessIterator,
 //			  class T,
 //			  class Reference,

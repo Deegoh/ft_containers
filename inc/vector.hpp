@@ -34,7 +34,7 @@ namespace ft {
 //				reference, difference_type>						reverse_iterator;
 
 		typedef ft::reverse_iterator<value_type>				reverse_iterator;
-//		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+		typedef ft::reverse_iterator<const value_type>			const_reverse_iterator;
 
 	protected:
 		allocator_type _alloc;

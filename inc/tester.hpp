@@ -450,7 +450,7 @@ void testRite() {
 	ft::vector<int>::const_iterator cit = vct.begin();
 
 	ft::vector<int>::reverse_iterator rit(it);
-//
+
 //	ft::vector<int>::const_reverse_iterator crit(rit);
 //	ft::vector<int>::const_reverse_iterator crit_(it);
 //	ft::vector<int>::const_reverse_iterator crit_2(cit);

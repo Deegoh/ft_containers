@@ -90,7 +90,7 @@ int main() {
 //	std::cout << "end()" << *int_vec.end() << std::endl;
 
 //	testMaxSize(int_vec, "int");
-	testErase();
+//	testErase();
 //	testResize();
 //	testAssign();
 //	testCopy();
