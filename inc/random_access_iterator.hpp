@@ -96,19 +96,24 @@ namespace ft {
 			return (*this);
 		}
 		random_access_iterator operator++(int) {
-			random_access_iterator it = *this;
+			random_access_iterator tmp = *this;
 			++(*this);
-			return (it);
+			return (tmp);
 		}
 		random_access_iterator &operator--() {
 			_ptr--;
 			return (*this);
 		}
 
+//		const random_access_iterator operator--(int) {
+//			const random_access_iterator tmp = *this;
+//			--(*this);
+//			return (tmp);
+//		}
 		random_access_iterator operator--(int) {
-			random_access_iterator it = *this;
+			random_access_iterator tmp = *this;
 			--(*this);
-			return (it);
+			return (tmp);
 		}
 
 		random_access_iterator &operator+=(difference_type diff) {

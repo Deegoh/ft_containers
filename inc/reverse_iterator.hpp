@@ -6,21 +6,10 @@
 
 namespace ft {
 
-//	template <class RandomAccessIterator,
-//			  class T,
-//			  class Reference,
-//			  class Distance>
-//	// Reference = T&
-//	// Distance = ptrdiff_t
-//
-//	class reverse_iterator : public random_access_iterator<T, Distance> {
-//		typedef reverse_iterator<RandomAccessIterator, T, Reference, Distance>
-//				self;
-
-	template <class T, class Category = random_access_iterator_tag>
-	class reverse_iterator : public random_access_iterator<T, Category> {
+	template <class RandomIt>
+	class reverse_iterator {
 	public:
-		typedef random_access_iterator<T, Category>						iterator_type;
+		typedef RandomIt									iterator_type;
 		typedef typename iterator_type::difference_type		difference_type;
 		typedef typename iterator_type::value_type			value_type;
 		typedef typename iterator_type::pointer				pointer;
@@ -28,40 +17,49 @@ namespace ft {
 		typedef typename iterator_type::iterator_category	iterator_category;
 
 	protected:
-		pointer _ptr;
+		RandomIt _randIt;
 
 	public:
-		reverse_iterator() : _ptr(NULL) {}
-		reverse_iterator(pointer ptr) : _ptr(ptr) {}
-		reverse_iterator(iterator_type ptr) : _ptr(reverse_iterator(ptr)) {}
+		reverse_iterator() : _randIt(NULL) {}
 		~reverse_iterator() {}
-		reverse_iterator(const reverse_iterator &src) {
+
+		explicit reverse_iterator(const iterator_type& randIt) : _randIt(randIt) {}
+
+		template <class Type>
+		explicit reverse_iterator(const reverse_iterator<Type> &src) {
 			(*this) = src;
 		}
+
 		reverse_iterator &operator=(const reverse_iterator &rhs) {
 			if (&rhs != this)
-				_ptr = rhs._ptr;
+				_randIt = rhs._randIt;
 			return (*this);
 		}
 
-		operator reverse_iterator<const T>() const {
-			return (reverse_iterator<const T>(this->_ptr));
+		operator reverse_iterator<ft::random_access_iterator<const value_type> >() const {
+			return (reverse_iterator<ft::random_access_iterator<const value_type> >(this->base()));
+		}
+
+		iterator_type base() const {
+			return _randIt;
 		}
 
 		reference operator*() const {
-			return (*_ptr);
+			RandomIt tmp = _randIt;
+			return *(--tmp);
 		}
+
 		pointer operator->() const {
-			return (_ptr);
+			return (_randIt);
 		}
 
 		reference operator[](difference_type diff) const {
-			return (*(_ptr + diff));
+			return (*(_randIt + diff));
 		}
 
 		reverse_iterator& operator++() {
-			_ptr--;
-			return (*_ptr);
+			_randIt--;
+			return (*_randIt);
 		}
 
 		reverse_iterator operator++(int) {
@@ -70,8 +68,8 @@ namespace ft {
 			return (*tmp);
 		}
 		reverse_iterator& operator--() {
-			_ptr++;
-			return (*_ptr);
+			_randIt++;
+			return (*_randIt);
 		}
 		reverse_iterator operator--(int) {
 			reverse_iterator tmp = *this;
@@ -79,57 +77,49 @@ namespace ft {
 			return (*tmp);
 		}
 		reverse_iterator& operator+=(difference_type diff) {
-			_ptr -= diff;
+			_randIt -= diff;
 			return (*this);
 		}
-		reverse_iterator operator+(difference_type diff) const
-		{
-			return (_ptr - diff);
+		const reverse_iterator operator+(difference_type diff) const {
+			return (reverse_iterator(_randIt - diff));
 		}
 		reverse_iterator& operator-=(difference_type diff) {
-			_ptr += diff;
+			_randIt += diff;
 			return (*this);
 		}
-		reverse_iterator operator-(difference_type diff) const {
-			return (_ptr - diff);
+		const reverse_iterator operator-(difference_type diff) const {
+			return (reverse_iterator(_randIt + diff));
+		}
+
+		// Non member function overloads
+		friend bool operator==(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return (lhs.base() == rhs.base());
+		}
+		friend bool operator!=(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return !(lhs.base() == rhs.base());
+		}
+		friend bool operator<(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return (rhs.base() < lhs.base());
+		}
+		friend bool operator<=(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return !(rhs < lhs);
+		}
+		friend bool operator>(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return (rhs < lhs);
+		}
+		friend bool operator>=(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return !(lhs < rhs);
+		}
+		friend reverse_iterator<RandomIt> operator+(difference_type diff, const reverse_iterator<RandomIt> &rhs) {
+			return (reverse_iterator(rhs._randIt - diff));
+		}
+		friend reverse_iterator<RandomIt> operator+(difference_type diff, reverse_iterator<RandomIt> &rhs) {
+			return (reverse_iterator(rhs._randIt - diff));
+		}
+		friend difference_type operator-(const reverse_iterator<RandomIt> &lhs, const reverse_iterator<RandomIt> &rhs) {
+			return (rhs._randIt - lhs._randIt);
 		}
 	};
-
-//	https://www.ibm.com/docs/en/zos/2.2.0?topic=ri-synopsis
-//	template<class RanIt>
-//	class reverse_iterator : public iterator<
-//			typename iterator_traits<RanIt>::iterator_category,
-//			typename iterator_traits<RanIt>::value_type,
-//			typename iterator_traits<RanIt>::difference_type,
-//			typename iterator_traits<RanIt>::pointer,
-//			typename iterator_traits<RanIt>::reference> {
-//		typedef typename iterator_traits<RanIt>::difference_type
-//				Dist;
-//		typedef typename iterator_traits<RanIt>::pointer
-//				Ptr;
-//		typedef typename iterator_traits<RanIt>::reference
-//				Ref;
-//	public:
-//		typedef RanIt iterator_type;
-//		reverse_iterator();
-//		explicit reverse_iterator(RanIt x);
-//		template<class U>
-//		reverse_iterator(const reverse_iterator<U>& x);
-//		RanIt base() const;
-//		Ref operator*() const;
-//		Ptr operator->() const;
-//		reverse_iterator& operator++();
-//		reverse_iterator operator++(int);
-//		reverse_iterator& operator--();
-//		reverse_iterator operator--();
-//		reverse_iterator& operator+=(Dist n);
-//		reverse_iterator operator+(Dist n) const;
-//		reverse_iterator& operator-=(Dist n);
-//		reverse_iterator operator-(Dist n) const;
-//		Ref operator[](Dist n) const;
-//	protected:
-//		RanIt current;
-//	};
 
 // template code
 
@@ -191,25 +181,25 @@ namespace ft {
 //
 //	template <class RandomAccessIterator, class T, class Reference, class Distance>
 //	inline bool operator==(const reverse_iterator<RandomAccessIterator, T,
-//			Reference, Distance>& x,
+//			Reference, Distance> &x,
 //						   const reverse_iterator<RandomAccessIterator, T,
-//								   Reference, Distance>& y) {
+//								   Reference, Distance> &y) {
 //		return x.current == y.current;
 //	}
 //
 //	template <class RandomAccessIterator, class T, class Reference, class Distance>
 //	inline bool operator<(const reverse_iterator<RandomAccessIterator, T,
-//			Reference, Distance>& x,
+//			Reference, Distance> &x,
 //						  const reverse_iterator<RandomAccessIterator, T,
-//								  Reference, Distance>& y) {
+//								  Reference, Distance> &y) {
 //		return y.current < x.current;
 //	}
 //
 //	template <class RandomAccessIterator, class T, class Reference, class Distance>
 //	inline Distance operator-(const reverse_iterator<RandomAccessIterator, T,
-//			Reference, Distance>& x,
+//			Reference, Distance> &x,
 //							  const reverse_iterator<RandomAccessIterator, T,
-//									  Reference, Distance>& y) {
+//									  Reference, Distance> &y) {
 //		return y.current - x.current;
 //	}
 //
@@ -217,7 +207,7 @@ namespace ft {
 //	inline reverse_iterator<RandomAccessIterator, T, Reference, Distance>
 //	operator+(Distance n,
 //			  const reverse_iterator<RandomAccessIterator, T, Reference,
-//					  Distance>& x) {
+//					  Distance> &x) {
 //		return reverse_iterator<RandomAccessIterator, T, Reference, Distance>
 //				(x.current - n);
 //	}

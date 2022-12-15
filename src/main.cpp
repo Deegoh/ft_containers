@@ -99,5 +99,7 @@ int main() {
 //	testIte();
 //	testIteArrow();
 //	testRelOp();
-
+//	testRiteConstruct();
+//	testRite();
+	testRite2();
 }
