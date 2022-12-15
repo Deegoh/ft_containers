@@ -503,10 +503,10 @@ void testRite2() {
 	for (int i = 0; i < size; ++i)
 		it[i] = (size - i) * 5;
 
-//	it = it + 5;
-//	it = 1 + it;
-//	it = it - 4;
-//	std::cout << *(it += 2) << std::endl;
+	it = it + 5;
+	it = 1 + it;
+	it = it - 4;
+	std::cout << *(it += 2) << std::endl;
 //	std::cout << *(it -= 1) << std::endl;
 //
 //	*(it -= 2) = 42;
@@ -517,9 +517,9 @@ void testRite2() {
 //	std::cout << "(it == const_it): " << (ite == it) << std::endl;
 //	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
 //	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
-
-	printTest(vct);
-	std::cout << *it << std::endl;
+//
+//	printTest(vct);
+//	std::cout << *it << std::endl;
 }
 
 

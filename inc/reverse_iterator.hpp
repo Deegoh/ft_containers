@@ -45,8 +45,7 @@ namespace ft {
 		}
 
 		reference operator*() const {
-			RandomIt tmp = _randIt;
-			return *(--tmp);
+			return (*_randIt);
 		}
 
 		pointer operator->() const {
@@ -54,7 +53,7 @@ namespace ft {
 		}
 
 		reference operator[](difference_type diff) const {
-			return (*(_randIt + diff));
+			return (*(_randIt - diff));
 		}
 
 		reverse_iterator& operator++() {
