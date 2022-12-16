@@ -1,6 +1,8 @@
 #ifndef MAIN_UTILS_HPP
 # define MAIN_UTILS_HPP
+
 #include <typeinfo>
+#include "base.hpp"
 
 template<typename T>
 void printVec(ft::vector<T> &vec, std::string str) {
@@ -160,25 +162,20 @@ void	testErase(void)
 	checkErase(vct, vct.erase(vct.begin()));
 	checkErase(vct, vct.erase(vct.end() - 1));
 
-	printTest(vct);
-	ft::vector<std::string>::iterator it = vct.erase(vct.begin(), vct.begin() + 3);
-	std::cout << *it << std::endl;
-	printTest(vct);
+	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
+	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
 
-//	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
-//	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
-//
-//	vct.push_back("Hello");
-//	vct.push_back("Hi there");
-//	printTest(vct);
-//	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
-//
-//	vct.push_back("ONE");
-//	vct.push_back("TWO");
-//	vct.push_back("THREE");
-//	vct.push_back("FOUR");
-//	printTest(vct);
-//	checkErase(vct, vct.erase(vct.begin(), vct.end()));
+	vct.push_back("Hello");
+	vct.push_back("Hi there");
+	printTest(vct);
+	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
+
+	vct.push_back("ONE");
+	vct.push_back("TWO");
+	vct.push_back("THREE");
+	vct.push_back("FOUR");
+	printTest(vct);
+	checkErase(vct, vct.erase(vct.begin(), vct.end()));
 }
 
 void testCopy() {
@@ -204,16 +201,16 @@ void testCopy() {
 	std::cout << "\t-- PART ONE --" << std::endl;
 	printTest(vct);
 	printTest(vct_range);
-//	printTest(vct_copy);
-//
-//	vct = vct_copy;
-//	vct_copy = vct_range;
-//	vct_range.clear();
-//
-//	std::cout << "\t-- PART TWO --" << std::endl;
-//	printTest(vct);
-//	printTest(vct_range);
-//	printTest(vct_copy);
+	printTest(vct_copy);
+
+	vct = vct_copy;
+	vct_copy = vct_range;
+	vct_range.clear();
+
+	std::cout << "\t-- PART TWO --" << std::endl;
+	printTest(vct);
+	printTest(vct_range);
+	printTest(vct_copy);
 }
 
 void testInsert() {
@@ -324,8 +321,6 @@ void testIte() {
 	printTest(vct);
 }
 
-#include "base.hpp"
-
 void testIteArrow() {
 	const int size = 5;
 	ft::vector<foo<int> > vct(size);
@@ -364,48 +359,6 @@ void testIteArrow() {
 	std::cout << *(it--) << std::endl;
 	std::cout << *it-- << std::endl;
 	std::cout << *--it << std::endl;
-}
-
-void	testRiteEqOpe()
-{
-//	const int size = 5;
-//	ft::vector<foo<int> > vct(size);
-//	ft::vector<foo<int> >::reverse_iterator it_0(vct.rbegin());
-//	ft::vector<foo<int> >::reverse_iterator it_1(vct.rend());
-//	ft::vector<foo<int> >::reverse_iterator it_mid;
-//
-//	ft::vector<foo<int> >::const_reverse_iterator cit_0 = vct.rbegin();
-//	ft::vector<foo<int> >::const_reverse_iterator cit_1;
-//	ft::vector<foo<int> >::const_reverse_iterator cit_mid;
-//
-//	for (int i = size; it_0 != it_1; --i)
-//		*it_0++ = i;
-//	printSize(vct, 1);
-//	it_0 = vct.rbegin();
-//	cit_1 = vct.rend();
-//	it_mid = it_0 + 3;
-//	cit_mid = it_0 + 3; cit_mid = cit_0 + 3; cit_mid = it_mid;
-//
-//	std::cout << std::boolalpha;
-//	std::cout << ((it_0 + 3 == cit_0 + 3) && (cit_0 + 3 == it_mid)) << std::endl;
-//
-//	std::cout << "\t\tft_eq_ope:" << std::endl;
-//	// regular it
-//	ft_eq_ope(it_0 + 3, it_mid);
-//	ft_eq_ope(it_0, it_1);
-//	ft_eq_ope(it_1 - 3, it_mid);
-//	// const it
-//	ft_eq_ope(cit_0 + 3, cit_mid);
-//	ft_eq_ope(cit_0, cit_1);
-//	ft_eq_ope(cit_1 - 3, cit_mid);
-//	// both it
-//	ft_eq_ope(it_0 + 3, cit_mid);
-//	ft_eq_ope(it_mid, cit_0 + 3);
-//	ft_eq_ope(it_0, cit_1);
-//	ft_eq_ope(it_1, cit_0);
-//	ft_eq_ope(it_1 - 3, cit_mid);
-//	ft_eq_ope(it_mid, cit_1 - 3);
-
 }
 
 template <class T, class Alloc>
@@ -485,11 +438,11 @@ void testRite() {
 	std::cout << *it.base() << std::endl;//20
 
 	std::cout << "TEST OFFSET" << std::endl;
-	std::cout << *(it) << std::endl;
-	std::cout << *(it).base() << std::endl;
-	std::cout << *(it - 0) << std::endl;
-	std::cout << *(it - 0).base() << std::endl;
-	std::cout << *(it - 1).base() << std::endl;
+	std::cout << *(it) << std::endl;//15
+	std::cout << *(it).base() << std::endl;//20
+	std::cout << *(it - 0) << std::endl;//15
+	std::cout << *(it - 0).base() << std::endl;//20
+	std::cout << *(it - 1).base() << std::endl;//25
 
 	std::cout << "OK" << std::endl;
 }
@@ -498,31 +451,70 @@ void testRite2() {
 	const int size = 5;
 	ft::vector<int> vct(size);
 	ft::vector<int>::reverse_iterator it = vct.rbegin();
-//	ft::vector<int>::const_reverse_iterator ite = vct.rbegin();
+	ft::vector<int>::const_reverse_iterator ite = vct.rbegin();
 
 	for (int i = 0; i < size; ++i)
 		it[i] = (size - i) * 5;
 
+	std::cout << *it << std::endl;
 	it = it + 5;
 	it = 1 + it;
 	it = it - 4;
-	std::cout << *(it += 2) << std::endl;
-//	std::cout << *(it -= 1) << std::endl;
-//
-//	*(it -= 2) = 42;
-//	*(it += 2) = 21;
-//
-//	std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
-//
-//	std::cout << "(it == const_it): " << (ite == it) << std::endl;
-//	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
-//	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
-//
-//	printTest(vct);
-//	std::cout << *it << std::endl;
+	std::cout << *it << std::endl;
+	std::cout << *(it += 2) << std::endl; // 5
+	std::cout << *(it -= 1) << std::endl;
+
+	*(it -= 2) = 42;
+	*(it += 2) = 21;
+
+	std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
+
+	std::cout << "(it == const_it): " << (ite == it) << std::endl;
+	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+
+	printTest(vct);
+	std::cout << *it << std::endl;
 }
 
+void testArrow() {
+	const int size = 5;
+	ft::vector<foo<int> > vct(size);
+	ft::vector<foo<int> >::reverse_iterator it(vct.rbegin());
+	ft::vector<foo<int> >::const_reverse_iterator ite(vct.rend());
+
+	for (int i = 1; it != ite; ++i)
+		*it++ = (i * 7);
+	printTest(vct);
+
+	it = vct.rbegin();
+	ite = vct.rbegin();
+
+	std::cout << *(++ite) << std::endl;
+	std::cout << *(ite++) << std::endl;
+	std::cout << *ite++ << std::endl;
+	std::cout << *++ite << std::endl;
+
+	it->m();
+	ite->m();
+
+	std::cout << *(++it) << std::endl;
+	std::cout << *(it++) << std::endl;
+	std::cout << *it++ << std::endl;
+	std::cout << *++it << std::endl;
+
+	std::cout << *(--ite) << std::endl;
+	std::cout << *(ite--) << std::endl;
+	std::cout << *--ite << std::endl;
+	std::cout << *ite-- << std::endl;
+
+	(*it).m();
+	(*ite).m();
+
+	std::cout << *(--it) << std::endl;
+	std::cout << *(it--) << std::endl;
+	std::cout << *it-- << std::endl;
+	std::cout << *--it << std::endl;
+}
 
 #endif
-
-

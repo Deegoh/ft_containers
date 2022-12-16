@@ -180,9 +180,13 @@ namespace ft {
 //		returns an iterator to the end
 		const_iterator end() const {return const_iterator(_c + _size);}
 
-		reverse_iterator rbegin() {return reverse_iterator(_c + _size - 1);}
-		const_reverse_iterator rbegin() const {return const_reverse_iterator(_c + _size - 1);}
+//		returns a reverse iterator to the beginning
+		reverse_iterator rbegin() {return reverse_iterator(_c + _size);}
+//		returns a reverse iterator to the beginning
+		const_reverse_iterator rbegin() const {return const_reverse_iterator(_c + _size);}
+//		returns a reverse iterator to the end
 		reverse_iterator rend() {return reverse_iterator(_c);}
+//		returns a reverse iterator to the end
 		const_reverse_iterator rend() const {return const_reverse_iterator(_c);}
 
 //		Capacity
@@ -349,17 +353,6 @@ namespace ft {
 			return (pos);
 		}
 
-////		TODO erase
-//		iterator erase(const_iterator pos) {
-//			if (pos == end())
-//				return (const_iterator (_c + _size));
-//			if (pos + 1 != end())
-//				std::copy(pos + 1, end(), pos);
-//			_size--;
-//			_alloc.destroy(_c + _size);
-//			return (iterator (_c + _size));
-//		}
-
 //		erases elements
 		iterator erase(iterator first, iterator last) {
 			if (first == last)
@@ -370,18 +363,8 @@ namespace ft {
 				_alloc.destroy(_c + (it - begin()));
 			}
 			_size = _size - diff;
-			return (last);
+			return (last - diff);
 		}
-
-//		iterator erase(const_iterator first, const_iterator last) {
-//			size_t diff = ft::distance(first, last);
-//			iterator it = std::copy(last, end(), first);
-//			for (; it != end() ; it++) {
-//				_alloc.destroy(_c + (it - begin()));
-//			}
-//			_size = _size - diff;
-//			return (iterator(_c + _size));
-//		}
 
 //		Add element at the end (public member function)
 		void push_back(const value_type& value) {
