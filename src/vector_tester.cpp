@@ -1,8 +1,8 @@
 #include "vector_tester.hpp"
 #include <list>
 
-void testVector() {
-	srand(10);
+void testVector(int count) {
+//	srand(10);
 	ft::vector<std::string> str_vec;
 	ft::vector<int> int_vec;
 	ft::vector<Buffer> buffer_vec;
@@ -14,7 +14,7 @@ void testVector() {
 	testMaxSize(int_vec, "int");
 
 	std::cout << "Push_back" << std::endl;
-	for (int i = 0; i < COUNT; i++)
+	for (int i = 0; i < count; i++)
 	{
 		//string
 		char c = i + 'a';
@@ -27,9 +27,9 @@ void testVector() {
 	printfComp("size", buffer_vec.size());
 	printfComp("capacity", buffer_vec.capacity());
 
-	for (int i = 0; i < COUNT; i++)
+	for (int i = 0; i < count; i++)
 	{
-		const int idx = rand() % COUNT;
+		const int idx = rand() % count;
 		buffer_vec[idx].idx = 5;
 	}
 

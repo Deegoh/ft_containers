@@ -1,14 +1,24 @@
 #ifndef VECTOR_TESTER_HPP
 # define VECTOR_TESTER_HPP
 
-#include "vector.hpp"
+#ifndef STD
+	#define STD 0
+#endif
+
+#if STD //CREATE A REAL STL EXAMPLE
+	#include <vector>
+	namespace ft = std;
+#else
+	#include "vector.hpp"
+#endif
+
 #include "base.hpp"
+
 #include <string>
 #include <sstream>
 #include <cstdlib>
 
 #define BUFFER_SIZE 4096
-#define COUNT (5)
 
 struct Buffer
 {
@@ -36,19 +46,19 @@ void printTest(T &vec);
 
 void testAssign();
 void testResize();
-void testErase(void);
+void testErase();
 void testCopy();
 void testInsert();
 void prepost_incdec(ft::vector<int> &vct);
 void testBidirect();
 void testIte();
 void testIteArrow();
-void testRelOp(void);
+void testRelOp();
 void testRiteConstruct();
 void testRite();
 void testRite2();
 void testArrow();
-void testVector();
+void testVector(int count);
 
 
 #endif
