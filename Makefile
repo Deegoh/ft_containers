@@ -11,7 +11,8 @@ CFLAGS += -std=c++98 -pedantic
 CFLAGS += -g3 -fsanitize=address
 
 SRC_DIR = src/
-_SRC =	main.cpp
+_SRC =	main.cpp\
+		vector_tester.cpp
 #		pdf.cpp
 
 SRC = $(addprefix $(SRC_DIR), $(_SRC))
@@ -22,7 +23,9 @@ HEADER=	vector.hpp\
 		iterator.hpp\
 		random_access_iterator.hpp\
 		reverse_iterator.hpp\
-		base.hpp
+		base.hpp\
+		vector_tester.hpp\
+		map.hpp
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
