@@ -36,6 +36,14 @@ namespace ft {
 		size_type _size;
 		size_type _capacity;
 
+		//		Destroy and deallocate
+		void cleanPointer() {
+			for (size_type i = 0; i < _size; ++i) {
+				_alloc.destroy(_c + i);
+			}
+			_alloc.deallocate(_c, _capacity);
+		}
+
 	public:
 
 //		Constructor
@@ -173,11 +181,11 @@ namespace ft {
 //		Iterators
 //		returns an iterator to the beginning
 		iterator begin() {return iterator(_c);}
-//		returns an iterator to the beginning
+//		returns an const iterator to the beginning
 		const_iterator begin() const {return const_iterator(_c);}
 //		returns an iterator to the end
 		iterator end() {return iterator(_c + _size);}
-//		returns an iterator to the end
+//		returns an const iterator to the end
 		const_iterator end() const {return const_iterator(_c + _size);}
 
 //		returns a reverse iterator to the beginning
@@ -226,14 +234,6 @@ namespace ft {
 		size_type capacity() const {return (_capacity);}
 
 //		Modifiers
-
-//		Destroy and deallocate
-		void cleanPointer() {
-			for (size_type i = 0; i < _size; ++i) {
-				_alloc.destroy(_c + i);
-			}
-			_alloc.deallocate(_c, _capacity);
-		}
 
 //		Clear content (public member function)
 		void clear() {

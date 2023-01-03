@@ -20,7 +20,6 @@ namespace ft {
 		};
 
 		typedef std::allocator<void>::pointer void_pointer;
-
 		struct rb_tree_node {
 			color_type color_field;
 			void_pointer parent_link;
@@ -35,13 +34,13 @@ namespace ft {
 	public:
 		typedef Key key_type;
 		typedef Value value_type;
-		typedef typename std::allocator<Value>::pointer pointer;
-		typedef typename std::allocator<Value>::reference reference;
-		typedef typename std::allocator<Value>::const_reference const_reference;
-		typedef typename std::allocator<rb_tree_node> rb_tree_node_allocator_type;
-		typedef typename std::allocator<rb_tree_node>::pointer link_type;
-		typedef typename std::allocator<rb_tree_node>::size_type size_type;
-		typedef typename std::allocator<rb_tree_node>::difference_type difference_type;
+		typedef typename std::allocator<Value>::pointer					pointer;
+		typedef typename std::allocator<Value>::reference				reference;
+		typedef typename std::allocator<Value>::const_reference			const_reference;
+		typedef typename std::allocator<rb_tree_node>					rb_tree_node_allocator_type;
+		typedef typename std::allocator<rb_tree_node>::pointer			link_type;
+		typedef typename std::allocator<rb_tree_node>::size_type		size_type;
+		typedef typename std::allocator<rb_tree_node>::difference_type	difference_type;
 
 	protected:
 		size_type buffer_size() {
@@ -225,8 +224,7 @@ namespace ft {
 			}
 		};
 
-		class const_iterator
-				: public ft::random_access_iterator<Value, difference_type> {
+		class const_iterator : public ft::random_access_iterator<Value, difference_type> {
 			//		friend class rb_tree<Key, Value, KeyOfValue, Compare>;
 			//		friend class iterator;
 			/*
