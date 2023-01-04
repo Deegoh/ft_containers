@@ -2,6 +2,7 @@
 # define RB_TREE_HPP
 
 //https://web.archive.org/web/20160731195009/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/TREE.H
+//https://cs.brown.edu/people/jwicks/libstdc++/html_user/stl__tree_8h-source.html
 # include <memory>
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
@@ -12,8 +13,13 @@ namespace ft {
 
 # define NIL __nul
 
-	template<class Key, class Value, class KeyOfValue, class Compare>
+	template<class Key,
+			 class Value,
+			 class KeyOfValue,
+			 class Compare>
 	class rb_tree {
+
+//	node base
 	protected:
 		enum color_type {
 			red, black
@@ -53,8 +59,8 @@ namespace ft {
 		};
 
 	public:
-		typedef typename std::allocator<rb_tree_node_buffer> buffer_allocator_type;
-		typedef typename std::allocator<rb_tree_node_buffer>::pointer buffer_pointer;
+		typedef typename std::allocator<rb_tree_node_buffer>			buffer_allocator_type;
+		typedef typename std::allocator<rb_tree_node_buffer>::pointer	buffer_pointer;
 
 	protected:
 		static std::allocator<rb_tree_node_buffer> buffer_allocator;
@@ -225,8 +231,8 @@ namespace ft {
 		};
 
 		class const_iterator : public ft::random_access_iterator<Value, difference_type> {
-			//		friend class rb_tree<Key, Value, KeyOfValue, Compare>;
-			//		friend class iterator;
+			friend class rb_tree<Key, Value, KeyOfValue, Compare>;
+			friend class iterator;
 			/*
 				friend bool operator==(const const_iterator& x, const const_iterator& y) {
 					return x.node == y.node;
@@ -510,8 +516,8 @@ namespace ft {
 		while (buffer_list) {
 			buffer_pointer tmp = buffer_list;
 			buffer_list = (buffer_pointer) (buffer_list->next_buffer);
-			rb_tree_node_allocator.deallocate(tmp->buffer);
-			buffer_allocator.deallocate(tmp);
+			rb_tree_node_allocator.deallocate(tmp->buffer, 1);
+			buffer_allocator.deallocate(tmp, 1);
 		}
 	}
 

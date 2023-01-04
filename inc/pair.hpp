@@ -2,6 +2,18 @@
 #define PAIR_HPP
 
 namespace ft {
+
+	//	select1st
+	template<typename Pair>
+	struct select1st : public std::unary_function<Pair, typename Pair::first_type>
+	{
+		typename Pair::first_type&
+		operator()(Pair& x) const { return x.first; }
+
+		const typename Pair::first_type&
+		operator()(const Pair& x) const { return x.first; }
+	};
+
 	template <class T1, class T2>
 	struct pair {
 		T1 first;
