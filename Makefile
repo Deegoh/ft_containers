@@ -25,9 +25,11 @@ HEADER=	vector.hpp\
 		reverse_iterator.hpp\
 		base.hpp\
 		vector_tester.hpp\
-		map.hpp\
 		pair.hpp\
-		rb_tree.hpp
+		test_map.h\
+		test_tree.h
+#		map.hpp\
+#		rb_tree.hpp
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))

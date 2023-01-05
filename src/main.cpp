@@ -13,7 +13,8 @@
 	#include <utility>
 	namespace ft = std;
 #else
-	#include <map.hpp>
+//	#include <map.hpp>
+	#include <test_map.h>
 //# include <stack.hpp>
 	#include <vector.hpp>
 #endif
@@ -55,30 +56,30 @@ void testCopyMap() {
 		for (unsigned int i = 0; i < lst_size; ++i)
 			lst.push_back(ft::pair<const int, int>(lst_size - i, i));
 		ft::map<const int, int> mp(lst.begin(), lst.end());
-//		ft::map<const int, int>::iterator it = mp.begin(), ite = mp.end();
-//
-//		ft::map<const int, int> mp_range(it, --(--ite));
-//		for (int i = 0; it != ite; ++it)
-//			it->second = ++i * 5;
-//
-//		it = mp.begin(); ite = --(--mp.end());
-//		ft::map<const int, int> mp_copy(mp);
-//		for (int i = 0; it != ite; ++it)
-//			it->second = ++i * 7;
-//
-//		std::cout << "\t-- PART ONE --" << std::endl;
-//		printSize(mp);
-//		printSize(mp_range);
-//		printSize(mp_copy);
-//
-//		mp = mp_copy;
-//		mp_copy = mp_range;
-//		mp_range.clear();
-//
-//		std::cout << "\t-- PART TWO --" << std::endl;
-//		printSize(mp);
-//		printSize(mp_range);
-//		printSize(mp_copy);
+		ft::map<const int, int>::iterator it = mp.begin(), ite = mp.end();
+
+		ft::map<const int, int> mp_range(it, --(--ite));
+		for (int i = 0; it != ite; ++it)
+			it->second = ++i * 5;
+
+		it = mp.begin(); ite = --(--mp.end());
+		ft::map<const int, int> mp_copy(mp);
+		for (int i = 0; it != ite; ++it)
+			it->second = ++i * 7;
+
+		std::cout << "\t-- PART ONE --" << std::endl;
+		printSize(mp);
+		printSize(mp_range);
+		printSize(mp_copy);
+
+		mp = mp_copy;
+		mp_copy = mp_range;
+		mp_range.clear();
+
+		std::cout << "\t-- PART TWO --" << std::endl;
+		printSize(mp);
+		printSize(mp_range);
+		printSize(mp_copy);
 }
 
 void testMap(int count) {

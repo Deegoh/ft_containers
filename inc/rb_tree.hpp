@@ -19,7 +19,7 @@ namespace ft {
 			 class Compare>
 	class rb_tree {
 
-//	node base
+//	node base:
 	protected:
 		enum color_type {
 			red, black
@@ -152,14 +152,12 @@ namespace ft {
 		}
 
 	public:
+//	iterator:
 		class iterator;
-
-		//	friend iterator;
 		class const_iterator;
-
-		//	friend const_iterator;
-		class iterator
-				: public ft::random_access_iterator<Value, difference_type> {
+//			friend iterator;
+//			friend const_iterator;
+		class iterator : public ft::random_access_iterator<Value, difference_type> {
 			friend class rb_tree<Key, Value, KeyOfValue, Compare>;
 
 			friend class const_iterator;
@@ -338,7 +336,6 @@ namespace ft {
 	public:
 
 		// allocation/deallocation
-
 		explicit rb_tree(const Compare &comp = Compare(), bool always = true)
 				: node_count(0), key_compare(comp), insert_always(always) {
 			init();
@@ -644,8 +641,7 @@ namespace ft {
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
 	typename rb_tree<Key, Value, KeyOfValue, Compare>::iterator
-	rb_tree<Key, Value, KeyOfValue, Compare>::insert(iterator position,
-													 const Value &v) {
+	rb_tree<Key, Value, KeyOfValue, Compare>::insert(iterator position, const Value &v) {
 		if (position == iterator(begin()))
 		{
 			if (size() > 0 && key_compare(KeyOfValue()(v), key(position.node)))
@@ -678,15 +674,15 @@ namespace ft {
 	}
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
-	void rb_tree<Key, Value, KeyOfValue, Compare>::insert(iterator first,
-														  iterator last) {
-		while (first != last) insert(*first++);
+	void rb_tree<Key, Value, KeyOfValue, Compare>::insert(iterator first, iterator last) {
+		while (first != last)
+			insert(*first++);
 	}
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
-	void rb_tree<Key, Value, KeyOfValue, Compare>::insert(const Value *first,
-														  const Value *last) {
-		while (first != last) insert(*first++);
+	void rb_tree<Key, Value, KeyOfValue, Compare>::insert(const Value *first, const Value *last) {
+		while (first != last)
+			insert(*first++);
 	}
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
@@ -850,22 +846,23 @@ namespace ft {
 	}
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
-	void rb_tree<Key, Value, KeyOfValue, Compare>::erase(iterator first,
-														 iterator last) {
+	void rb_tree<Key, Value, KeyOfValue, Compare>::erase(iterator first, iterator last) {
 		if (first == begin() && last == end() && node_count != 0) {
 			__erase(root());
 			leftmost() = header;
 			root() = NIL;
 			rightmost() = header;
 			node_count = 0;
-		} else
-			while (first != last) erase(first++);
+		}
+		else
+			while (first != last)
+				erase(first++);
 	}
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
-	void rb_tree<Key, Value, KeyOfValue, Compare>::erase(const Key *first,
-														 const Key *last) {
-		while (first != last) erase(*first++);
+	void rb_tree<Key, Value, KeyOfValue, Compare>::erase(const Key *first, const Key *last) {
+		while (first != last)
+			erase(*first++);
 	}
 
 	template<class Key, class Value, class KeyOfValue, class Compare>
