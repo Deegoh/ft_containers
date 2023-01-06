@@ -886,7 +886,7 @@ namespace ft {
 					 typename _Compare, typename _Alloc>
 	inline bool operator<(const rb_tree<_Key,Value,_KeyOfValue,_Compare,_Alloc>& __x,
 			const rb_tree<_Key,Value,_KeyOfValue,_Compare,_Alloc>& __y) {
-		return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+		return ft::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
 	}
 
 	template<typename _Key, typename Value, typename _KeyOfValue,

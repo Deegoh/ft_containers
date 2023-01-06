@@ -26,10 +26,10 @@ HEADER=	vector.hpp\
 		base.hpp\
 		vector_tester.hpp\
 		pair.hpp\
-		test_map.h\
-		test_tree.h
-#		map.hpp\
-#		rb_tree.hpp
+		map.hpp\
+		rb_tree.hpp
+#		test_map.h\
+#		test_tree.h
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))

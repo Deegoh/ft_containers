@@ -13,8 +13,8 @@
 	#include <utility>
 	namespace ft = std;
 #else
-//	#include <map.hpp>
-	#include <test_map.h>
+	#include <map.hpp>
+//	#include <test_map.h>
 //# include <stack.hpp>
 	#include <vector.hpp>
 #endif
@@ -25,65 +25,65 @@
 //#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 
-template <typename T>
-std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
-{
-	o << "key: " << iterator->first << " | value: " << iterator->second;
-	if (nl)
-		o << std::endl;
-	return ("");
-}
-
-template<typename T_MAP>
-void	printSize(T_MAP const &mp, bool print_content = 1)
-{
-	std::cout << "size: " << mp.size() << std::endl;
-	std::cout << "max_size: " << mp.max_size() << std::endl;
-	if (print_content)
-	{
-		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
-		std::cout << std::endl << "Content is:" << std::endl;
-		for (; it != ite; ++it)
-			std::cout << "- " << printPair(it, false) << std::endl;
-	}
-	std::cout << "###############################################" << std::endl;
-}
-
-void testCopyMap() {
-
-		std::list<ft::pair<const int, int> > lst;
-		unsigned int lst_size = 7;
-		for (unsigned int i = 0; i < lst_size; ++i)
-			lst.push_back(ft::pair<const int, int>(lst_size - i, i));
-		ft::map<const int, int> mp(lst.begin(), lst.end());
-		ft::map<const int, int>::iterator it = mp.begin(), ite = mp.end();
-
-		ft::map<const int, int> mp_range(it, --(--ite));
-		for (int i = 0; it != ite; ++it)
-			it->second = ++i * 5;
-
-		it = mp.begin(); ite = --(--mp.end());
-		ft::map<const int, int> mp_copy(mp);
-		for (int i = 0; it != ite; ++it)
-			it->second = ++i * 7;
-
-		std::cout << "\t-- PART ONE --" << std::endl;
-		printSize(mp);
-		printSize(mp_range);
-		printSize(mp_copy);
-
-		mp = mp_copy;
-		mp_copy = mp_range;
-		mp_range.clear();
-
-		std::cout << "\t-- PART TWO --" << std::endl;
-		printSize(mp);
-		printSize(mp_range);
-		printSize(mp_copy);
-}
+//template <typename T>
+//std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
+//{
+//	o << "key: " << iterator->first << " | value: " << iterator->second;
+//	if (nl)
+//		o << std::endl;
+//	return ("");
+//}
+//
+//template<typename T_MAP>
+//void	printSize(T_MAP const &mp, bool print_content = 1)
+//{
+//	std::cout << "size: " << mp.size() << std::endl;
+//	std::cout << "max_size: " << mp.max_size() << std::endl;
+//	if (print_content)
+//	{
+//		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
+//		std::cout << std::endl << "Content is:" << std::endl;
+//		for (; it != ite; ++it)
+//			std::cout << "- " << printPair(it, false) << std::endl;
+//	}
+//	std::cout << "###############################################" << std::endl;
+//}
+//
+//void testCopyMap() {
+//
+//		std::list<ft::pair<const int, int> > lst;
+//		unsigned int lst_size = 7;
+//		for (unsigned int i = 0; i < lst_size; ++i)
+//			lst.push_back(ft::pair<const int, int>(lst_size - i, i));
+//		ft::map<const int, int> mp(lst.begin(), lst.end());
+//		ft::map<const int, int>::iterator it = mp.begin(), ite = mp.end();
+//
+//		ft::map<const int, int> mp_range(it, --(--ite));
+//		for (int i = 0; it != ite; ++it)
+//			it->second = ++i * 5;
+//
+//		it = mp.begin(); ite = --(--mp.end());
+//		ft::map<const int, int> mp_copy(mp);
+//		for (int i = 0; it != ite; ++it)
+//			it->second = ++i * 7;
+//
+//		std::cout << "\t-- PART ONE --" << std::endl;
+//		printSize(mp);
+//		printSize(mp_range);
+//		printSize(mp_copy);
+//
+//		mp = mp_copy;
+//		mp_copy = mp_range;
+//		mp_range.clear();
+//
+//		std::cout << "\t-- PART TWO --" << std::endl;
+//		printSize(mp);
+//		printSize(mp_range);
+//		printSize(mp_copy);
+//}
 
 void testMap(int count) {
-	testCopyMap();
+//	testCopyMap();
 //	ft::map<int, int> map_int;
 //
 //	for (int i = 0; i < count; ++i)
@@ -122,5 +122,13 @@ int main() {
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
 	srand(10);
 //	testVector(COUNT);
-	testMap(COUNT);
+//	testMap(COUNT);
+	ft::rb_node<int> test;
+	test.value = 10;
+	std::cout << test.value << std::endl;
+
+	ft::rb_tree<int> tree;
+	tree._root = test;
+
+	std::cout << tree._root->value << std::endl;
 }

@@ -66,7 +66,8 @@
 
 #include "pair.hpp"
 #include <functional>
-#include "test_tree.h"
+//#include "test_tree.h"
+#include "tree_hajar.hpp"
 //#include <concept_check.h>
 
 namespace ft
@@ -118,13 +119,13 @@ namespace ft
 		: comp(_c) { }
 
 			public:
-		bool operator()(const value_type& x, const value_type& y) const
-		{ return comp(x.first, y.first); }
-			};
+		bool operator()(const value_type& x, const value_type& y) const {
+			return comp(x.first, y.first); }
+		};
 
 		private:
 			/// @if maint	This turns a red-black tree into a [multi]map.	@endif
-			typedef rb_tree<key_type, value_type, ft::select1st<value_type>, keyCompare, Alloc> rep_type;
+			typedef Tree<key_type> rep_type;
 			/// @if maint	The actual tree structure.	@endif
 			rep_type _tree;
 
@@ -136,12 +137,10 @@ namespace ft
 			typedef typename Alloc::reference								 reference;
 			typedef typename Alloc::const_reference					 const_reference;
 			typedef typename rep_type::allocator_type				 allocator_type;
-			typedef typename rep_type::iterator							 iterator;
-			typedef typename rep_type::const_iterator				 const_iterator;
-			typedef typename rep_type::size_type							size_type;
-			typedef typename rep_type::difference_type				difference_type;
-			typedef typename rep_type::reverse_iterator			 reverse_iterator;
-			typedef typename rep_type::const_reverse_iterator const_reverse_iterator;
+			typedef typename ft::TreeIterators<value_type, keyCompare>		iterator;
+			typedef typename ft::TreeIterators<value_type, keyCompare, true>	const_iterator;
+//			typedef typename ft::TreeIterators<value_type, keyCompare>::reverse_iterator	reverse_iterator;
+//			typedef typename ft::TreeIterators<value_type, keyCompare, true>::const_reverse_iterator const_reverse_iterator;
 
 			// [23.3.1.1] construct/copy/destroy
 			// (getAllocator() is normally listed in this section, but seems to have
@@ -150,15 +149,15 @@ namespace ft
 			 *	@brief	Default constructor creates no elements.
 			 */
 			map()
-			: _tree(Compare(), allocator_type()) { }
+			: _tree() { }
 
 			// for some reason this was made a separate function
 			/**
 			 *	@brief	Default constructor creates no elements.
 			 */
-			explicit
-			map(const Compare& comp, const allocator_type& alloc = allocator_type())
-			: _tree(comp, alloc) { }
+//			explicit
+//			map(const Compare& comp, const allocator_type& alloc = allocator_type())
+//			: _tree(comp, alloc) { }
 
 			/**
 			 *	@brief	Map copy constructor.
@@ -180,9 +179,10 @@ namespace ft
 			 *	otherwise (where N is distance(first,last)).
 			 */
 			template <typename InputIt>
-				map(InputIt first, InputIt last)
-		: _tree(Compare(), allocator_type())
-				{ _tree.insert_unique(first, last); }
+			map(InputIt first, InputIt last)
+			: _tree() {
+				_tree.insert_unique(first, last);
+			}
 
 			/**
 			 *	@brief	Builds a %map from a range.
@@ -198,7 +198,7 @@ namespace ft
 			template <typename InputIt>
 				map(InputIt first, InputIt last,
 				const Compare& comp, const allocator_type& alloc = allocator_type())
-		: _tree(comp, alloc)
+		: _tree()
 				{ _tree.insert_unique(first, last); }
 
 			// FIXME There is no dtor declared, but we should have something generated
@@ -270,36 +270,36 @@ namespace ft
 			 *	the %map.	Iteration is done in descending order according to the
 			 *	keys.
 			 */
-			reverse_iterator
-			rbegin()
-			{ return _tree.rbegin(); }
+//			reverse_iterator
+//			rbegin()
+//			{ return _tree.rbegin(); }
 
 			/**
 			 *	Returns a read-only (constant) reverse iterator that points to the
 			 *	last pair in the %map.	Iteration is done in descending order
 			 *	according to the keys.
 			 */
-			const_reverse_iterator
-			rbegin() const
-			{ return _tree.rbegin(); }
+//			const_reverse_iterator
+//			rbegin() const
+//			{ return _tree.rbegin(); }
 
 			/**
 			 *	Returns a read/write reverse iterator that points to one before the
 			 *	first pair in the %map.	Iteration is done in descending order
 			 *	according to the keys.
 			 */
-			reverse_iterator
-			rend()
-			{ return _tree.rend(); }
+//			reverse_iterator
+//			rend()
+//			{ return _tree.rend(); }
 
 			/**
 			 *	Returns a read-only (constant) reverse iterator that points to one
 			 *	before the first pair in the %map.	Iteration is done in descending
 			 *	order according to the keys.
 			 */
-			const_reverse_iterator
-			rend() const
-			{ return _tree.rend(); }
+//			const_reverse_iterator
+//			rend() const
+//			{ return _tree.rend(); }
 
 			// capacity
 			/** Returns true if the %map is empty.	(Thus begin() would equal
@@ -310,12 +310,11 @@ namespace ft
 			{ return _tree.empty(); }
 
 			/** Returns the size of the %map.	*/
-			size_type
-			size() const
+			size_t size() const
 			{ return _tree.size(); }
 
 			/** Returns the maximum size of the %map.	*/
-			size_type
+			size_t
 			max_size() const
 			{ return _tree.max_size(); }
 
@@ -425,7 +424,7 @@ namespace ft
 			 *	the element is itself a pointer, the pointed-to memory is not touched
 			 *	in any way.	Managing the pointer is the user's responsibilty.
 			 */
-			size_type
+			size_t
 			erase(const key_type& x)
 			{ return _tree.erase(x); }
 
@@ -525,7 +524,7 @@ namespace ft
 			 *	This function only makes sense for multimaps; for map the result will
 			 *	either be 0 (not present) or 1 (present).
 			 */
-			size_type
+			size_t
 			count(const key_type& x) const
 			{ return _tree.find(x) == _tree.end() ? 0 : 1; }
 
