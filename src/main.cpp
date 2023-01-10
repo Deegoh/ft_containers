@@ -84,11 +84,37 @@
 
 void testMap(int count) {
 //	testCopyMap();
-//	ft::map<int, int> map_int;
+	ft::map<int, int> map_int;
+	ft::map<int, int>::iterator it;
 //
-//	for (int i = 0; i < count; ++i)
+	for (int i = 0; i < count; ++i)
+	{
+//		template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc>
+//		pair<typename _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator, bool>
+//		_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique(const _Val& __v) {
+//			typedef pair<iterator, bool> _Res;
+//			pair<_Base_ptr, _Base_ptr> __res = _M_get_insert_unique_pos(_KeyOfValue()(__v));
+//			if (__res.second)
+//			{
+//				_Alloc_node __an(*this);
+//				return _Res(_M_insert_(__res.first, __res.second,
+//									   _GLIBCXX_FORWARD(_Arg, __v), __an),
+//							true);
+//			}
+//			return _Res(iterator(__res.first), false);
+//		}
+
+
+//		std::pair<iterator, bool>
+//		insert(const value_type& __x)
+//		{ return _M_t._M_insert_unique(__x); }
+		map_int.insert(ft::make_pair(i, i * count));
+//		map_int.insert(std::make_pair(i, i * count));
+	}
+//
+//	for(it = map_int.begin(); it != map_int.end(); ++it)
 //	{
-//		map_int.insert(ft::make_pair(rand(), rand()));
+//		std::cout << "first[" << it->first << "] second[" << it->second << "]" << "\n";
 //	}
 //
 //	int sum = 0;
@@ -110,7 +136,6 @@ void testMap(int count) {
 //			std::cout << it->first << "\n";
 //		}
 //	}
-	(void)count;
 }
 
 int main() {
@@ -122,13 +147,13 @@ int main() {
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
 	srand(10);
 //	testVector(COUNT);
-//	testMap(COUNT);
-	ft::rb_node<int> test;
-	test.value = 10;
-	std::cout << test.value << std::endl;
+	testMap(COUNT);
+//	ft::rb_tree<std::string, int> test;
+//	test._root->value = 10;
+//	std::cout << test._root->value << std::endl;
 
-	ft::rb_tree<int> tree;
-	tree._root = test;
+//	ft::rb_tree<std::string, int> tree;
+//	tree = test;
 
-	std::cout << tree._root->value << std::endl;
+//	std::cout << tree._root->value << std::endl;
 }

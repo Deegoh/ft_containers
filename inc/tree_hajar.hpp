@@ -9,9 +9,8 @@
 #include <memory>
 
 //Include fts
-//#include "utility.hpp"
+#include "utility.hpp"
 #include "iterator.hpp"
-#include "random_access_iterator.hpp"
 
 // https://brilliant.org/wiki/red-black-tree/
 // https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
@@ -76,27 +75,16 @@ namespace ft {
 
 	}; // End of Node class
 
-	template<class T, class Compare = std::less<T>, bool isConst = false>
+	template<class T, class Compare = ft::less<T>, bool isConst = false>
 	class TreeIterators {
 	public:
 		typedef	T															iterator_type;
-		typedef	typename ft::random_access_iterator<iterator_type>::value_type			value_type;
-		typedef	typename ft::random_access_iterator<iterator_type>::difference_type	difference_type;
-		typedef	typename ft::random_access_iterator<iterator_type>::pointer			pointer;
-		typedef	typename ft::random_access_iterator<iterator_type>::reference			reference;
-		typedef	typename ft::random_access_iterator<iterator_type>::iterator_category	iterator_category;
+		typedef	typename iterator_traits<iterator_type>::value_type			value_type;
+		typedef	typename iterator_traits<iterator_type>::difference_type	difference_type;
+		typedef	typename iterator_traits<iterator_type>::pointer			pointer;
+		typedef	typename iterator_traits<iterator_type>::reference			reference;
+		typedef	typename iterator_traits<iterator_type>::iterator_category	iterator_category;
 		typedef	Node<value_type>											*node_pointer;
-
-//		typedef Tp	value_type;
-//		typedef Tp&	reference;
-//		typedef Tp*	pointer;
-//
-//		typedef bidirectional_iterator_tag	iterator_category;
-//		typedef ptrdiff_t					difference_type;
-//
-//		typedef rb_tree_iterator<Tp>		_Self;
-//		typedef rb_tree_node_base::base_ptr	base_ptr;
-//		typedef rb_tree_node<Tp>*			link_type;
 
 	protected:
 		node_pointer	ptr;

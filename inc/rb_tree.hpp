@@ -19,73 +19,309 @@ namespace ft {
 
 	// node
 	template <class T>
-	class rb_node {
-	public:
+	struct rb_node {
 		typedef T								value_type;
 		typedef std::allocator<void>::pointer	void_pointer;
 
-		color_type color;
-		void_pointer parent_link;
-		void_pointer left_link;
-		void_pointer right_link;
 		value_type value;
-
-	public:
-		rb_node() :
-			color(red),
-			parent_link(NIL),
-			left_link(NIL),
-			right_link(NIL),
-			value(0) {}
-
-		~rb_node() {}
-
-		rb_node(const rb_node& src) {
-			*this = src;
-		}
-
-		rb_node& operator=(const rb_node& rhs) {
-			if (this != rhs)
-			{
-				value = rhs.value;
-				color = rhs.color;
-				parent_link = rhs.parent_link;
-				left_link = rhs.left_link;
-				right_link = rhs.right_link;
-			}
-			return(*this);
-		}
-
+		color_type color;
+		void_pointer parent;
+		void_pointer left;
+		void_pointer right;
 	};
 	//end node
 
-//	template < class Key, // map::key_type
-//	class T, // map::mapped_type
-//	class Compare = less<Key>, // map::key_compare
-//	class Alloc = allocator<pair<const Key,T> > // map::allocator_type>
-//	class map;
-	template<class T,
-			class Compare = std::less<rb_node<T> >,
-			class Alloc = std::allocator<rb_node<T> > >
+	// rb_tree
+	template<
+			typename Key, //map::key_type
+			typename T, //map::mapped_type
+			typename Compare = std::less<Key>, // map::key_compare
+			typename Alloc = std::allocator<rb_node<T> > > // map::allocator_type
 	class rb_tree {
 	public:
+		typedef	Key			key_type;
 		typedef	T			value_type;
-		typedef Alloc		allocator_type;
-		typedef	size_t		size_type;
 		typedef	rb_node<T>	node_type;
 		typedef node_type*	node_pointer;
 
-//	private:
+		typedef Alloc		alloc_type;
+		typedef	Compare		comp_type;
+		typedef	size_t		size_type;
+
+	private:
 		node_pointer _root;
-		allocator_type _alloc;
+		alloc_type _alloc;
+		size_type _size;
+		comp_type _comp;
 
 	public:
-		rb_tree(const allocator_type alloc = allocator_type()) :
-			_root(NIL),
-			_alloc(alloc) {}
+//		iterator
+		template<typename T1>
+		class iterator {
+		public:
+			typedef T1				itr_type;
+			typedef std::ptrdiff_t	difference_type;
+			typedef T1*				it_pointer;
+			typedef T1&				it_reference;
 
+		private:
+			node_pointer _node; // current node
+
+		public:
+			iterator() : _node(NIL) {}
+			iterator(node_pointer ptr) : _node(ptr) {}
+
+			iterator(const iterator& src) {
+				*this = src;
+			}
+
+			iterator& operator=(const iterator& rhs) {
+				if (this != &rhs) {
+					_node = rhs.nodePtr;
+				}
+				return *this;
+			}
+
+			~iterator() {}
+
+			operator iterator<const T1>() const {
+				return (iterator<const T1>(this->_node));
+			}
+
+			bool operator==(const iterator &rhs) const {
+				return (_node == rhs._node);
+			}
+
+			bool operator!=(const iterator &rhs) const {
+				return (_node != rhs._node);
+			}
+
+			it_reference operator*() const {
+				if (_node == NULL)
+					throw std::exception();
+				return (_node->value);
+			}
+
+			it_reference operator*() {
+				if (_node == NULL)
+					throw std::exception();
+				return (_node->value);
+			}
+
+			it_pointer operator->() {
+				return &_node->value;
+			}
+			it_pointer operator->() const {
+				return &_node->value;
+			}
+
+			it_reference operator++() {
+				if (_node->right)
+				{
+					_node = _node->right;
+					while (_node->left)
+						_node = _node->left;
+				}
+				else
+				{
+					node_pointer tmp = _node->parent;
+					while (_node == tmp->parent)
+					{
+						_node = tmp;
+						tmp = tmp->parent;
+					}
+					if (_node->right != tmp)
+						_node = tmp;
+				}
+				return *this;
+			}
+
+			iterator operator++(int) {
+				iterator tmp = *this;
+				++*this;
+				return tmp;
+			}
+
+			it_reference operator--() {
+				if (_node->color == red && _node->parent && _node->parent->parent == _node)
+					_node = _node->right; // return rightmost
+				else if (_node->left != NIL)
+				{
+					node_pointer tmp = _node->left;
+					while (tmp->right != NIL)
+						tmp = tmp->right;
+					_node = tmp;
+				}
+				else
+				{
+					node_pointer tmp = _node->parent;
+					while (_node == tmp->left)
+					{
+						_node = tmp;
+						tmp = tmp->parent;
+					}
+					_node = tmp;
+				}
+				return *this;
+			}
+
+			iterator operator--(int) {
+				iterator tmp = *this;
+				--*this;
+				return tmp;
+			}
+
+			node_pointer base() { return _node; }
+
+			node_pointer base() const { return _node; }
+
+		};//end iterator
+
+	private:
+		//get node with min value
+		node_pointer most_left(node_pointer node) { //min value
+			if (node == NIL)
+				return (NIL);
+			while (node->left != NIL)
+				node = node->left;
+			return (node);
+		}
+
+		//get node with max value
+		node_pointer most_right(node_pointer node) {
+			if (node == NIL)
+				return (NIL);
+			while (node->right != NIL)
+				node = node->right;
+			return (node);
+		}
+	public:
+
+//		iterator in tree
+		typedef iterator<const value_type>	const_it;
+		typedef iterator<value_type>		it;
+
+		// default
+		rb_tree() : _root(NIL), _size(0) {}
+
+		//copy
+		rb_tree(const rb_tree& other) : _root(NULL) {
+			*this = other;
+		}
+
+		// overload =
+		rb_tree& operator=(const rb_tree& rhs) {
+			if (this != &rhs) {
+//				_root = clone(rhs._root);
+//				setParent(_root);
+				_size = rhs._size;
+			}
+			return *this;
+		}
+
+		// dectruct
 		~rb_tree() {}
+
+
+		// accessors:
+
+		Compare key_comp() const { return Compare(); }
+
+		it begin() { return most_left(); }
+
+		const_it begin() const { return most_left(); }
+
+		it end() { return it(); }
+
+		const_it end() const { return const_it(); }
+
+//		reverse_iterator rbegin() { return reverse_iterator(end()); }
+//
+//		const_reverse_iterator rbegin() const {
+//			return const_reverse_iterator(end());
+//		}
+//
+//		reverse_iterator rend() { return reverse_iterator(begin()); }
+//
+//		const_reverse_iterator rend() const {
+//			return const_reverse_iterator(begin());
+//		}
+
+		bool empty() const { return _size == 0; }
+
+		size_type size() const { return _size; }
+
+		size_type max_size() const {
+			return _alloc.max_size();
+		}
+
+		// insert/erase
+
+		node_pointer insert_node(node_pointer current_node, node_pointer new_node) {
+			if (_root == NIL)
+				return new_node;
+			if (_comp(current_node->value, new_node->value))
+			{
+				current_node->left = Insert(current_node->left, new_node);
+				std::cout << "gauche" << std::endl;
+			}
+			else if (!_comp(current_node->value, new_node->value))
+			{
+				current_node->right = Insert(current_node->right, new_node);
+				std::cout << "droite" << std::endl;
+			}
+			return (_root);
+		}
+
+
+		typedef ft::pair<it, bool> pair_iterator_bool;
+		// typedef done to get around compiler bug
+
+		pair_iterator_bool insert(const value_type& value) {
+			node_pointer node = _alloc.allocate(1);
+			_alloc.construct(node, node_type(value));
+			node->left = NIL;
+			node->parent = NIL;
+			node->right = NIL;
+			node->color = red;
+			node->value = value;
+			_root = insert_node(node);
+			return pair_iterator_bool();
+		}
+
+		it insert(it position, const value_type& val) {
+			(void)position;
+			it temp = insert(val);
+			if (temp == end())
+				return (temp);
+			_size++;
+			return (temp);
+		}
+
+//		pair_iterator_bool insert(const value_type &x) {
+//
+//		}
+
+//		it insert(it position, const value_type &x);
+//
+//		void insert(it first, it last);
+//
+//		void insert(const value_type *first, const value_type *last);
+
+
+
+//
+//		void erase(it position);
+//
+//		size_type erase(const key_type &x);
+//
+//		void erase(it first, it last);
+//
+//		void erase(const key_type *first, const key_type *last);
 	};
+	// end rb_tree
+
+
 //
 ////	node base:
 //	protected:
@@ -619,6 +855,7 @@ namespace ft {
 //		return *this;
 //	}
 //
+
 //	template<class Key, class Value, class KeyOfValue, class Compare>
 //	typename rb_tree<Key, Value, KeyOfValue, Compare>::iterator
 //	rb_tree<Key, Value, KeyOfValue, Compare>::
