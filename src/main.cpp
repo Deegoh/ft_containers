@@ -51,10 +51,10 @@
 //
 //void testCopyMap() {
 //
-//		std::list<ft::pair<const int, int> > lst;
+//		std::list<ft::utility<const int, int> > lst;
 //		unsigned int lst_size = 7;
 //		for (unsigned int i = 0; i < lst_size; ++i)
-//			lst.push_back(ft::pair<const int, int>(lst_size - i, i));
+//			lst.push_back(ft::utility<const int, int>(lst_size - i, i));
 //		ft::map<const int, int> mp(lst.begin(), lst.end());
 //		ft::map<const int, int>::iterator it = mp.begin(), ite = mp.end();
 //
@@ -85,15 +85,16 @@
 void testMap(int count) {
 //	testCopyMap();
 	ft::map<int, int> map_int;
-	ft::map<int, int>::iterator it;
-//
-	for (int i = 0; i < count; ++i)
-	{
+
+//	ft::map<int, int>::iterator it;
+
+	for (int i = 0; i < count; ++i) {
+
 //		template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc>
-//		pair<typename _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator, bool>
+//		utility<typename _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator, bool>
 //		_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique(const _Val& __v) {
-//			typedef pair<iterator, bool> _Res;
-//			pair<_Base_ptr, _Base_ptr> __res = _M_get_insert_unique_pos(_KeyOfValue()(__v));
+//			typedef utility<iterator, bool> _Res;
+//			utility<_Base_ptr, _Base_ptr> __res = _M_get_insert_unique_pos(_KeyOfValue()(__v));
 //			if (__res.second)
 //			{
 //				_Alloc_node __an(*this);
@@ -105,7 +106,7 @@ void testMap(int count) {
 //		}
 
 
-//		std::pair<iterator, bool>
+//		std::utility<iterator, bool>
 //		insert(const value_type& __x)
 //		{ return _M_t._M_insert_unique(__x); }
 		map_int.insert(ft::make_pair(i, i * count));

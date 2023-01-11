@@ -5,12 +5,12 @@
 //https://web.archive.org/web/20160731194845/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/MAP.H
 //https://cs.brown.edu/people/jwicks/libstdc++/html_user/stl__map_8h-source.html
 
-# include "pair.hpp"
+# include "utility.hpp"
 # include "rb_tree.hpp"
 //#include "test_map.h"
 //#include "test_tree.h"
 # include <functional>
-//# include <utility>
+# include <utility>
 
 namespace ft {
 
@@ -18,7 +18,7 @@ namespace ft {
 				class Key,//map::key_type
 				class T,//map::mapped_type
 				class Compare = std::less<Key>,//map::key_compare
-				class Allocator = std::allocator<ft::pair<const Key, T> >//map::allocator_type>
+				class Allocator = std::allocator<ft::pair<Key, T> >//map::allocator_type>
 			>
 	class map {
 	public:
@@ -46,7 +46,7 @@ namespace ft {
 ////		typedef typename rep_type::pointer					pointer;
 ////		typedef typename rep_type::reference				reference;
 ////		typedef typename rep_type::const_reference			const_reference;
-		typedef ft::rb_tree<key_type, mapped_type , key_compare , alloc_type> tree_type;
+//		typedef ft::rb_tree<value_type, key_type, Compare> tree_type;
 //
 //		typedef typename rep_type::iterator					iterator;
 //		typedef typename rep_type::const_iterator			const_iterator;
@@ -56,35 +56,40 @@ namespace ft {
 //		typedef typename rep_type::difference_type			difference_type;
 //
 //
-////		compares objects of type value_type (class)
-//		class value_compare : public std::binary_function<value_type, value_type, bool> {
-//			friend class map<Key, T, Compare>;
-//
-//		protected:
-//			Compare comp;
-//
-//			value_compare(Compare c) : comp(c) {}
-//
-//		public:
-//			bool operator()(const value_type &x, const value_type &y) const {
-//				return comp(x.first, y.first);
-//			}
-//		};
-//
+
 	private:
-		tree_type _tree;
-		key_compare _comp;
+//		compares objects of type value_type (class)
+		class value_compare : public std::binary_function<value_type, value_type, bool> {
+		protected:
+			Compare comp;
+
+		public:
+			value_compare() {};
+			explicit value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
+			bool operator() (const value_type& x, const value_type& y) const
+			{
+				return comp(x.first, y.first);
+			}
+		};
+
+		key_compare _key_comp;
+		value_compare _value_comp;
+		ft::rb_tree<value_type, key_type, Compare> _tree;
 		alloc_type _alloc;
 //
+	public:
+		typedef ft::rb_tree<value_type, key_type, Compare> tree_type;
+
 	public:
 
 //	copilien
 
 //		empty container constructor (default constructor)
-		explicit map(const Compare &comp = Compare(),
+		explicit map(const key_compare &comp = key_compare(),
 					 const alloc_type& alloc = alloc_type()) :
+					 _key_comp(comp),
+					 _value_comp(comp),
 					 _tree(),
-					 _comp(comp),
 					 _alloc(alloc)
 					 {}
 //
@@ -186,8 +191,10 @@ namespace ft {
 //		// typedef done to get around compiler bug
 
 //		insert a single elemen
-		pair_iterator_bool insert(const value_type& val) {
-			return _tree.insert(val);
+		void insert(const value_type& val) {
+//		pair_iterator_bool insert(const value_type& val) {
+			_tree.insert(val);
+//			return _tree.insert(val);
 		}
 //		insert a single elemen with hint
 //		iterator insert(iterator position, const value_type& x) {
@@ -199,13 +206,13 @@ namespace ft {
 //		}
 
 		//
-//		pair<iterator, bool> insert(const value_type& val) {
+//		utility<iterator, bool> insert(const value_type& val) {
 //			int isNew = 0;
 //			iterator temp = _tree.insert(val, isNew);
 //			if (!isNew)
 //				return (ft::make_pair<iterator, bool>(temp, false));
 //			_size++;
-////            pair<iterator, bool> t1 = ft::make_pair<iterator, bool>(temp, true);
+////            utility<iterator, bool> t1 = ft::make_pair<iterator, bool>(temp, true);
 //			return (ft::make_pair<iterator, bool>(temp, true));
 //		}
 //
@@ -252,14 +259,14 @@ namespace ft {
 //		const_iterator upper_bound(const key_type& x) const {
 //			return _tree.upper_bound(x);
 //		}
-////		typedef pair<iterator, iterator> pair_iterator_iterator;
+////		typedef utility<iterator, iterator> pair_iterator_iterator;
 //		// typedef done to get around compiler bug
-//		pair<iterator, iterator> equal_range(const key_type& x) {
+//		utility<iterator, iterator> equal_range(const key_type& x) {
 //			return _tree.equal_range(x);
 //		}
-////		typedef pair<const_iterator, const_iterator> pair_citerator_citerator;
+////		typedef utility<const_iterator, const_iterator> pair_citerator_citerator;
 //		// typedef done to get around compiler bug
-//		pair<const_iterator, const_iterator> equal_range(const key_type& x) const {
+//		utility<const_iterator, const_iterator> equal_range(const key_type& x) const {
 //			return _tree.equal_range(x);
 //		}
 //

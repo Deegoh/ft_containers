@@ -6,7 +6,7 @@
 # include <memory>
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
-# include "pair.hpp"
+# include "utility.hpp"
 # include "comparators.hpp"
 
 namespace ft {
@@ -19,24 +19,52 @@ namespace ft {
 
 	// node
 	template <class T>
-	struct rb_node {
-		typedef T								value_type;
-		typedef std::allocator<void>::pointer	void_pointer;
+	class rb_node {
+	public:
+		typedef T					value_type;
+		typedef rb_node<T>*			node_pointer;
+		typedef const node_pointer	const_node_pointer;
 
+		rb_node(const value_type &data = value_type(), color_type color = red) :
+			value(data), color(color), parent(NIL), left(NIL), right(NIL) {}
+
+		rb_node(const T& src) {
+			*this = src;
+		}
+
+		rb_node &operator=(const rb_node& rhs) {
+			if (&rhs != this)
+			{
+				value = rhs.value;
+				color = rhs.color;
+				parent = rhs.parent;
+				left = rhs.left;
+				right = rhs.right;
+			}
+			return (*this);
+		}
+
+		~rb_node() {}
+
+	public:
 		value_type value;
 		color_type color;
-		void_pointer parent;
-		void_pointer left;
-		void_pointer right;
+		node_pointer parent;
+		node_pointer left;
+		node_pointer right;
 	};
 	//end node
 
 	// rb_tree
-	template<
-			typename Key, //map::key_type
-			typename T, //map::mapped_type
-			typename Compare = std::less<Key>, // map::key_compare
-			typename Alloc = std::allocator<rb_node<T> > > // map::allocator_type
+//	template<
+//			typename Key, //map::key_type
+//			typename T, //map::value_type // pair
+//			typename Compare = std::less<rb_node<T> >, // map::key_compare
+//			typename Alloc = std::allocator<rb_node<T> > > // map::allocator_type
+	template<typename T,
+			typename Key,
+			class Compare = std::less<Key>,
+			typename Node_Alloc = std::allocator<rb_node<T> > >
 	class rb_tree {
 	public:
 		typedef	Key			key_type;
@@ -44,15 +72,14 @@ namespace ft {
 		typedef	rb_node<T>	node_type;
 		typedef node_type*	node_pointer;
 
-		typedef Alloc		alloc_type;
+		typedef Node_Alloc	alloc_type;
 		typedef	Compare		comp_type;
 		typedef	size_t		size_type;
 
 	private:
 		node_pointer _root;
-		alloc_type _alloc;
 		size_type _size;
-		comp_type _comp;
+		alloc_type _alloc;
 
 	public:
 //		iterator
@@ -77,7 +104,7 @@ namespace ft {
 
 			iterator& operator=(const iterator& rhs) {
 				if (this != &rhs) {
-					_node = rhs.nodePtr;
+					_node = rhs._node;
 				}
 				return *this;
 			}
@@ -202,7 +229,10 @@ namespace ft {
 		typedef iterator<value_type>		it;
 
 		// default
-		rb_tree() : _root(NIL), _size(0) {}
+		rb_tree() :
+					_root(NIL),
+					_size(0)
+					{}
 
 		//copy
 		rb_tree(const rb_tree& other) : _root(NULL) {
@@ -212,9 +242,9 @@ namespace ft {
 		// overload =
 		rb_tree& operator=(const rb_tree& rhs) {
 			if (this != &rhs) {
-//				_root = clone(rhs._root);
-//				setParent(_root);
+				_root = rhs._root;
 				_size = rhs._size;
+				_alloc = rhs._alloc;
 			}
 			return *this;
 		}
@@ -225,7 +255,7 @@ namespace ft {
 
 		// accessors:
 
-		Compare key_comp() const { return Compare(); }
+//		Compare key_comp() const { return Compare(); }
 
 		it begin() { return most_left(); }
 
@@ -257,17 +287,17 @@ namespace ft {
 
 		// insert/erase
 
-		node_pointer insert_node(node_pointer current_node, node_pointer new_node) {
+		node_pointer insert_node(node_pointer current_node, value_type new_node) {
 			if (_root == NIL)
-				return new_node;
-			if (_comp(current_node->value, new_node->value))
+				return current_node;
+			if (comp_type()(current_node->value.first, new_node.first))
 			{
-				current_node->left = Insert(current_node->left, new_node);
+				current_node->left = insert_node(current_node->left, new_node);
 				std::cout << "gauche" << std::endl;
 			}
-			else if (!_comp(current_node->value, new_node->value))
+			else if (!comp_type()(current_node->value.first, new_node.first))
 			{
-				current_node->right = Insert(current_node->right, new_node);
+				current_node->right = insert_node(current_node->right, new_node);
 				std::cout << "droite" << std::endl;
 			}
 			return (_root);
@@ -277,25 +307,31 @@ namespace ft {
 		typedef ft::pair<it, bool> pair_iterator_bool;
 		// typedef done to get around compiler bug
 
-		pair_iterator_bool insert(const value_type& value) {
-			node_pointer node = _alloc.allocate(1);
-			_alloc.construct(node, node_type(value));
-			node->left = NIL;
-			node->parent = NIL;
-			node->right = NIL;
-			node->color = red;
-			node->value = value;
-			_root = insert_node(node);
-			return pair_iterator_bool();
+//		pair_iterator_bool insert(const value_type& value) {
+		void insert(const value_type& value) {
+//			node_pointer node = _alloc.allocate(1);
+//			_alloc.construct(node->value, value_type(value));
+////			rb_node<T>* node = new rb_node<T>(value, red);
+////			node = rb_node<value_type>(value);
+////			_alloc.
+//			node->left = NIL;
+//			node->parent = NIL;
+//			node->right = NIL;
+//			node->color = red;
+//			node->value = value;
+
+			_root = insert_node(_root, value);
+//			return pair_iterator_bool();
+//			(void)node;
 		}
 
 		it insert(it position, const value_type& val) {
 			(void)position;
-			it temp = insert(val);
-			if (temp == end())
-				return (temp);
+			insert(val);
+//			if (temp == end())
+//				return (temp);
 			_size++;
-			return (temp);
+			return (it());
 		}
 
 //		pair_iterator_bool insert(const value_type &x) {
@@ -726,7 +762,7 @@ namespace ft {
 //
 //		// insert/erase
 //
-//		typedef ft::pair<iterator, bool> pair_iterator_bool;
+//		typedef ft::utility<iterator, bool> pair_iterator_bool;
 //
 //		// typedef done to get around compiler bug
 //		pair_iterator_bool insert(const value_type &x);
@@ -761,12 +797,12 @@ namespace ft {
 //
 //		const_iterator upper_bound(const key_type &x) const;
 //
-//		typedef ft::pair<iterator, iterator> pair_iterator_iterator;
+//		typedef ft::utility<iterator, iterator> pair_iterator_iterator;
 //
 //		// typedef done to get around compiler bug
 //		pair_iterator_iterator equal_range(const key_type &x);
 //
-//		typedef ft::pair<const_iterator, const_iterator> pair_citerator_citerator;
+//		typedef ft::utility<const_iterator, const_iterator> pair_citerator_citerator;
 //
 //		// typedef done to get around compiler bug
 //		pair_citerator_citerator equal_range(const key_type &x) const;
@@ -1205,7 +1241,7 @@ namespace ft {
 //	template<class Key, class Value, class KeyOfValue, class Compare>
 //	typename rb_tree<Key, Value, KeyOfValue, Compare>::size_type
 //	rb_tree<Key, Value, KeyOfValue, Compare>::count(const Key &k) const {
-//		ft::pair<const_iterator, const_iterator> p = equal_range(k);
+//		ft::utility<const_iterator, const_iterator> p = equal_range(k);
 //		size_type n = 0;
 //		distance(p.first, p.second, n);
 //		return n;

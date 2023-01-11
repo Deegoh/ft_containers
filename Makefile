@@ -6,7 +6,7 @@ else
 	CC = c++
 endif
 RM = rm -rf
-CFLAGS = -Werror -Wall -Wextra
+CFLAGS = -Werror -Wall -Wextra -Wfatal-errors
 CFLAGS += -std=c++98 -pedantic
 CFLAGS += -g3 -fsanitize=address
 
@@ -25,7 +25,7 @@ HEADER=	vector.hpp\
 		reverse_iterator.hpp\
 		base.hpp\
 		vector_tester.hpp\
-		pair.hpp\
+		utility.hpp\
 		map.hpp\
 		rb_tree.hpp
 #		test_map.h\
