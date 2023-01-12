@@ -109,9 +109,14 @@ void testMap(int count) {
 //		std::utility<iterator, bool>
 //		insert(const value_type& __x)
 //		{ return _M_t._M_insert_unique(__x); }
-		map_int.insert(ft::make_pair(i, i * count));
+//		map_int.insert(ft::make_pair(i, i * count));
 //		map_int.insert(std::make_pair(i, i * count));
 	}
+	map_int.insert(ft::make_pair(1, 5));
+	map_int.insert(ft::make_pair(2, 10));
+//	map_int.begin();
+//	map_int.clear();
+//	map_int.begin();
 //
 //	for(it = map_int.begin(); it != map_int.end(); ++it)
 //	{

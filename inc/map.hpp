@@ -34,26 +34,14 @@ namespace ft {
 //		typedef typename alloc_type::const_reference const_reference;
 //		typedef typename alloc_type::pointer pointer;
 //		typedef typename alloc_type::const_pointer const_pointer;
-		typedef ft::random_access_iterator<value_type> iterator;
-////		typedef ft::random_access_iterator<const value_type> const_iterator;
-//////		typedef ft::bidirectional_iterator<value_type>			iterator;
-//////		typedef ft::bidirectional_iterator<const value_type>	const_iterator;
-////		typedef ft::reverse_iterator<iterator> reverse_iterator;
-////		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-////		typedef typename allocator_type::difference_type difference_type;
-////		typedef typename allocator_type::size_type size_type;
-//
-////		typedef typename rep_type::pointer					pointer;
-////		typedef typename rep_type::reference				reference;
-////		typedef typename rep_type::const_reference			const_reference;
-//		typedef ft::rb_tree<value_type, key_type, Compare> tree_type;
-//
-//		typedef typename rep_type::iterator					iterator;
-//		typedef typename rep_type::const_iterator			const_iterator;
-//		typedef typename rep_type::reverse_iterator			reverse_iterator;
-//		typedef typename rep_type::const_reverse_iterator	const_reverse_iterator;
-//		typedef typename rep_type::size_type				size_type;
-//		typedef typename rep_type::difference_type			difference_type;
+		typedef ft::rb_tree<value_type, key_type, Compare> tree_type;
+
+		typedef typename tree_type::it						iterator;
+		typedef typename tree_type::const_it				const_iterator;
+//		typedef typename tree_type::reverse_iterator		reverse_iterator;
+//		typedef typename tree_type::const_reverse_iterator	const_reverse_iterator;
+//		typedef typename tree_type::size_type				size_type;
+//		typedef typename tree_type::difference_type			difference_type;
 //
 //
 
@@ -74,11 +62,8 @@ namespace ft {
 
 		key_compare _key_comp;
 		value_compare _value_comp;
-		ft::rb_tree<value_type, key_type, Compare> _tree;
+		tree_type _tree;
 		alloc_type _alloc;
-//
-	public:
-		typedef ft::rb_tree<value_type, key_type, Compare> tree_type;
 
 	public:
 
@@ -183,8 +168,10 @@ namespace ft {
 ////	Modifiers:
 //
 ////		Erases all elements from the container. After this call, size() returns zero.
-////		clears the contents
-//		void clear() {}
+//		clears the contents
+		void clear() {
+			_tree.clear();
+		}
 //
 //
 		typedef ft::pair<iterator, bool> pair_iterator_bool;

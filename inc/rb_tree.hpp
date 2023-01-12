@@ -222,6 +222,17 @@ namespace ft {
 				node = node->right;
 			return (node);
 		}
+
+		void clear_tree(node_pointer node) {
+			if (!node)
+				return;
+			clear_tree(node->left);
+			clear_tree(node->right);
+
+			_alloc.destroy(node);
+			_alloc.deallocate(node, 1);
+		}
+
 	public:
 
 //		iterator in tree
@@ -250,7 +261,9 @@ namespace ft {
 		}
 
 		// dectruct
-		~rb_tree() {}
+		~rb_tree() {
+			clear();
+		}
 
 
 		// accessors:
@@ -287,20 +300,38 @@ namespace ft {
 
 		// insert/erase
 
-		node_pointer insert_node(node_pointer current_node, value_type new_node) {
+		node_pointer insert_node(node_pointer current_node, node_pointer new_node) {
 			if (_root == NIL)
-				return current_node;
-			if (comp_type()(current_node->value.first, new_node.first))
 			{
-				current_node->left = insert_node(current_node->left, new_node);
-				std::cout << "gauche" << std::endl;
+				std::cout << "first" << std::endl;
+				return new_node;
 			}
-			else if (!comp_type()(current_node->value.first, new_node.first))
+			if (!comp_type()(current_node->value.first, new_node->value.first))
 			{
-				current_node->right = insert_node(current_node->right, new_node);
+				std::cout << "gauche" << std::endl;
+				current_node->left = insert_node(current_node->left, new_node);
+			}
+			else if (comp_type()(current_node->value.first, new_node->value.first))
+			{
 				std::cout << "droite" << std::endl;
+				current_node->right = insert_node(current_node->right, new_node);
 			}
 			return (_root);
+		}
+
+		node_pointer new_node(const value_type& value, color_type color) {
+			node_pointer node = _alloc.allocate(1);
+			_alloc.construct(node, rb_node<T>(value, color));
+			if (_size == 0)
+				node->color = black;
+			_size++;
+			return (node);
+		}
+
+		void clear() {
+			clear_tree(_root);
+			_root = NIL;
+			_size = 0;
 		}
 
 
@@ -319,8 +350,9 @@ namespace ft {
 //			node->right = NIL;
 //			node->color = red;
 //			node->value = value;
-
-			_root = insert_node(_root, value);
+			node_pointer node = new_node(value, red);
+			_root = insert_node(_root, node);
+//			std::cout << _root->color << std::endl;
 //			return pair_iterator_bool();
 //			(void)node;
 		}
