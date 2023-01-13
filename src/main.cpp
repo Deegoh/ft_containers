@@ -86,39 +86,24 @@ void testMap(int count) {
 //	testCopyMap();
 	ft::map<int, int> map_int;
 
-//	ft::map<int, int>::iterator it;
+	ft::map<int, int>::iterator it;
 
 	for (int i = 0; i < count; ++i) {
-
-//		template<typename _Key, typename _Val, typename _KeyOfValue, typename _Compare, typename _Alloc>
-//		utility<typename _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator, bool>
-//		_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique(const _Val& __v) {
-//			typedef utility<iterator, bool> _Res;
-//			utility<_Base_ptr, _Base_ptr> __res = _M_get_insert_unique_pos(_KeyOfValue()(__v));
-//			if (__res.second)
-//			{
-//				_Alloc_node __an(*this);
-//				return _Res(_M_insert_(__res.first, __res.second,
-//									   _GLIBCXX_FORWARD(_Arg, __v), __an),
-//							true);
-//			}
-//			return _Res(iterator(__res.first), false);
-//		}
-
-
-//		std::utility<iterator, bool>
-//		insert(const value_type& __x)
-//		{ return _M_t._M_insert_unique(__x); }
 //		map_int.insert(ft::make_pair(i, i * count));
-//		map_int.insert(std::make_pair(i, i * count));
 	}
 	map_int.insert(ft::make_pair(1, 5));
 	map_int.insert(ft::make_pair(2, 10));
-//	map_int.begin();
+
+	it = map_int.begin();
+	std::cout << it->first << " ";
+	std::cout << it->second << std::endl;
+	it++;
 //	map_int.clear();
 //	map_int.begin();
 //
-//	for(it = map_int.begin(); it != map_int.end(); ++it)
+
+//TODO ++ not working
+//	for(it = map_int.begin(); it != map_int.end(); it++)
 //	{
 //		std::cout << "first[" << it->first << "] second[" << it->second << "]" << "\n";
 //	}

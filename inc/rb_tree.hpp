@@ -86,7 +86,7 @@ namespace ft {
 		template<typename T1>
 		class iterator {
 		public:
-			typedef T1				itr_type;
+			typedef T1				it_type;
 			typedef std::ptrdiff_t	difference_type;
 			typedef T1*				it_pointer;
 			typedef T1&				it_reference;
@@ -206,7 +206,7 @@ namespace ft {
 
 	private:
 		//get node with min value
-		node_pointer most_left(node_pointer node) { //min value
+		node_pointer most_left(node_pointer &node) { //min value
 			if (node == NIL)
 				return (NIL);
 			while (node->left != NIL)
@@ -215,7 +215,7 @@ namespace ft {
 		}
 
 		//get node with max value
-		node_pointer most_right(node_pointer node) {
+		node_pointer most_right(node_pointer &node) {
 			if (node == NIL)
 				return (NIL);
 			while (node->right != NIL)
@@ -270,9 +270,9 @@ namespace ft {
 
 //		Compare key_comp() const { return Compare(); }
 
-		it begin() { return most_left(); }
+		it begin() { return it(most_left(_root)); }
 
-		const_it begin() const { return most_left(); }
+		const_it begin() const { return it(most_left(_root)); }
 
 		it end() { return it(); }
 
@@ -301,19 +301,19 @@ namespace ft {
 		// insert/erase
 
 		node_pointer insert_node(node_pointer current_node, node_pointer new_node) {
-			if (_root == NIL)
+			if (current_node == NIL)
 			{
-				std::cout << "first" << std::endl;
+//				std::cout << "first" << std::endl;
 				return new_node;
 			}
 			if (!comp_type()(current_node->value.first, new_node->value.first))
 			{
-				std::cout << "gauche" << std::endl;
+//				std::cout << "gauche" << std::endl;
 				current_node->left = insert_node(current_node->left, new_node);
 			}
 			else if (comp_type()(current_node->value.first, new_node->value.first))
 			{
-				std::cout << "droite" << std::endl;
+//				std::cout << "droite" << std::endl;
 				current_node->right = insert_node(current_node->right, new_node);
 			}
 			return (_root);
