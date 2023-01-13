@@ -56,13 +56,8 @@ namespace ft {
 	//end node
 
 	// rb_tree
-//	template<
-//			typename Key, //map::key_type
-//			typename T, //map::value_type // pair
-//			typename Compare = std::less<rb_node<T> >, // map::key_compare
-//			typename Alloc = std::allocator<rb_node<T> > > // map::allocator_type
-	template<typename T,
-			typename Key,
+	template<typename T, //pair
+			typename Key, // key of pair
 			class Compare = std::less<Key>,
 			typename Node_Alloc = std::allocator<rb_node<T> > >
 	class rb_tree {
@@ -80,16 +75,17 @@ namespace ft {
 		node_pointer _root;
 		size_type _size;
 		alloc_type _alloc;
+		node_pointer _end;
 
 	public:
 //		iterator
 		template<typename T1>
 		class iterator {
 		public:
-			typedef T1				it_type;
-			typedef std::ptrdiff_t	difference_type;
-			typedef T1*				it_pointer;
-			typedef T1&				it_reference;
+			typedef T1				value_type;
+//			typedef std::ptrdiff_t	difference_type;
+			typedef value_type*		value_pointer;
+			typedef value_type&		value_reference;
 
 		private:
 			node_pointer _node; // current node
@@ -123,26 +119,26 @@ namespace ft {
 				return (_node != rhs._node);
 			}
 
-			it_reference operator*() const {
+			value_reference operator*() const {
 				if (_node == NULL)
 					throw std::exception();
 				return (_node->value);
 			}
 
-			it_reference operator*() {
+			value_reference operator*() {
 				if (_node == NULL)
 					throw std::exception();
 				return (_node->value);
 			}
 
-			it_pointer operator->() {
+			value_pointer operator->() {
 				return &_node->value;
 			}
-			it_pointer operator->() const {
+			value_pointer operator->() const {
 				return &_node->value;
 			}
 
-			it_reference operator++() {
+			iterator& operator++() {
 				if (_node->right)
 				{
 					_node = _node->right;
@@ -169,10 +165,8 @@ namespace ft {
 				return tmp;
 			}
 
-			it_reference operator--() {
-				if (_node->color == red && _node->parent && _node->parent->parent == _node)
-					_node = _node->right; // return rightmost
-				else if (_node->left != NIL)
+			iterator& operator--() {
+				if (_node->left)
 				{
 					node_pointer tmp = _node->left;
 					while (tmp->right != NIL)
@@ -224,13 +218,88 @@ namespace ft {
 		}
 
 		void clear_tree(node_pointer node) {
-			if (!node)
+			if (node == NIL)
 				return;
 			clear_tree(node->left);
 			clear_tree(node->right);
 
+//			delete node;
 			_alloc.destroy(node);
 			_alloc.deallocate(node, 1);
+			node = NIL;
+		}
+
+		// Rotates
+		void left_rotate(node_pointer node) {
+//			node_pointer right_child = node->right;
+//			node->right = right_child->left;
+//
+//			if (node->right != NULL)
+//				node->right->parent = node;
+//			right_child->parent = node->parent;
+//			if (node->parent == NULL)
+//				_root = right_child;
+//			else if (node == node->parent->left)
+//				node->parent->left = right_child;
+//			else
+//				node->parent->right = right_child;
+//			right_child->left = node;
+//			node->parent = right_child;
+
+			node_pointer y = node->right;
+			node->right = y->left;
+			if (y->left != NIL)
+				y->left->parent = node;
+			y->parent = node->parent;
+			if (node->parent == NIL)
+				_root = y;
+			else if (node == node->parent->left)
+				node->parent->left = y;
+			else
+				node->parent->right = y;
+			y->left = node;
+			node->parent = y;
+		}
+
+		void right_rotate(node_pointer node) {
+//			node_pointer left_child = node->left;
+//			node->left = left_child->right;
+//
+//			if (node->left != NULL)
+//				node->left->parent = node;
+//			left_child->parent = node->parent;
+//			if (node->parent == NULL)
+//				_root = left_child;
+//			else if (node == node->parent->left)
+//				node->parent->left = left_child;
+//			else
+//				node->parent->right = left_child;
+//			left_child->right = node;
+//			node->parent = left_child;
+
+			node_pointer y = node->left;
+			node->left = y->right;
+			if (y->right != NIL)
+				y->right->parent = node;
+			y->parent = node->parent;
+			if (node->parent == NIL)
+				_root = y;
+			else if (node == node->parent->right)
+				node->parent->right = y;
+			else
+				node->parent->left = y;
+			y->right = node;
+			node->parent = y;
+		}
+
+		void transplant(node_pointer &u, node_pointer &v) {
+			if (u->parent == NIL)
+				_root = v;
+			else if (u == u->parent->left)
+				u->parent->left = v;
+			else
+				u->parent->right = v;
+			v->parent = u->parent;
 		}
 
 	public:
@@ -242,8 +311,10 @@ namespace ft {
 		// default
 		rb_tree() :
 					_root(NIL),
-					_size(0)
-					{}
+					_size(0) {
+			_end = _alloc.allocate(1);
+			_alloc.construct(_end, node_type(value_type(), black));
+		}
 
 		//copy
 		rb_tree(const rb_tree& other) : _root(NULL) {
@@ -263,32 +334,22 @@ namespace ft {
 		// dectruct
 		~rb_tree() {
 			clear();
+//			_alloc.destroy(_end);
+//			_alloc.deallocate(_end, 1);
 		}
 
 
 		// accessors:
 
-//		Compare key_comp() const { return Compare(); }
+		Compare key_comp() const { return Compare(); }
 
 		it begin() { return it(most_left(_root)); }
 
 		const_it begin() const { return it(most_left(_root)); }
 
-		it end() { return it(); }
+		it end() { return it(_end); }
 
-		const_it end() const { return const_it(); }
-
-//		reverse_iterator rbegin() { return reverse_iterator(end()); }
-//
-//		const_reverse_iterator rbegin() const {
-//			return const_reverse_iterator(end());
-//		}
-//
-//		reverse_iterator rend() { return reverse_iterator(begin()); }
-//
-//		const_reverse_iterator rend() const {
-//			return const_reverse_iterator(begin());
-//		}
+		const_it end() const { return const_it(_end); }
 
 		bool empty() const { return _size == 0; }
 
@@ -303,23 +364,26 @@ namespace ft {
 		node_pointer insert_node(node_pointer current_node, node_pointer new_node) {
 			if (current_node == NIL)
 			{
-//				std::cout << "first" << std::endl;
+//				std::cout << "insert " << new_node->value.first << std::endl;
 				return new_node;
 			}
 			if (!comp_type()(current_node->value.first, new_node->value.first))
 			{
-//				std::cout << "gauche" << std::endl;
+//				std::cout << "go to left"<< std::endl;
 				current_node->left = insert_node(current_node->left, new_node);
+				current_node->left->parent = current_node;
 			}
 			else if (comp_type()(current_node->value.first, new_node->value.first))
 			{
-//				std::cout << "droite" << std::endl;
+//				std::cout << "go to right"<< std::endl;
 				current_node->right = insert_node(current_node->right, new_node);
+				current_node->right->parent = current_node;
 			}
 			return (_root);
 		}
 
 		node_pointer new_node(const value_type& value, color_type color) {
+//			if (value)
 			node_pointer node = _alloc.allocate(1);
 			_alloc.construct(node, rb_node<T>(value, color));
 			if (_size == 0)
@@ -334,48 +398,16 @@ namespace ft {
 			_size = 0;
 		}
 
+		void update_end() {
+			most_right(_root)->right = _end;
+		}
 
-		typedef ft::pair<it, bool> pair_iterator_bool;
-		// typedef done to get around compiler bug
-
-//		pair_iterator_bool insert(const value_type& value) {
-		void insert(const value_type& value) {
-//			node_pointer node = _alloc.allocate(1);
-//			_alloc.construct(node->value, value_type(value));
-////			rb_node<T>* node = new rb_node<T>(value, red);
-////			node = rb_node<value_type>(value);
-////			_alloc.
-//			node->left = NIL;
-//			node->parent = NIL;
-//			node->right = NIL;
-//			node->color = red;
-//			node->value = value;
+		node_pointer insert(const value_type& value) {
 			node_pointer node = new_node(value, red);
 			_root = insert_node(_root, node);
-//			std::cout << _root->color << std::endl;
-//			return pair_iterator_bool();
-//			(void)node;
+			update_end();
+			return node;
 		}
-
-		it insert(it position, const value_type& val) {
-			(void)position;
-			insert(val);
-//			if (temp == end())
-//				return (temp);
-			_size++;
-			return (it());
-		}
-
-//		pair_iterator_bool insert(const value_type &x) {
-//
-//		}
-
-//		it insert(it position, const value_type &x);
-//
-//		void insert(it first, it last);
-//
-//		void insert(const value_type *first, const value_type *last);
-
 
 
 //
