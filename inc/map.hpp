@@ -180,7 +180,8 @@ namespace ft {
 //		insert a single elemen
 		void insert(const value_type& val) {
 //		pair_iterator_bool insert(const value_type& val) {
-			_tree.insert(val);
+			_tree.InsertNode(val);
+//			_tree.insert(val);
 //			return _tree.insert(val);
 		}
 //		insert a single elemen with hint

@@ -85,22 +85,22 @@
 void testMap(int count) {
 //	testCopyMap();
 	ft::map<int, int> map_int;
-
 	ft::map<int, int>::iterator it;
 
-	for (int i = 0; i < count; ++i) {
+	int i;
+	for (i = 1; i <= count; ++i) {
 //		map_int.insert(ft::make_pair(i, i * count));
 	}
-//	map_int.insert(ft::make_pair(2, 10));
+	map_int.insert(ft::make_pair(2, 10));
 	map_int.insert(ft::make_pair(1, 5));
 //	map_int.insert(ft::make_pair(3, 15));
 //
 	it = map_int.begin();
-//	std::cout << it->first << " ";
-//	std::cout << it->second << std::endl;
-//	it++;
-//	std::cout << it->first << " ";
-//	std::cout << it->second << std::endl;
+	std::cout << it->first << " ";
+	std::cout << it->second << std::endl;
+	it++;
+	std::cout << it->first << " ";
+	std::cout << it->second << std::endl;
 //	it++;
 //	std::cout << it->first << " ";
 //	std::cout << it->second << std::endl;
@@ -110,14 +110,16 @@ void testMap(int count) {
 
 
 ////TODO ++ not working
-	int i = 0;
-	for(it = map_int.begin(); it != map_int.end(); it++)
-	{
-		std::cout << i++;
-		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
-		if (i > 8)
-			break;
-	}
+//	i = 0;
+//	for(it = map_int.begin(); it != map_int.end(); it++)
+////	for(it = map_int.begin(); i < COUNT; it++)
+//	{
+//		std::cout << i++;
+//		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
+//		if (i > 8)
+//			break;
+//	}
+
 //	it = map_int.begin();
 //	ft::map<int, int>::iterator ite = map_int.end();
 //	std::cout << &it << " " << &ite << std::endl;
