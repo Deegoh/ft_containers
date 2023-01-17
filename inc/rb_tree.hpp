@@ -20,11 +20,8 @@ namespace ft {
 	class rb_node {
 	public:
 		typedef T					value_type;
-		typedef rb_node<T>*			node_pointer;
-		typedef const node_pointer	const_node_pointer;
-
-		rb_node(const value_type &data = value_type(), color_type color = red) :
-			value(data), color(color), parent(NULL), left(NULL), right(NULL) {}
+		typedef rb_node*			node_pointer;
+//		typedef const node_pointer	const_node_pointer;
 
 		rb_node(const value_type &data, color_type color, node_pointer parent, node_pointer left, node_pointer right) :
 				value(data), color(color), parent(parent), left(left), right(right) {}
@@ -70,7 +67,7 @@ namespace ft {
 		typedef node_type*	node_pointer;
 
 		typedef Node_Alloc	alloc_type;
-		typedef	Compare		comp_type;
+		typedef	Compare		key_compare_type;
 		typedef	size_t		size_type;
 
 	private:
@@ -95,7 +92,7 @@ namespace ft {
 
 		public:
 			iterator() : _current(NULL), _nil(NULL) {}
-			iterator(node_pointer current, node_pointer nil) : _current(current), _nil(nil){}
+			iterator(node_pointer current, node_pointer nil) : _current(current), _nil(nil) {}
 
 			iterator(const iterator& src) {
 				*this = src;
@@ -112,7 +109,7 @@ namespace ft {
 			~iterator() {}
 
 			operator iterator<const T1>() const {
-				return (iterator<const T1>(this->_current));
+				return (iterator<const T1>(this->_current, this->_nil));
 			}
 
 			bool operator==(const iterator &rhs) const {
@@ -121,13 +118,6 @@ namespace ft {
 			bool operator!=(const iterator &rhs) const {
 				return (_current != rhs._current);
 			}
-
-//			friend bool operator==(const iterator &lhs, const iterator &rhs) {
-//				return (lhs._current == rhs._current);
-//			}
-//			friend bool operator!=(const iterator &lhs, const iterator &rhs) {
-//				return ((lhs._current != rhs._current));
-//			}
 
 			value_reference operator*() const {
 				if (_current == NULL)
@@ -192,31 +182,40 @@ namespace ft {
 			}
 
 			node_pointer predecessor(node_pointer node) {
-				if (node->left != this->_nil) { // if the left subtree is not null the predecessor is the right most node is the left subtree
+				if (node->left != this->_nil)
+				{ // if the left subtree is not null the predecessor is the right most node is the left subtree
 					return maximum(node->left);
 				}
-				else { // else it is the lowest ancestor of node whose right child is also an ancestor of node
+				else
+				{ // else it is the lowest ancestor of node whose right child is also an ancestor of node
 					node_pointer x = node->parent;
+
 					while (x != NULL && node == x->left) {
 						node = x;
 						x = x->parent;
 					}
+
 					return x;
 				}
 			}
 
 			node_pointer successor(node_pointer node) {
-				if (node->right != this->_nil) {
+				if (node->right != this->_nil)
+				{
 					return minimum(node->right);
 				}
-				else {
+				else
+				{
 					node_pointer x = node->parent;
+
 					while (x != NULL && node == x->right) {
 						node = x;
 						x = x->parent;
 					}
+
 					if (x == NULL)
 						return _nil;
+
 					return x;
 				}
 			}
@@ -249,7 +248,7 @@ namespace ft {
 				_alloc = rhs._alloc;
 				_nil = rhs._nil;
 			}
-			return *this;
+			return (*this);
 		}
 
 		// dectruct
@@ -272,9 +271,9 @@ namespace ft {
 
 		Compare key_comp() const { return Compare(); }
 
-		it begin() { return it(most_left(_root), _nil); }
+		it begin() { return it(most_left(), _nil); }
 
-		const_it begin() const { return it(most_left(_root), _nil); }
+		const_it begin() const { return const_it(most_left(), _nil); }
 
 		it end() { return it(_nil, _nil); }
 
@@ -290,7 +289,7 @@ namespace ft {
 
 		// insert/erase
 
-		node_pointer InsertNode(const value_type &value) {
+		node_pointer insert_node(const value_type &value) {
 			node_pointer node;
 			node = _alloc.allocate(1);
 			_alloc.construct(node, node_type(value, red, NULL, _nil, _nil));
@@ -298,78 +297,96 @@ namespace ft {
 			node_pointer y = NULL;
 			node_pointer x = _root;
 
-			while (x != _nil) // find nodes natural palcement
+			while (x != _nil)
 			{
 				y = x;
 
-				if (comp_type()(node->value.first, x->value.first))
+				if (key_compare_type()(node->value.first, x->value.first))
+				{
 					x = x->left;
-				else if (!comp_type()(node->value.first, x->value.first))
+				}
+				else if (!key_compare_type()(node->value.first, x->value.first))
+				{
 					x = x->right;
-				else { // x->value == value;
+				}
+				else
+				{
 					_alloc.destroy(node);
 					_alloc.deallocate(node, 1);
 					return _nil;
 				}
 			}
+
 			node->parent = y;
+
 			if (y == NULL)
 				this->_root = node;
-			else if (comp_type()(node->value.first, y->value.first))
+			else if (key_compare_type()(node->value.first, y->value.first))
 				y->left = node;
 			else
 				y->right = node;
+
 			this->_size++;
+
 			if (y == NULL) {
 				node->color = black;
 				return (this->_root);
 			}
+
 			if (node->parent->parent == NULL)
 				return node;
-			FixInsert(node);
+
+			fix_insert(node);
+
 			return node;
 		}
 
-		void	FixInsert(node_pointer node) {
+		void	fix_insert(node_pointer node) {
 			node_pointer x;
-			while (node->parent->color == red) {
-				if (node->parent == node->parent->parent->right) // parent is gp's right child
+
+			while (node->parent->color == red)
+			{
+				if (node->parent == node->parent->parent->right)
 				{
-					x = node->parent->parent->left; // uncel is left
-					if (x->color == red) // if unc is also red
+					x = node->parent->parent->left;
+					if (x->color == red)
 					{
 						x->color = black;
 						node->parent->color = black;
 						node->parent->parent->color = red;
 						node = node->parent->parent;
 					}
-					else {
-						if (node == node->parent->left) // node is left child
+					else
+					{
+						if (node == node->parent->left)
 						{
 							node = node->parent;
-							right_rotate(node); // new node is old parent
+							right_rotate(node);
 						}
+
 						node->parent->color = black;
 						node->parent->parent->color = red;
 						left_rotate(node->parent->parent);
 					}
 				}
-				else { // parent id gs's left child (mirror case)
-					x = node->parent->parent->right; // uncle
-					if (x->color == red) {
-						// mirror case
+				else
+				{
+					x = node->parent->parent->right;
+					if (x->color == red)
+					{
 						x->color = black;
 						node->parent->color = black;
 						node->parent->parent->color = red;
 						node = node->parent->parent;
 					}
-					else {
-						if (node == node->parent->right) {
-							// mirror case
+					else
+					{
+						if (node == node->parent->right)
+						{
 							node = node->parent;
 							left_rotate(node);
 						}
-						// mirror case
+
 						node->parent->color = black;
 						node->parent->parent->color = red;
 						right_rotate(node->parent->parent);
@@ -387,9 +404,148 @@ namespace ft {
 			_size = 0;
 		}
 
+		node_pointer search_tree(node_pointer node, key_type key) const {
+			if (node == _nil)
+				return _nil;
+
+			if (key == node->value.first)
+				return node;
+
+			if (node != _nil)
+			{
+				if (key_compare_type()(key, node->value.first))
+					return search_tree(node->left, key);
+
+				return search_tree(node->right, key);
+			}
+			return (_nil);
+		}
+
+		bool delete_node(key_type key) {
+			node_pointer x,y,z;
+
+			z = search_tree(_root, key);
+
+			if (z == _nil)
+				return false;
+
+			y = z;
+			color_type y_clr_save = y->color;
+
+			if (z->left == _nil)
+			{
+				x = z->right;
+				transplant(z, z->right);
+			}
+			else if (z->right == _nil)
+			{
+				x = z->left;
+				transplant(z, z->left);
+			}
+			else
+			{
+				y = most_left(z->right);
+				y_clr_save = y->color;
+				x = y->right;
+				if (y->parent == z)
+				{
+					x->parent = y;
+				}
+				else
+				{
+					transplant(y, y->right);
+					y->right = z->right;
+					y->right->parent = y;
+				}
+
+				transplant(z,y);
+				y->left = z->left;
+				y->left->parent = y;
+				y->color = z->color;
+			}
+
+			_alloc.destroy(z);
+			_alloc.deallocate(z, 1);
+			_size--;
+
+			if (y_clr_save == black)
+				fix_delete(x);
+
+			return true;
+		}
+		void fix_delete(node_pointer node) {
+			node_pointer w;
+
+			while (node != _root && node->color == black)
+			{
+				if (node == node->parent->left)
+				{
+					w = node->parent->right;
+					if (w->color == red)
+					{
+						w->color = black;
+						node->parent->color = red;
+						left_rotate(node->parent);
+						w = node->parent->right;
+					}
+					if (w->left->color == black && w->right->color == black) {
+						w->color = red;
+						node = node->parent;
+					}
+					else
+					{
+						if (w->right->color == black)
+						{
+							w->left->color = black;
+							w->color = red;
+							right_rotate(w);
+							w = node->parent->right;
+						}
+
+						w->color = node->parent->color;
+						node->parent->color = black;
+						w->right->color = black;
+						left_rotate(node->parent);
+						node = _root;
+					}
+				}
+				else
+				{
+					w = node->parent->left;
+					if (w->color == red) {
+						w->color = black;
+						node->parent->color = red;
+						right_rotate(node->parent);
+						w = node->parent->left;
+					}
+					if (w->left->color == black && w->right->color == black) {
+						w->color = red;
+						node = node->parent;
+					}
+					else
+					{
+						if (w->left->color == black)
+						{
+							w->right->color = black;
+							w->color = red;
+							left_rotate(w);
+							w = node->parent->left;
+						}
+						w->color = node->parent->color;
+						node->parent->color = black;
+						w->left->color = black;
+						right_rotate(node->parent);
+						node = _root;
+					}
+				}
+			}
+			node->color = black;
+		}
+
 	public:
+
 		//get node with min value
-		node_pointer most_left(node_pointer &node) { //min value
+		node_pointer most_left(node_pointer &node) {
 			if (node == _nil)
 				return (_root);
 
@@ -399,10 +555,10 @@ namespace ft {
 			return (node);
 		}
 
-		node_pointer most_left() {
+		node_pointer most_left() const {
 			node_pointer tmp = _root;
 
-			if (tmp != _nil)
+			if (tmp == _nil)
 				return (_root);
 
 			while (tmp->left != _nil)
@@ -440,10 +596,12 @@ namespace ft {
 			}
 
 			node_pointer y = x->parent;
+
 			while (y != NULL && x == y->right) {
 				x = y;
 				y = y->parent;
 			}
+
 			return y;
 		}
 
@@ -453,6 +611,7 @@ namespace ft {
 			}
 
 			node_pointer y = x->parent;
+
 			while (y != NULL && x == y->left) {
 				x = y;
 				y = y->parent;
@@ -462,7 +621,7 @@ namespace ft {
 		}
 
 		void clear_tree(node_pointer node) {
-			if (node == _nil)
+			if(node == _nil)
 				return;
 
 			clear_tree(node->left);
@@ -479,17 +638,26 @@ namespace ft {
 			node_pointer y = x->right;
 			x->right = y->left;
 
-			if (y->left != _nil) {
+			if (y->left != _nil)
+			{
 				y->left->parent = x;
 			}
+
 			y->parent = x->parent;
-			if (x->parent == NULL) {
+
+			if (x->parent == NULL)
+			{
 				_root = y;
-			} else if (x == x->parent->left) {
+			}
+			else if (x == x->parent->left)
+			{
 				x->parent->left = y;
-			} else {
+			}
+			else
+			{
 				x->parent->right = y;
 			}
+
 			y->left = x;
 			x->parent = y;
 		}
@@ -497,17 +665,27 @@ namespace ft {
 		void right_rotate(node_pointer x) {
 			node_pointer y = x->left;
 			x->left = y->right;
-			if (y->right != _nil) {
+
+			if (y->right != _nil)
+			{
 				y->right->parent = x;
 			}
+
 			y->parent = x->parent;
-			if (x->parent == NULL) {
+
+			if (x->parent == NULL)
+			{
 				_root = y;
-			} else if (x == x->parent->right) {
+			}
+			else if (x == x->parent->right)
+			{
 				x->parent->right = y;
-			} else {
+			}
+			else
+			{
 				x->parent->left = y;
 			}
+
 			y->right = x;
 			x->parent = y;
 		}
@@ -520,6 +698,13 @@ namespace ft {
 			else
 				u->parent->right = v;
 			v->parent = u->parent;
+		}
+
+		void swap(rb_tree &rhs) {
+			std::swap(_root, rhs._root);
+			std::swap(_nil, rhs._nil);
+			std::swap(_alloc, rhs._alloc);
+			std::swap(_size, rhs._size);
 		}
 
 	};

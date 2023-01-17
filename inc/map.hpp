@@ -40,7 +40,7 @@ namespace ft {
 		typedef typename tree_type::const_it				const_iterator;
 //		typedef typename tree_type::reverse_iterator		reverse_iterator;
 //		typedef typename tree_type::const_reverse_iterator	const_reverse_iterator;
-//		typedef typename tree_type::size_type				size_type;
+		typedef typename tree_type::size_type				size_type;
 //		typedef typename tree_type::difference_type			difference_type;
 //
 //
@@ -134,13 +134,13 @@ namespace ft {
 //
 //		Return iterator to beginning
 		iterator begin() { return _tree.begin(); }
-////		Return const iterator to beginning
-//		const_iterator begin() const { return _tree.begin(); }
+//		Return const iterator to beginning
+		const_iterator begin() const { return _tree.begin(); }
 //
 //		Return iterator to end
 		iterator end() { return _tree.end(); }
-////		Return const iterator to end
-//		const_iterator end() const { return _tree.end(); }
+//		Return const iterator to end
+		const_iterator end() const { return _tree.end(); }
 //
 ////		Returns a reverse iterator to the beginning
 //		reverse_iterator rbegin() { return _tree.rbegin(); }
@@ -154,12 +154,12 @@ namespace ft {
 //
 ////	Capacity:
 //
-////		checks whether the container is empty
-//		bool empty() const { return _tree.empty(); }
-////		returns the number of elements
-//		size_type size() const { return _tree.size(); }
-////		returns the maximum possible number of elements
-//		size_type max_size() const { return _tree.max_size(); }
+//		checks whether the container is empty
+		bool empty() const { return _tree.empty(); }
+//		returns the number of elements
+		size_type size() const { return _tree.size(); }
+//		returns the maximum possible number of elements
+		size_type max_size() const { return _tree.max_size(); }
 //
 //		void swap(map<Key, T, Compare>& x) {
 //			_tree.swap(x.t);
@@ -180,7 +180,7 @@ namespace ft {
 //		insert a single elemen
 		void insert(const value_type& val) {
 //		pair_iterator_bool insert(const value_type& val) {
-			_tree.InsertNode(val);
+			_tree.insert_node(val);
 //			_tree.insert(val);
 //			return _tree.insert(val);
 		}
@@ -193,45 +193,11 @@ namespace ft {
 //			_tree.insert(first, last);
 //		}
 
-		//
-//		utility<iterator, bool> insert(const value_type& val) {
-//			int isNew = 0;
-//			iterator temp = _tree.insert(val, isNew);
-//			if (!isNew)
-//				return (ft::make_pair<iterator, bool>(temp, false));
-//			_size++;
-////            utility<iterator, bool> t1 = ft::make_pair<iterator, bool>(temp, true);
-//			return (ft::make_pair<iterator, bool>(temp, true));
-//		}
-//
-//		template <class InputIterator>
-//		void insert (InputIterator first, InputIterator last) {
-//			InputIterator it = first;
-//			int isNew = 0;
-//			for (; it != last; it++) {
-//				_tree.insert(*it, isNew);
-//				if (isNew)
-//					_size++;
-//				isNew = 0;
-//			}
-//		}
-//
-//		iterator insert(iterator position, const value_type& val) {
-//			(void)position;
-//			int isNew = 0;
-//			iterator temp = _tree.insert(val, isNew);
-//			if (temp == _tree.end())
-//				return (temp);
-//			_size++;
-//			return (temp);
-//		}
-		//
-
-
-
 
 //		void erase(iterator position) { _tree.erase(position); }
-//		size_type erase(const key_type& x) { return _tree.erase(x); }
+		size_type erase(const key_type& key) {
+			return _tree.delete_node(key);
+		}
 //		void erase(iterator first, iterator last) { _tree.erase(first, last); }
 //
 //	// map operations:

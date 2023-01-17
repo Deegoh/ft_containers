@@ -89,36 +89,25 @@ void testMap(int count) {
 
 	int i;
 	for (i = 1; i <= count; ++i) {
-//		map_int.insert(ft::make_pair(i, i * count));
+		map_int.insert(ft::make_pair(i, i * count));
 	}
-	map_int.insert(ft::make_pair(2, 10));
-	map_int.insert(ft::make_pair(1, 5));
-//	map_int.insert(ft::make_pair(3, 15));
-//
-	it = map_int.begin();
-	std::cout << it->first << " ";
-	std::cout << it->second << std::endl;
-	it++;
-	std::cout << it->first << " ";
-	std::cout << it->second << std::endl;
-//	it++;
-//	std::cout << it->first << " ";
-//	std::cout << it->second << std::endl;
-//	it--;
-//	std::cout << it->first << " ";
-//	std::cout << it->second << std::endl;
 
+	i = 0;
+	for(it = map_int.begin(); it != map_int.end(); it++)
+	{
+		std::cout << i++;
+		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
+	}
 
-////TODO ++ not working
-//	i = 0;
-//	for(it = map_int.begin(); it != map_int.end(); it++)
-////	for(it = map_int.begin(); i < COUNT; it++)
-//	{
-//		std::cout << i++;
-//		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
-//		if (i > 8)
-//			break;
-//	}
+	std::cout << "\nerase key 3\n" << std::endl;
+	map_int.erase(3);
+
+	i = 0;
+	for(it = map_int.begin(); it != map_int.end(); it++)
+	{
+		std::cout << i++;
+		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
+	}
 
 //	it = map_int.begin();
 //	ft::map<int, int>::iterator ite = map_int.end();
