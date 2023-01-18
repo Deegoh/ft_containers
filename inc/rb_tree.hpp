@@ -4,7 +4,6 @@
 //https://web.archive.org/web/20160731195009/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/TREE.H
 //https://cs.brown.edu/people/jwicks/libstdc++/html_user/stl__tree_8h-source.html
 # include <memory>
-//# include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "utility.hpp"
 # include "comparators.hpp"
@@ -132,36 +131,36 @@ namespace ft {
 			}
 
 			value_pointer operator->() {
-				return &_current->value;
+				return (&_current->value);
 			}
 			value_pointer operator->() const {
-				return &_current->value;
+				return (&_current->value);
 			}
 
 			iterator& operator++() {
-				if (this->_current != _nil)
+				if (_current != _nil)
 					_current = successor(_current);
-				return *this;
+				return (*this);
 			}
 
 			iterator operator++(int) {
 				iterator tmp = *this;
 				++*this;
-				return tmp;
+				return (tmp);
 			}
 
 			iterator& operator--() {
-				if (this->_current == this->_nil)
-					_current = maximum(this->_root);
+				if (_current == _nil)
+					_current = maximum(_current);
 				else
-					this->_ptr = predecessor(this->_current);
-				return *this;
+					_current = predecessor(_current);
+				return (*this);
 			}
 
 			iterator operator--(int) {
 				iterator tmp = *this;
 				--*this;
-				return tmp;
+				return (tmp);
 			}
 
 			node_pointer base() { return _current; }
@@ -225,8 +224,10 @@ namespace ft {
 	public:
 
 //		iterator in tree
-		typedef iterator<const value_type>	const_it;
-		typedef iterator<value_type>		it;
+		typedef iterator<const value_type>		const_it;
+		typedef iterator<value_type>			it;
+		typedef ft::reverse_iterator<it>		reverse_iterator;
+		typedef ft::reverse_iterator<const_it>	const_reverse_iterator;
 
 		// default
 		rb_tree() : _size(0) {
@@ -705,6 +706,72 @@ namespace ft {
 			std::swap(_nil, rhs._nil);
 			std::swap(_alloc, rhs._alloc);
 			std::swap(_size, rhs._size);
+		}
+
+		it lower_bound (const key_type& key) {
+			node_pointer t = _root;
+
+			while (t != NULL) {
+				if (t->value.first == key)
+					return (it(t, _nil));
+				else if (key_compare_type()(key, t->value.first))
+					return (it(t, _nil));
+				else
+					t = t->right;
+			}
+			return end();
+		}
+
+		const_it lower_bound (const key_type& key) const{
+			node_pointer t = _root;
+
+			while (t != NULL) {
+				if (t->value.first == key)
+					return (const_it(t, _nil));
+				else if (key_compare_type()(key, t->value.first))
+					return (const_it(t, _nil));
+				else
+					t = t->right;
+			}
+			return end();
+		}
+
+		it upper_bound (const key_type& key) {
+			node_pointer t = _root;
+
+			while (t != NULL) {
+				if (key_compare_type()(key, t->value.first))
+					return it(t, _nil);
+				else
+					t = t->right;
+			}
+			return end();
+		}
+
+		const_it upper_bound (const key_type& key) const{
+			node_pointer t = _root;
+
+			while (t != NULL) {
+				if (key_compare_type()(key, t->value.first))
+					return const_it(t, _nil);
+				else
+					t = t->right;
+			}
+			return end();
+		}
+
+		pair<const_it,const_it> equal_range (const key_type& key) const {
+			return (ft::make_pair<const_it, const_it>(lower_bound(key), upper_bound(key)));
+		}
+
+		pair<it,it> equal_range (const key_type& key) {
+			return (ft::make_pair<it , it>(lower_bound(key), upper_bound(key)));
+		}
+
+		size_type count(const key_type& key) const {
+			if (find(key) != end())
+				return 1;
+			return 0;
 		}
 
 	};

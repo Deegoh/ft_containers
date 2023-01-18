@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib>
 
 #ifndef STD
 # define STD 0
@@ -91,6 +90,9 @@ void testMap(int count) {
 	for (i = 1; i <= count; ++i) {
 		map_int.insert(ft::make_pair(i, i * count));
 	}
+
+	i = 3;
+	map_int.insert(ft::make_pair(i, i * count));
 
 	i = 0;
 	for(it = map_int.begin(); it != map_int.end(); it++)
