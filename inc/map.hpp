@@ -84,6 +84,7 @@ namespace ft {
 			_value_comp(comp),
 			_tree(),
 			_alloc(alloc) {
+				clear();
 				insert(first, last);
 		}
 
@@ -100,8 +101,9 @@ namespace ft {
 			{
 				_key_comp = rhs._key_comp;
 				_value_comp = rhs._value_comp;
-				_tree = rhs._tree;
 				_alloc = rhs._alloc;
+				clear();
+				insert(rhs.begin(), rhs.end());
 			}
 			return (*this);
 		}
