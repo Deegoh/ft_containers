@@ -129,6 +129,12 @@ namespace ft {
 
 //		access or insert specified element
 		mapped_type& operator[](const key_type& key) {
+			typename tree_type::node_pointer node;
+			node = _tree.search_tree(get_root(), key);
+
+			if (node->value.first != key)
+				insert(ft::make_pair(key, T()));
+
 			return((*((insert(ft::make_pair(key, T()))).first)).second);
 		}
 
