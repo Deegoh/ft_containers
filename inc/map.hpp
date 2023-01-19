@@ -132,6 +132,10 @@ namespace ft {
 			return((*((insert(ft::make_pair(key, T()))).first)).second);
 		}
 
+		typename tree_type::node_pointer get_root() {
+			return (_tree.get_root());
+		}
+
 //	Iterators:
 //
 //		Return iterator to beginning
@@ -167,17 +171,14 @@ namespace ft {
 //			_tree.swap(x.t);
 //		}
 //
-////	Modifiers:
-//
-////		Erases all elements from the container. After this call, size() returns zero.
+//	Modifiers:
+
 //		clears the contents
 		void clear() {
 			_tree.clear();
 		}
-//
-//
+
 		typedef ft::pair<iterator, bool> pair_iterator_bool;
-//		// typedef done to get around compiler bug
 
 //		insert a single elemen
 		pair_iterator_bool insert(const value_type& val) {
@@ -250,8 +251,7 @@ namespace ft {
 		pair_citerator_citerator equal_range(const key_type& key) const {
 			return _tree.equal_range(key);
 		}
-//
-//
+
 //	Observers:
 //		returns the function that compares keys
 		key_compare key_comp() const { return _tree.key_comp(); }

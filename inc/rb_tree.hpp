@@ -142,11 +142,8 @@ namespace ft {
 			}
 
 			iterator& operator++() {
-//				TODO _nil into max not working
 				if (_current != _nil)
 					_current = successor(_current);
-//				else
-//					_current = maximum(_root);
 				return (*this);
 			}
 
@@ -157,9 +154,10 @@ namespace ft {
 			}
 
 			iterator& operator--() {
-				std::cout << "--" << &_current << "\n";
 				if (_current != _nil)
 					_current = predecessor(_current);
+				else
+					_current = maximum(_root);
 				return (*this);
 			}
 
@@ -187,7 +185,7 @@ namespace ft {
 			}
 
 			node_pointer predecessor(node_pointer node) {
-				if (node->left != _nil)
+				if (node->left != this->_nil)
 				{
 					return maximum(node->left);
 				}
@@ -199,9 +197,6 @@ namespace ft {
 						node = tmp;
 						tmp = tmp->parent;
 					}
-
-					if (tmp == NULL)
-						return _nil;
 					return tmp;
 				}
 			}
@@ -599,35 +594,35 @@ namespace ft {
 			return (tmp);
 		}
 
-		node_pointer successor(node_pointer x) {
-			if (x->right != NULL) {
-				return most_left(x->right);
-			}
-
-			node_pointer y = x->parent;
-
-			while (y != NULL && x == y->right) {
-				x = y;
-				y = y->parent;
-			}
-
-			return y;
-		}
-
-		node_pointer predecessor(node_pointer x) {
-			if (x->left != NULL) {
-				return maximum(x->left);
-			}
-
-			node_pointer y = x->parent;
-
-			while (y != NULL && x == y->left) {
-				x = y;
-				y = y->parent;
-			}
-
-			return y;
-		}
+//		node_pointer successor(node_pointer x) {
+//			if (x->right != NULL) {
+//				return most_left(x->right);
+//			}
+//
+//			node_pointer y = x->parent;
+//
+//			while (y != NULL && x == y->right) {
+//				x = y;
+//				y = y->parent;
+//			}
+//
+//			return y;
+//		}
+//
+//		node_pointer predecessor(node_pointer x) {
+//			if (x->left != NULL) {
+//				return maximum(x->left);
+//			}
+//
+//			node_pointer y = x->parent;
+//
+//			while (y != NULL && x == y->left) {
+//				x = y;
+//				y = y->parent;
+//			}
+//
+//			return y;
+//		}
 
 		void clear_tree(node_pointer node) {
 			if(node == _nil)

@@ -119,13 +119,28 @@ void testMap(int count) {
 	std::list<ft::pair<const int, int> > lst;
 	unsigned int lst_size = 7;
 	for (unsigned int i = 0; i < lst_size; ++i)
+	{
+		std::cout << "key:" << lst_size - i << " value:" << i << std::endl;
 		lst.push_back(ft::pair<const int, int>(lst_size - i, i));
+	}
 
 	ft::map<int, int> mp(lst.begin(), lst.end());
 	it = mp.begin();
 	ft::map<int, int>::iterator ite = mp.end();
 
-//	--(--it);
+//	std::cout << "\t\t\t" << mp.get_root()->value.first << std::endl;
+//	std::cout << "\t\t" << mp.get_root()->left->value.first << "\t\t" << mp.get_root()->right->value.first << std::endl;
+//	std::cout << "\t" << mp.get_root()->left->left->value.first << "\t\t" << mp.get_root()->left->right->value.first << std::endl;
+//	std::cout << "" << mp.get_root()->left->left->left->value.first << "\t\t" << mp.get_root()->left->left->right->value.first << std::endl;
+
+	for (; it != ite; ++it)
+		std::cout << it->first << ":" << it->second << " ";
+	std::cout << std::endl;
+
+	it = mp.begin();
+//	it++;
+//	it--;
+	--ite;
 	ft::map<int, int> mp_range(it, ite);
 
 	for (; it != ite; ++it)
