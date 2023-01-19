@@ -709,54 +709,46 @@ namespace ft {
 		}
 
 		it lower_bound (const key_type& key) {
-			node_pointer t = _root;
+			it start = begin();
 
-			while (t != NULL) {
-				if (t->value.first == key)
-					return (it(t, _nil));
-				else if (key_compare_type()(key, t->value.first))
-					return (it(t, _nil));
-				else
-					t = t->right;
+			for (; start != end() ; start++) {
+				if ((*start).first >= key)
+					return start;
 			}
+
 			return end();
 		}
 
 		const_it lower_bound (const key_type& key) const{
-			node_pointer t = _root;
+			const_it start = begin();
 
-			while (t != NULL) {
-				if (t->value.first == key)
-					return (const_it(t, _nil));
-				else if (key_compare_type()(key, t->value.first))
-					return (const_it(t, _nil));
-				else
-					t = t->right;
+			for (; start != end() ; start++) {
+				if ((*start).first >= key)
+					return start;
 			}
+
 			return end();
 		}
 
 		it upper_bound (const key_type& key) {
-			node_pointer t = _root;
+			it start = begin();
 
-			while (t != NULL) {
-				if (key_compare_type()(key, t->value.first))
-					return it(t, _nil);
-				else
-					t = t->right;
+			for (; start != end() ; start++) {
+				if ((*start).first > key)
+					return start;
 			}
+
 			return end();
 		}
 
 		const_it upper_bound (const key_type& key) const{
-			node_pointer t = _root;
+			const_it start = begin();
 
-			while (t != NULL) {
-				if (key_compare_type()(key, t->value.first))
-					return const_it(t, _nil);
-				else
-					t = t->right;
+			for (; start != end() ; start++) {
+				if ((*start).first > key)
+					return start;
 			}
+
 			return end();
 		}
 

@@ -32,7 +32,8 @@ namespace ft {
 		pair& operator=(const pair& pr) {
 			if (this != &pr)
 			{
-				*this = pair(pr);
+				first = pr.first;
+				second = pr.second;
 			}
 			return (*this);
 		};

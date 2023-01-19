@@ -111,6 +111,8 @@ void testMap(int count) {
 		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
 	}
 
+	std::cout << "size_max " << map_int.max_size() << std::endl;
+
 //	it = map_int.begin();
 //	ft::map<int, int>::iterator ite = map_int.end();
 //	std::cout << &it << " " << &ite << std::endl;
