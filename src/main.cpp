@@ -113,6 +113,26 @@ void testMap(int count) {
 
 	std::cout << "size_max " << map_int.max_size() << std::endl;
 
+	ft::map<char, foo<float> > mp_cf;
+	mp_cf['a'] = 2.3;
+
+	std::list<ft::pair<const int, int> > lst;
+	unsigned int lst_size = 7;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(ft::pair<const int, int>(lst_size - i, i));
+
+	ft::map<int, int> mp(lst.begin(), lst.end());
+	it = mp.begin();
+	ft::map<int, int>::iterator ite = mp.end();
+
+//	--(--it);
+	ft::map<int, int> mp_range(it, ite);
+
+	for (; it != ite; ++it)
+		std::cout << it->first << ":" << it->second << " ";
+	std::cout << std::endl;
+//		it->second = ++i * 5;
+
 //	it = map_int.begin();
 //	ft::map<int, int>::iterator ite = map_int.end();
 //	std::cout << &it << " " << &ite << std::endl;

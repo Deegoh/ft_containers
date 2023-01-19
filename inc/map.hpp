@@ -126,10 +126,10 @@ namespace ft {
 ////			TODO find if key exist
 //			throw std::out_of_range("out_of_range exception");
 //		}
-//
+
 //		access or insert specified element
-		mapped_type& operator[](const Key& key) {
-			return(*((this->insert(make_pair(key,mapped_type()))).first));
+		mapped_type& operator[](const key_type& key) {
+			return((*((insert(ft::make_pair(key, T()))).first)).second);
 		}
 
 //	Iterators:
@@ -216,10 +216,10 @@ namespace ft {
 	// map operations:
 
 		iterator find(const key_type& key) {
-			return iterator(_tree.search_tree(_tree.get_root(), key), _tree.get_nil());
+			return iterator(_tree.get_root(), _tree.search_tree(_tree.get_root(), key), _tree.get_nil());
 		}
 		const_iterator find(const key_type& key) const {
-			return const_iterator(_tree.search_tree(_tree.get_root(), key), _tree.get_nil());
+			return const_iterator(_tree.get_root(), _tree.search_tree(_tree.get_root(), key), _tree.get_nil());
 		}
 
 		size_type count(const key_type& key) const { return _tree.count(key); }
@@ -252,11 +252,11 @@ namespace ft {
 		}
 //
 //
-////	Observers:
-////		returns the function that compares keys
-//		key_compare key_comp() const { return _tree.key_comp(); }
-////		returns the function that compares keys in objects of type value_type
-//		value_compare value_comp() const { return value_compare(_tree.key_comp()); }
+//	Observers:
+//		returns the function that compares keys
+		key_compare key_comp() const { return _tree.key_comp(); }
+//		returns the function that compares keys in objects of type value_type
+		value_compare value_comp() const { return value_compare(_tree.key_comp()); }
 	};
 //
 //	template <class Key, class T, class Compare>

@@ -69,6 +69,7 @@ namespace ft {
 		typedef	Compare		key_compare_type;
 		typedef	size_t		size_type;
 
+
 	private:
 		node_pointer _root;
 		size_type _size;
@@ -86,12 +87,14 @@ namespace ft {
 			typedef value_type&		value_reference;
 
 		private:
+			node_pointer _root;
 			node_pointer _current;
 			node_pointer _nil;
 
 		public:
-			iterator() : _current(NULL), _nil(NULL) {}
-			iterator(node_pointer current, node_pointer nil) : _current(current), _nil(nil) {}
+			iterator() : _root(NULL), _current(NULL), _nil(NULL) {}
+			iterator(node_pointer root, node_pointer current, node_pointer nil) :
+					_root(root), _current(current), _nil(nil) {}
 
 			iterator(const iterator& src) {
 				*this = src;
@@ -99,6 +102,7 @@ namespace ft {
 
 			iterator& operator=(const iterator& rhs) {
 				if (this != &rhs) {
+					_root = rhs._root;
 					_current = rhs._current;
 					_nil = rhs._nil;
 				}
@@ -108,7 +112,7 @@ namespace ft {
 			~iterator() {}
 
 			operator iterator<const T1>() const {
-				return (iterator<const T1>(this->_current, this->_nil));
+				return (iterator<const T1>(_root, _current, _nil));
 			}
 
 			bool operator==(const iterator &rhs) const {
@@ -138,8 +142,11 @@ namespace ft {
 			}
 
 			iterator& operator++() {
+//				TODO _nil into max not working
 				if (_current != _nil)
 					_current = successor(_current);
+//				else
+//					_current = maximum(_root);
 				return (*this);
 			}
 
@@ -150,9 +157,8 @@ namespace ft {
 			}
 
 			iterator& operator--() {
-				if (_current == _nil)
-					_current = maximum(_current);
-				else
+				std::cout << "--" << &_current << "\n";
+				if (_current != _nil)
 					_current = predecessor(_current);
 				return (*this);
 			}
@@ -181,20 +187,22 @@ namespace ft {
 			}
 
 			node_pointer predecessor(node_pointer node) {
-				if (node->left != this->_nil)
-				{ // if the left subtree is not null the predecessor is the right most node is the left subtree
+				if (node->left != _nil)
+				{
 					return maximum(node->left);
 				}
 				else
-				{ // else it is the lowest ancestor of node whose right child is also an ancestor of node
-					node_pointer x = node->parent;
+				{
+					node_pointer tmp = node->parent;
 
-					while (x != NULL && node == x->left) {
-						node = x;
-						x = x->parent;
+					while (tmp != NULL && node == tmp->left) {
+						node = tmp;
+						tmp = tmp->parent;
 					}
 
-					return x;
+					if (tmp == NULL)
+						return _nil;
+					return tmp;
 				}
 			}
 
@@ -205,17 +213,17 @@ namespace ft {
 				}
 				else
 				{
-					node_pointer x = node->parent;
+					node_pointer tmp = node->parent;
 
-					while (x != NULL && node == x->right) {
-						node = x;
-						x = x->parent;
+					while (tmp != NULL && node == tmp->right) {
+						node = tmp;
+						tmp = tmp->parent;
 					}
 
-					if (x == NULL)
+					if (tmp == NULL)
 						return _nil;
 
-					return x;
+					return tmp;
 				}
 			}
 
@@ -272,13 +280,13 @@ namespace ft {
 
 		Compare key_comp() const { return Compare(); }
 
-		it begin() { return it(most_left(), _nil); }
+		it begin() { return it(_root, most_left(), _nil); }
 
-		const_it begin() const { return const_it(most_left(), _nil); }
+		const_it begin() const { return const_it(_root, most_left(), _nil); }
 
-		it end() { return it(_nil, _nil); }
+		it end() { return it(_root, _nil, _nil); }
 
-		const_it end() const { return const_it(_nil, _nil); }
+		const_it end() const { return const_it(_root, _nil, _nil); }
 
 		bool empty() const { return _size == 0; }
 
