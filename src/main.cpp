@@ -81,10 +81,23 @@
 //		printSize(mp_copy);
 //}
 
+template <class MAP>
+void	cmp(const MAP &lhs, const MAP &rhs)
+{
+	static int i = 0;
+
+	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
+	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
+	std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
+	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
+}
+
 void testMap(int count) {
 //	testCopyMap();
 	{
 		ft::map<int, int> map_int;
+		ft::map<int, int> map_int2;
+		cmp(map_int, map_int2);
 		ft::map<int, int>::iterator it;
 
 		int i;
@@ -143,7 +156,7 @@ void testMap(int count) {
 
 //	it = mp.begin();
 //	--(--ite);
-//	mp.erase(it, ite);
+	mp.erase(it, ite);
 //	it = mp.begin();
 //	ite = mp.end();
 //	it++;

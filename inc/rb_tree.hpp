@@ -81,10 +81,11 @@ namespace ft {
 		template<typename T1>
 		class iterator {
 		public:
-			typedef T1				value_type;
-//			typedef std::ptrdiff_t	difference_type;
-			typedef value_type*		value_pointer;
-			typedef value_type&		value_reference;
+			typedef T1							value_type;
+			typedef std::ptrdiff_t				difference_type;
+			typedef value_type*					pointer;
+			typedef value_type&					reference;
+			typedef bidirectional_iterator_tag	iterator_category;
 
 		private:
 			node_pointer _root;
@@ -123,22 +124,22 @@ namespace ft {
 				return (_current != rhs._current);
 			}
 
-			value_reference operator*() const {
+			reference operator*() const {
 				if (_current == NULL)
 					throw std::exception();
 				return (_current->value);
 			}
 
-			value_reference operator*() {
+			reference operator*() {
 				if (_current == NULL)
 					throw std::exception();
 				return (_current->value);
 			}
 
-			value_pointer operator->() {
+			pointer operator->() {
 				return (&_current->value);
 			}
-			value_pointer operator->() const {
+			pointer operator->() const {
 				return (&_current->value);
 			}
 
@@ -240,21 +241,21 @@ namespace ft {
 			_root = _nil;
 		}
 
-		//copy
-		rb_tree(const rb_tree& other) : _root(NULL) {
-			*this = other;
-		}
-
-		// overload =
-		rb_tree& operator=(const rb_tree& rhs) {
-			if (this != &rhs) {
-				_root = rhs._root;
-				_size = rhs._size;
-				_alloc = rhs._alloc;
-				_nil = rhs._nil;
-			}
-			return (*this);
-		}
+//		//copy
+//		rb_tree(const rb_tree& other) : _root(NULL) {
+//			*this = other;
+//		}
+//
+//		// overload =
+//		rb_tree& operator=(const rb_tree& rhs) {
+//			if (this != &rhs) {
+//				_root = rhs._root;
+//				_size = rhs._size;
+//				_alloc = rhs._alloc;
+//				_nil = rhs._nil;
+//			}
+//			return (*this);
+//		}
 
 		// dectruct
 		~rb_tree() {
@@ -284,6 +285,22 @@ namespace ft {
 
 		const_it end() const { return const_it(_root, _nil, _nil); }
 
+		reverse_iterator rbegin() {
+			return (reverse_iterator(end()));
+		}
+
+		const_reverse_iterator rbegin() const {
+			return (const_reverse_iterator(end()));
+		}
+
+		reverse_iterator rend() {
+			return (reverse_iterator(begin()));
+		}
+
+		const_reverse_iterator rend() const {
+			return (const_reverse_iterator(begin()));
+		}
+
 		bool empty() const { return (_size == 0); }
 
 		size_type size() const { return _size; }
@@ -310,7 +327,7 @@ namespace ft {
 				{
 					x = x->left;
 				}
-				else if (!key_compare_type()(node->value.first, x->value.first))
+				else if (key_compare_type()(x->value.first, node->value.first))
 				{
 					x = x->right;
 				}
@@ -479,6 +496,79 @@ namespace ft {
 			return true;
 		}
 
+		void _FixDelete(node_pointer node) {
+			node_pointer w;
+
+			while (node != _root && node->color == black)
+			{
+				if (node == node->parent->left)
+				{ // if node the left child
+					w = node->parent->right;
+					if (w->color == red)
+					{
+						w->color = black;
+						node->parent->color = red;
+						// new parent is w , old parent became w's left child, p is still x's parent and x->parent->right bacame old w->left
+						left_rotate(node->parent);
+						w = node->parent->right;
+					}
+					if (w->left->color == black && w->right->color == black)
+					{
+						w->color = red;
+						node = node->parent;
+					}
+					else
+					{ // at least on child is red
+						if (w->right->color == black)
+						{ // left child is red
+							w->left->color = black;
+							w->color = red;
+							right_rotate(w);
+							w = node->parent->right;
+						}
+						w->color = node->parent->color;
+						node->parent->color = black;
+						w->right->color = black;
+						left_rotate(node->parent);
+						node = _root;
+					}
+				}
+				else
+				{ // mirror case
+					w = node->parent->left;
+					if (w->color == red)
+					{
+						w->color = black;
+						node->parent->color = red;
+						// new parent is w , old parent became w's left child, p is still x's parent and x->parent->right bacame old w->left
+						right_rotate(node->parent);
+						w = node->parent->left;
+					}
+					if (w->left->color == black && w->right->color == black)
+					{
+						w->color = red;
+						node = node->parent;
+					}
+					else
+					{ // at least on child is red
+						if (w->left->color == black)
+						{ // left child is red
+							w->right->color = black;
+							w->color = red;
+							left_rotate(w);
+							w = node->parent->left;
+						}
+						w->color = node->parent->color;
+						node->parent->color = black;
+						w->left->color = black;
+						right_rotate(node->parent);
+						node = _root;
+					}
+				}
+			}
+			node->color = black; // root is always black
+		}
+
 		void fix_delete(node_pointer node) {
 			node_pointer w;
 
@@ -584,7 +674,7 @@ namespace ft {
 			return (node);
 		}
 
-		node_pointer most_right() {
+		node_pointer most_right() const {
 			node_pointer tmp = _root;
 
 			if (tmp == _nil)
@@ -640,63 +730,92 @@ namespace ft {
 		}
 
 		// Rotates
-		void left_rotate(node_pointer x) {
-			node_pointer y = x->right;
-			x->right = y->left;
+		void left_rotate(node_pointer node) {
+//			node_pointer y = x->right;
+//			x->right = y->left;
+//
+//			if (y->left != _nil)
+//			{
+//				y->left->parent = x;
+//			}
+//
+//			y->parent = x->parent;
+//
+//			if (x->parent == NULL)
+//			{
+//				_root = y;
+//			}
+//			else if (x == x->parent->left)
+//			{
+//				x->parent->left = y;
+//			}
+//			else
+//			{
+//				x->parent->right = y;
+//			}
+//
+//			y->left = x;
+//			x->parent = y;
 
-			if (y->left != _nil)
-			{
-				y->left->parent = x;
-			}
-
-			y->parent = x->parent;
-
-			if (x->parent == NULL)
-			{
-				_root = y;
-			}
-			else if (x == x->parent->left)
-			{
-				x->parent->left = y;
-			}
+			node_pointer tmp = node->right; // save node's right branch
+			node->right = tmp->left; //node's new right child is tmp's old left child
+			if (tmp->left != _nil) // if tmp->left is not NULL
+				tmp->left->parent = node;
+			tmp->parent = node->parent; // tmp is the new node so it takes node's parent
+			if (node->parent == NULL)
+				this->_root = tmp;
+			else if (node == node->parent->left) // is node was its parents left child, tmp becomes its new parents left child
+				node->parent->left = tmp;
 			else
-			{
-				x->parent->right = y;
-			}
-
-			y->left = x;
-			x->parent = y;
+				node->parent->right = tmp; // mirror case
+			tmp->left = node;
+			node->parent = tmp;
 		}
 
-		void right_rotate(node_pointer x) {
-			node_pointer y = x->left;
-			x->left = y->right;
+		void right_rotate(node_pointer node) {
+//			node_pointer y = x->left;
+//			x->left = y->right;
+//
+//			if (y->right != _nil)
+//			{
+//				y->right->parent = x;
+//			}
+//
+//			y->parent = x->parent;
+//
+//			if (x->parent == NULL)
+//			{
+//				_root = y;
+//			}
+//			else if (x == x->parent->right)
+//			{
+//				x->parent->right = y;
+//			}
+//			else
+//			{
+//				x->parent->left = y;
+//			}
+//
+//			y->right = x;
+//			x->parent = y;
 
-			if (y->right != _nil)
-			{
-				y->right->parent = x;
-			}
+			node_pointer tmp = node->left;
 
-			y->parent = x->parent;
-
-			if (x->parent == NULL)
-			{
-				_root = y;
-			}
-			else if (x == x->parent->right)
-			{
-				x->parent->right = y;
-			}
+			node->left = tmp->right;
+			if (tmp->right != _nil)
+				tmp->right->parent = node;
+			tmp->parent = node->parent;
+			if (node->parent == NULL)
+				this->_root = tmp;
+			else if (node == node->parent->left)
+				node->parent->left = tmp;
 			else
-			{
-				x->parent->left = y;
-			}
-
-			y->right = x;
-			x->parent = y;
+				node->parent->right = tmp;
+			tmp->right = node;
+			node->parent = tmp;
 		}
 
-		void transplant(node_pointer &u, node_pointer &v) {
+		void transplant(node_pointer u, node_pointer v) {
 			if (u->parent == NULL)
 				_root = v;
 			else if (u == u->parent->left)

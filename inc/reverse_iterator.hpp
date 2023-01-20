@@ -17,17 +17,17 @@ namespace ft {
 		typedef typename iterator_type::iterator_category	iterator_category;
 
 	protected:
-		RandomIt _randIt;
+		iterator_type _randIt;
 
 	public:
 //		Default constructor
-		reverse_iterator() : _randIt(NULL) {}
+		reverse_iterator() : _randIt() {}
 //		Constructor by random iterator
 		explicit reverse_iterator(const iterator_type& randIt) : _randIt(randIt) {}
 //		Copy constructor
 		template <class Type>
 		explicit reverse_iterator(const reverse_iterator<Type> &src) {
-			(*this) = src;
+			_randIt = src.base();
 		}
 //		assigns another iterator adaptor
 		reverse_iterator &operator=(const reverse_iterator &rhs) {
@@ -50,11 +50,12 @@ namespace ft {
 
 //		accesses the pointed-to element
 		reference operator*() const {
-			return (*(_randIt - 1));
+			iterator_type tmp = _randIt;
+			return (*(--tmp));
 		}
 //		accesses the pointed-to element
 		pointer operator->() const {
-			return &(*(_randIt - 1));
+			return &(operator*());
 		}
 //		accesses an element by index
 		reference operator[](difference_type diff) const {
