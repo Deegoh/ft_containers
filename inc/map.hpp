@@ -216,11 +216,16 @@ namespace ft {
 		}
 
 
-//		void erase(iterator position) { _tree.erase(position); }
+		void erase(iterator position) {
+			erase(position->first);
+		}
 		size_type erase(const key_type& key) {
 			return _tree.delete_node(key);
 		}
-//		void erase(iterator first, iterator last) { _tree.erase(first, last); }
+		void erase(iterator first, iterator last) {
+			while (first != last)
+				erase(first++);
+		}
 
 	// map operations:
 

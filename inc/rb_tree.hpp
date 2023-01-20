@@ -477,6 +477,7 @@ namespace ft {
 
 			return true;
 		}
+
 		void fix_delete(node_pointer node) {
 			node_pointer w;
 
