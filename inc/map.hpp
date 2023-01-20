@@ -77,7 +77,8 @@ namespace ft {
 
 //		range constructor
 		template <class InputIt>
-		map(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last,
+		map(InputIt first, InputIt last,
+//		map(typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type first, InputIt last,
 			const Compare &comp = Compare(),
 			const alloc_type& alloc = alloc_type()) :
 			_key_comp(comp),
@@ -85,6 +86,11 @@ namespace ft {
 			_tree(),
 			_alloc(alloc) {
 				clear();
+//				while (first != last)
+//				std::cout	<< "construct:"
+//							<< first->first
+//							<< " " <<
+//							first->second << std::endl;
 				insert(first, last);
 		}
 
@@ -189,29 +195,30 @@ namespace ft {
 		typedef ft::pair<iterator, bool> pair_iterator_bool;
 
 //		insert a single elemen
-		pair_iterator_bool insert(const value_type& val) {
-			iterator it = find(val.first);
-			if (it->first ==  val.first)
-			{
-				return (ft::make_pair<iterator, bool>(it, false));
+		pair_iterator_bool insert(const value_type& value) {
+			iterator it = find(value.first);
+			if (it != end())
+				return (pair_iterator_bool(it, false));
+			else {
+				this->_tree.insert_node(value);
+				it = find(value.first);
+				return (pair_iterator_bool(it, true));
 			}
-			_tree.insert_node(val);
-			return (pair_iterator_bool(it, true));
 		}
 
 //		insert a single elemen with hint
-		iterator insert(iterator position, const value_type& val) {
+		iterator insert(iterator position, const value_type& value) {
 			(void)position;
-			insert(val);
-			find(val.first);
-			return (iterator(find(val.first), _tree.get_nil()));
+			return (insert(value).first);
 		}
 
 //		insert a range
 		template <class InputIt>
 		void insert (InputIt first, InputIt last) {
-			for (; first != last ; first++) {
+			while (first != last)
+			{
 				insert(*first);
+				first++;
 			}
 		}
 
@@ -222,9 +229,23 @@ namespace ft {
 		size_type erase(const key_type& key) {
 			return _tree.delete_node(key);
 		}
-		void erase(iterator first, iterator last) {
-			while (first != last)
-				erase(first++);
+		void erase(iterator start, iterator last) {
+
+//			iterator temp = first;
+//			int i = 0;
+//			for (; temp != last; temp++) {
+//				i++;
+//			}
+//			for (; i > 0; i--) {
+//				erase(first++);
+////				_size--;
+//			}
+
+			while (start != last)
+			{
+				erase(start->first);
+				start++;
+			}
 		}
 
 	// map operations:
@@ -236,7 +257,11 @@ namespace ft {
 			return const_iterator(_tree.get_root(), _tree.search_tree(_tree.get_root(), key), _tree.get_nil());
 		}
 
-		size_type count(const key_type& key) const { return _tree.count(key); }
+		size_type count(const key_type& key) const {
+			if (find(key) != end())
+				return 1;
+			return 0;
+		}
 
 		iterator lower_bound(const key_type& key) {
 			return _tree.lower_bound(key);

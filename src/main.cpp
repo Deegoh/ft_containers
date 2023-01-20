@@ -83,76 +83,90 @@
 
 void testMap(int count) {
 //	testCopyMap();
-	ft::map<int, int> map_int;
-	ft::map<int, int>::iterator it;
+	{
+		ft::map<int, int> map_int;
+		ft::map<int, int>::iterator it;
 
-	int i;
-	for (i = 1; i <= count; ++i) {
+		int i;
+		for (i = 1; i <= count; ++i) {
+			map_int.insert(ft::make_pair(i, i * count));
+		}
+
+		i = 3;
 		map_int.insert(ft::make_pair(i, i * count));
-	}
 
-	i = 3;
-	map_int.insert(ft::make_pair(i, i * count));
+		i = 0;
+		for (it = map_int.begin(); it != map_int.end(); it++) {
+			std::cout << i++;
+			std::cout << ":first[" << it->first << "] second[" << it->second
+					  << "]" << "\n";
+		}
 
-	i = 0;
-	for(it = map_int.begin(); it != map_int.end(); it++)
-	{
-		std::cout << i++;
-		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
-	}
+		std::cout << "\nerase key 3\n" << std::endl;
+		map_int.erase(3);
 
-	std::cout << "\nerase key 3\n" << std::endl;
-	map_int.erase(3);
+		i = 0;
+		for (it = map_int.begin(); it != map_int.end(); it++) {
+			std::cout << i++;
+			std::cout << ":first[" << it->first << "] second[" << it->second
+					  << "]" << "\n";
+		}
 
-	i = 0;
-	for(it = map_int.begin(); it != map_int.end(); it++)
-	{
-		std::cout << i++;
-		std::cout << ":first[" << it->first << "] second[" << it->second << "]" << "\n";
-	}
+		std::cout << "size_max " << map_int.max_size() << std::endl;
 
-	std::cout << "size_max " << map_int.max_size() << std::endl;
-
-	ft::map<char, foo<float> > mp_cf;
+		ft::map<char, foo<float> > mp_cf;
 //	std::cout << mp_cf['a'] << std::endl;
-	mp_cf['a'] = 2.3;
-	std::cout << mp_cf['a'] << std::endl;
+		mp_cf['a'] = 2.3;
+		std::cout << mp_cf['a'] << std::endl;
 
-	std::list<ft::pair<const int, int> > lst;
-	unsigned int lst_size = 7;
-	for (unsigned int i = 0; i < lst_size; ++i)
-	{
-		std::cout << "key:" << lst_size - i << " value:" << i << std::endl;
-		lst.push_back(ft::pair<const int, int>(lst_size - i, i));
-	}
+		std::list<ft::pair<const int, int> > lst;
+		unsigned int lst_size = 7;
+		for (unsigned int i = 0; i < lst_size; ++i) {
+			std::cout << "key:" << lst_size - i << " value:" << i << std::endl;
+			lst.push_back(ft::pair<const int, int>(lst_size - i, i));
+		}
 
 
-	ft::map<int, int> mp(lst.begin(), lst.end());
-	it = mp.begin();
-	ft::map<int, int>::iterator ite = mp.end();
+		ft::map<int, int> mp(lst.begin(), lst.end());
+		it = mp.begin();
+		ft::map<int, int>::iterator ite = mp.end();
 
 //	std::cout << "\t\t\t" << mp.get_root()->value.first << std::endl;
 //	std::cout << "\t\t" << mp.get_root()->left->value.first << "\t\t" << mp.get_root()->right->value.first << std::endl;
 //	std::cout << "\t" << mp.get_root()->left->left->value.first << "\t\t" << mp.get_root()->left->right->value.first << std::endl;
 //	std::cout << "" << mp.get_root()->left->left->left->value.first << "\t\t" << mp.get_root()->left->left->right->value.first << std::endl;
 
-	for (; it != ite; ++it)
-		std::cout << it->first << ":" << it->second << " ";
-	std::cout << std::endl;
+		for (; it != ite; ++it)
+			std::cout << it->first << ":" << it->second << " ";
+		std::cout << std::endl;
 
 
-	it = mp.begin();
-	--(--ite);
-	mp.erase(it, ite);
-	it = mp.begin();
-	ite = mp.end();
+//	it = mp.begin();
+//	--(--ite);
+//	mp.erase(it, ite);
+//	it = mp.begin();
+//	ite = mp.end();
 //	it++;
 //	it--;
 //	ft::map<int, int> mp_range(it, ite);
 //
-	for (; it != ite; ++it)
-		std::cout << it->first << ":" << it->second << " ";
-	std::cout << std::endl;
+//	for (; it != ite; ++it)
+//		std::cout << it->first << ":" << it->second << " ";
+//	std::cout << std::endl;
+	}
+
+	{
+		std::list<ft::pair<int, std::string> > lst;
+		unsigned int lst_size = 10;
+		for (unsigned int i = 0; i < lst_size; ++i)
+			lst.push_back(ft::pair<int, std::string>(i, std::string((lst_size - i), i + 65)));
+		ft::map<int, std::string> mp(lst.begin(), lst.end());
+
+		ft::map<int, std::string>::iterator it;
+		for (it = mp.begin(); it != mp.end() ; ++it) {
+			std::cout << it->first << " " << it->second << "\n";
+		}
+	}
 
 //		it->second = ++i * 5;
 

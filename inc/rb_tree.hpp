@@ -93,6 +93,7 @@ namespace ft {
 
 		public:
 			iterator() : _root(NULL), _current(NULL), _nil(NULL) {}
+
 			iterator(node_pointer root, node_pointer current, node_pointer nil) :
 					_root(root), _current(current), _nil(nil) {}
 
@@ -283,7 +284,7 @@ namespace ft {
 
 		const_it end() const { return const_it(_root, _nil, _nil); }
 
-		bool empty() const { return _size == 0; }
+		bool empty() const { return (_size == 0); }
 
 		size_type size() const { return _size; }
 
@@ -762,12 +763,6 @@ namespace ft {
 
 		pair<it,it> equal_range (const key_type& key) {
 			return (ft::make_pair<it , it>(lower_bound(key), upper_bound(key)));
-		}
-
-		size_type count(const key_type& key) const {
-			if (find(key) != end())
-				return 1;
-			return 0;
 		}
 
 	};
