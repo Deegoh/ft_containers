@@ -53,38 +53,38 @@ namespace ft {
 
 //TODO find if fix infinit loop
 //		https://www.geeksforgeeks.org/deletion-in-red-black-tree/
-		// returns pointer to uncle
-		node_pointer uncle() {
-			// If no parent or grandparent, then no uncle
-			if (parent == NULL || parent->parent == NULL)
-				return NULL;
-
-			if (parent->isOnLeft())
-				// uncle on right
-				return parent->parent->right;
-			else
-				// uncle on left
-				return parent->parent->left;
-		}
-
-		bool isOnLeft() { return this == parent->left; }
-
-		// returns pointer to sibling
-		node_pointer sibling() {
-			// sibling null if no parent
-			if (parent == NULL)
-				return NULL;
-
-			if (isOnLeft())
-				return parent->right;
-
-			return parent->left;
-		}
-
-		bool hasRedChild() {
-			return (left != NULL and left->color == red) ||
-					(right != NULL and right->color == red);
-		}
+//		// returns pointer to uncle
+//		node_pointer uncle() {
+//			// If no parent or grandparent, then no uncle
+//			if (parent == NULL || parent->parent == NULL)
+//				return NULL;
+//
+//			if (parent->isOnLeft())
+//				// uncle on right
+//				return parent->parent->right;
+//			else
+//				// uncle on left
+//				return parent->parent->left;
+//		}
+//
+//		bool isOnLeft() { return this == parent->left; }
+//
+//		// returns pointer to sibling
+//		node_pointer sibling() {
+//			// sibling null if no parent
+//			if (parent == NULL)
+//				return NULL;
+//
+//			if (isOnLeft())
+//				return parent->right;
+//
+//			return parent->left;
+//		}
+//
+//		bool hasRedChild() {
+//			return (left != NULL and left->color == red) ||
+//					(right != NULL and right->color == red);
+//		}
 	};
 
 	//end node
@@ -347,12 +347,36 @@ namespace ft {
 
 		// insert/erase
 
+//		void RedBlackTree::insert(int value) {
+//			Node *z = new Node(value);
+//			Node *y = nil;
+//			Node *x = root;
+//			while (x != nil) {
+//				y = x;
+//				if (z->value < x->value)
+//					x = x->left;
+//				else
+//					x = x->right;
+//			}
+//			z->parent = y;
+//			if (y == nil)
+//				root = z;
+//			else if (z->value < y->value)
+//				y->left = z;
+//			else
+//				y->right = z;
+//			z->left = nil;
+//			z->right = nil;
+//			z->color = RED;
+//			insertFixup(root, z);
+//		}
+
 		node_pointer insert_node(const value_type &value) {
 			node_pointer node;
 			node = _alloc.allocate(1);
-			_alloc.construct(node, node_type(value, red, NULL, _nil, _nil));
+			_alloc.construct(node, node_type(value, red, _nil, _nil, _nil));
 
-			node_pointer y = NULL;
+			node_pointer y = _nil;
 			node_pointer x = _root;
 
 			while (x != _nil)
@@ -377,7 +401,7 @@ namespace ft {
 
 			node->parent = y;
 
-			if (y == NULL)
+			if (y == _nil)
 				this->_root = node;
 			else if (key_compare_type()(node->value.first, y->value.first))
 				y->left = node;
@@ -386,12 +410,13 @@ namespace ft {
 
 			this->_size++;
 
-			if (y == NULL) {
+			if (y == _nil)
+			{
 				node->color = black;
 				return (this->_root);
 			}
 
-			if (node->parent->parent == NULL)
+			if (node->parent->parent == _nil)
 				return node;
 
 			fix_insert(node);
@@ -482,6 +507,7 @@ namespace ft {
 		bool delete_node(key_type key) {
 			node_pointer x,y,z;
 
+			z = _nil;
 			z = search_tree(_root, key);
 
 			if (z == _nil)
@@ -532,98 +558,24 @@ namespace ft {
 			return true;
 		}
 
-		//TODO RM
-		void _FixDelete(node_pointer node) {
+		void fix_delete(node_pointer x) {
 			node_pointer w;
 
-			while (node != _root && node->color == black)
+			while (x != _root && x->color == black)
 			{
-				if (node == node->parent->left)
-				{ // if node the left child
-					w = node->parent->right;
-					if (w->color == red)
-					{
-						w->color = black;
-						node->parent->color = red;
-						// new parent is w , old parent became w's left child, p is still x's parent and x->parent->right bacame old w->left
-						left_rotate(node->parent);
-						w = node->parent->right;
-					}
-					if (w->left->color == black && w->right->color == black)
-					{
-						w->color = red;
-						node = node->parent;
-					}
-					else
-					{ // at least on child is red
-						if (w->right->color == black)
-						{ // left child is red
-							w->left->color = black;
-							w->color = red;
-							right_rotate(w);
-							w = node->parent->right;
-						}
-						w->color = node->parent->color;
-						node->parent->color = black;
-						w->right->color = black;
-						left_rotate(node->parent);
-						node = _root;
-					}
-				}
-				else
-				{ // mirror case
-					w = node->parent->left;
-					if (w->color == red)
-					{
-						w->color = black;
-						node->parent->color = red;
-						// new parent is w , old parent became w's left child, p is still x's parent and x->parent->right bacame old w->left
-						right_rotate(node->parent);
-						w = node->parent->left;
-					}
-					if (w->left->color == black && w->right->color == black)
-					{
-						w->color = red;
-						node = node->parent;
-					}
-					else
-					{ // at least on child is red
-						if (w->left->color == black)
-						{ // left child is red
-							w->right->color = black;
-							w->color = red;
-							left_rotate(w);
-							w = node->parent->left;
-						}
-						w->color = node->parent->color;
-						node->parent->color = black;
-						w->left->color = black;
-						right_rotate(node->parent);
-						node = _root;
-					}
-				}
-			}
-			node->color = black; // root is always black
-		}
-
-		void fix_delete(node_pointer node) {
-			node_pointer w;
-
-			while (node != _root && node->color == black)
-			{
-				if (node == node->parent->left)
+				if (x == x->parent->left)
 				{
-					w = node->parent->right;
+					w = x->parent->right;
 					if (w->color == red)
 					{
 						w->color = black;
-						node->parent->color = red;
-						left_rotate(node->parent);
-						w = node->parent->right;
+						x->parent->color = red;
+						left_rotate(x->parent);
+						w = x->parent->right;
 					}
 					if (w->left->color == black && w->right->color == black) {
 						w->color = red;
-						node = node->parent;
+						x = x->parent;
 					}
 					else
 					{
@@ -632,28 +584,29 @@ namespace ft {
 							w->left->color = black;
 							w->color = red;
 							right_rotate(w);
-							w = node->parent->right;
+							w = x->parent->right;
 						}
 
-						w->color = node->parent->color;
-						node->parent->color = black;
+						w->color = x->parent->color;
+						x->parent->color = black;
 						w->right->color = black;
-						left_rotate(node->parent);
-						node = _root;
+						left_rotate(x->parent);
+						x = _root;
 					}
 				}
 				else
 				{
-					w = node->parent->left;
+					w = x->parent->left;
 					if (w->color == red) {
 						w->color = black;
-						node->parent->color = red;
-						right_rotate(node->parent);
-						w = node->parent->left;
+						x->parent->color = red;
+						right_rotate(x->parent);
+						w = x->parent->left;
 					}
-					if (w->left->color == black && w->right->color == black) {
+					if (w->left->color == black && w->right->color == black)
+					{
 						w->color = red;
-						node = node->parent;
+						x = x->parent;
 					}
 					else
 					{
@@ -662,17 +615,17 @@ namespace ft {
 							w->right->color = black;
 							w->color = red;
 							left_rotate(w);
-							w = node->parent->left;
+							w = x->parent->left;
 						}
-						w->color = node->parent->color;
-						node->parent->color = black;
+						w->color = x->parent->color;
+						x->parent->color = black;
 						w->left->color = black;
-						right_rotate(node->parent);
-						node = _root;
+						right_rotate(x->parent);
+						x = _root;
 					}
 				}
 			}
-			node->color = black;
+			x->color = black;
 		}
 
 	public:
@@ -748,7 +701,7 @@ namespace ft {
 
 			y->parent = x->parent;
 
-			if (x->parent == NULL)
+			if (x->parent == _nil)
 			{
 				_root = y;
 			}
@@ -776,7 +729,7 @@ namespace ft {
 
 			y->parent = x->parent;
 
-			if (x->parent == NULL)
+			if (x->parent == _nil)
 			{
 				_root = y;
 			}
@@ -794,7 +747,7 @@ namespace ft {
 		}
 
 		void transplant(node_pointer u, node_pointer v) {
-			if (u->parent == NULL)
+			if (u->parent == _nil)
 				_root = v;
 			else if (u == u->parent->left)
 				u->parent->left = v;

@@ -13,7 +13,6 @@ CFLAGS += -g3 -fsanitize=address
 SRC_DIR = src/
 _SRC =	main.cpp\
 		vector_tester.cpp
-#		pdf.cpp
 
 SRC = $(addprefix $(SRC_DIR), $(_SRC))
 
@@ -28,8 +27,6 @@ HEADER=	vector.hpp\
 		utility.hpp\
 		map.hpp\
 		rb_tree.hpp
-#		test_map.h\
-#		test_tree.h
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
