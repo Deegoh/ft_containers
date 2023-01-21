@@ -3,6 +3,7 @@
 
 //https://web.archive.org/web/20160731195009/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/TREE.H
 //https://cs.brown.edu/people/jwicks/libstdc++/html_user/stl__tree_8h-source.html
+//https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf
 # include <memory>
 # include "reverse_iterator.hpp"
 # include "utility.hpp"
@@ -49,6 +50,41 @@ namespace ft {
 		node_pointer parent;
 		node_pointer left;
 		node_pointer right;
+
+//TODO find if fix infinit loop
+//		https://www.geeksforgeeks.org/deletion-in-red-black-tree/
+		// returns pointer to uncle
+		node_pointer uncle() {
+			// If no parent or grandparent, then no uncle
+			if (parent == NULL || parent->parent == NULL)
+				return NULL;
+
+			if (parent->isOnLeft())
+				// uncle on right
+				return parent->parent->right;
+			else
+				// uncle on left
+				return parent->parent->left;
+		}
+
+		bool isOnLeft() { return this == parent->left; }
+
+		// returns pointer to sibling
+		node_pointer sibling() {
+			// sibling null if no parent
+			if (parent == NULL)
+				return NULL;
+
+			if (isOnLeft())
+				return parent->right;
+
+			return parent->left;
+		}
+
+		bool hasRedChild() {
+			return (left != NULL and left->color == red) ||
+					(right != NULL and right->color == red);
+		}
 	};
 
 	//end node
@@ -496,6 +532,7 @@ namespace ft {
 			return true;
 		}
 
+		//TODO RM
 		void _FixDelete(node_pointer node) {
 			node_pointer w;
 
@@ -686,36 +723,6 @@ namespace ft {
 			return (tmp);
 		}
 
-//		node_pointer successor(node_pointer x) {
-//			if (x->right != NULL) {
-//				return most_left(x->right);
-//			}
-//
-//			node_pointer y = x->parent;
-//
-//			while (y != NULL && x == y->right) {
-//				x = y;
-//				y = y->parent;
-//			}
-//
-//			return y;
-//		}
-//
-//		node_pointer predecessor(node_pointer x) {
-//			if (x->left != NULL) {
-//				return maximum(x->left);
-//			}
-//
-//			node_pointer y = x->parent;
-//
-//			while (y != NULL && x == y->left) {
-//				x = y;
-//				y = y->parent;
-//			}
-//
-//			return y;
-//		}
-
 		void clear_tree(node_pointer node) {
 			if(node == _nil)
 				return;
@@ -730,89 +737,60 @@ namespace ft {
 		}
 
 		// Rotates
-		void left_rotate(node_pointer node) {
-//			node_pointer y = x->right;
-//			x->right = y->left;
-//
-//			if (y->left != _nil)
-//			{
-//				y->left->parent = x;
-//			}
-//
-//			y->parent = x->parent;
-//
-//			if (x->parent == NULL)
-//			{
-//				_root = y;
-//			}
-//			else if (x == x->parent->left)
-//			{
-//				x->parent->left = y;
-//			}
-//			else
-//			{
-//				x->parent->right = y;
-//			}
-//
-//			y->left = x;
-//			x->parent = y;
+		void left_rotate(node_pointer x) {
+			node_pointer y = x->right;
+			x->right = y->left;
 
-			node_pointer tmp = node->right; // save node's right branch
-			node->right = tmp->left; //node's new right child is tmp's old left child
-			if (tmp->left != _nil) // if tmp->left is not NULL
-				tmp->left->parent = node;
-			tmp->parent = node->parent; // tmp is the new node so it takes node's parent
-			if (node->parent == NULL)
-				this->_root = tmp;
-			else if (node == node->parent->left) // is node was its parents left child, tmp becomes its new parents left child
-				node->parent->left = tmp;
+			if (y->left != _nil)
+			{
+				y->left->parent = x;
+			}
+
+			y->parent = x->parent;
+
+			if (x->parent == NULL)
+			{
+				_root = y;
+			}
+			else if (x == x->parent->left)
+			{
+				x->parent->left = y;
+			}
 			else
-				node->parent->right = tmp; // mirror case
-			tmp->left = node;
-			node->parent = tmp;
+			{
+				x->parent->right = y;
+			}
+
+			y->left = x;
+			x->parent = y;
 		}
 
-		void right_rotate(node_pointer node) {
-//			node_pointer y = x->left;
-//			x->left = y->right;
-//
-//			if (y->right != _nil)
-//			{
-//				y->right->parent = x;
-//			}
-//
-//			y->parent = x->parent;
-//
-//			if (x->parent == NULL)
-//			{
-//				_root = y;
-//			}
-//			else if (x == x->parent->right)
-//			{
-//				x->parent->right = y;
-//			}
-//			else
-//			{
-//				x->parent->left = y;
-//			}
-//
-//			y->right = x;
-//			x->parent = y;
+		void right_rotate(node_pointer x) {
+			node_pointer y = x->left;
+			x->left = y->right;
 
-			node_pointer tmp = node->left;
+			if (y->right != _nil)
+			{
+				y->right->parent = x;
+			}
 
-			node->left = tmp->right;
-			if (tmp->right != _nil)
-				tmp->right->parent = node;
-			tmp->parent = node->parent;
-			if (node->parent == NULL)
-				this->_root = tmp;
-			else if (node == node->parent->left)
-				node->parent->left = tmp;
+			y->parent = x->parent;
+
+			if (x->parent == NULL)
+			{
+				_root = y;
+			}
+			else if (x == x->parent->right)
+			{
+				x->parent->right = y;
+			}
 			else
-				node->parent->right = tmp;
-			tmp->right = node;
-			node->parent = tmp;
+			{
+				x->parent->left = y;
+			}
+
+			y->right = x;
+			x->parent = y;
 		}
 
 		void transplant(node_pointer u, node_pointer v) {

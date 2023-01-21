@@ -310,6 +310,10 @@ namespace ft {
 		friend bool operator<=(const map& lhs, const map& rhs) {
 			return (!(rhs < lhs));
 		}
+
+		friend void swap(const map& lhs, const map& rhs) {
+			lhs.swap(rhs);
+		}
 	};
 }
 
