@@ -177,7 +177,8 @@ namespace ft {
 			iterator it = find(value.first);
 			if (it != end())
 				return (pair_iterator_bool(it, false));
-			else {
+			else
+			{
 				this->_tree.insert_node(value);
 				it = find(value.first);
 				return (pair_iterator_bool(it, true));
@@ -197,6 +198,16 @@ namespace ft {
 				first++;
 			}
 		}
+
+//		void left_rot(key_type key) {
+//			typename tree_type::node_pointer x = _tree.search_tree(get_root(), key);
+//			_tree.left_rotate(x);
+//		}
+//
+//		void right_rot(key_type key) {
+//			typename tree_type::node_pointer x = _tree.search_tree(get_root(), key);
+//			_tree.right_rotate(x);
+//		}
 
 
 //		Erase elements

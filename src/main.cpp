@@ -81,6 +81,30 @@
 //		printSize(mp_copy);
 //}
 
+template <typename T>
+std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
+{
+	o << "key: " << iterator->first << " | value: " << iterator->second;
+	if (nl)
+		o << std::endl;
+	return ("");
+}
+
+template <typename T_MAP>
+void	printSize(T_MAP const &mp, bool print_content = 1)
+{
+	std::cout << "size: " << mp.size() << std::endl;
+	std::cout << "max_size: " << mp.max_size() << std::endl;
+	if (print_content)
+	{
+		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
+		std::cout << std::endl << "Content is:" << std::endl;
+		for (; it != ite; ++it)
+			std::cout << "- " << printPair(it, false) << std::endl;
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
 template <class MAP>
 void	cmp(const MAP &lhs, const MAP &rhs)
 {
@@ -116,7 +140,7 @@ void testMap(int count) {
 		}
 
 		std::cout << "\nerase key 3\n" << std::endl;
-		map_int.erase(3);
+//		map_int.erase(3);
 
 		i = 0;
 		for (it = map_int.begin(); it != map_int.end(); it++) {
@@ -156,8 +180,8 @@ void testMap(int count) {
 
 //	it = mp.begin();
 //	--(--ite);
-	mp.erase(it, ite);
-//	it = mp.begin();
+//	mp.erase(it, ite);
+//	it = mp.qbegin();
 //	ite = mp.end();
 //	it++;
 //	it--;
@@ -179,6 +203,63 @@ void testMap(int count) {
 		for (it = mp.begin(); it != mp.end() ; ++it) {
 			std::cout << it->first << " " << it->second << "\n";
 		}
+	}
+
+	{
+		ft::map<int, std::string> mp;
+		mp.insert(ft::make_pair<int, std::string>(42, "lol"));
+		mp.insert(ft::make_pair<int, std::string>(50, "mdr"));
+		mp.insert(ft::make_pair<int, std::string>(25, "funny"));
+		mp.insert(ft::make_pair<int, std::string>(46, "bunny"));
+		mp.insert(ft::make_pair<int, std::string>(21, "fizz"));
+		mp.insert(ft::make_pair<int, std::string>(30, "buzz"));
+		mp.insert(ft::make_pair<int, std::string>(55, "fuzzy"));
+		mp.insert(ft::make_pair<int, std::string>(18, "bee"));
+		mp.insert(ft::make_pair<int, std::string>(23, "coconut"));
+		mp.insert(ft::make_pair<int, std::string>(28, "diary"));
+		mp.insert(ft::make_pair<int, std::string>(35, "fiesta"));
+		mp.insert(ft::make_pair<int, std::string>(44, "hello"));
+		mp.insert(ft::make_pair<int, std::string>(48, "world"));
+		mp.insert(ft::make_pair<int, std::string>(53, "this is a test"));
+		mp.insert(ft::make_pair<int, std::string>(80, "hey"));
+		mp.insert(ft::make_pair<int, std::string>(12, "no"));
+		mp.insert(ft::make_pair<int, std::string>(20, "idea"));
+		mp.insert(ft::make_pair<int, std::string>(22, "123"));
+		mp.insert(ft::make_pair<int, std::string>(24, "345"));
+		mp.insert(ft::make_pair<int, std::string>(27, "27"));
+		mp.insert(ft::make_pair<int, std::string>(29, "29"));
+		mp.insert(ft::make_pair<int, std::string>(33, "33"));
+		mp.insert(ft::make_pair<int, std::string>(38, "38"));
+		mp.insert(ft::make_pair<int, std::string>(43, "1"));
+		mp.insert(ft::make_pair<int, std::string>(45, "2"));
+		mp.insert(ft::make_pair<int, std::string>(47, "3"));
+		mp.insert(ft::make_pair<int, std::string>(49, "4"));
+		mp.insert(ft::make_pair<int, std::string>(51, "5"));
+		mp.insert(ft::make_pair<int, std::string>(54, "6"));
+		mp.insert(ft::make_pair<int, std::string>(60, "7"));
+		mp.insert(ft::make_pair<int, std::string>(90, "8"));
+
+		printSize(mp);
+
+//		mp.erase(25);
+		std::cout << "25 erase\n";
+
+
+//		printSize(mp);
+
+	}
+
+	{
+		ft::map<int, std::string> mp;
+		mp.insert(ft::make_pair<int, std::string>(10, "lol"));
+		mp.insert(ft::make_pair<int, std::string>(15, "mdr"));
+		mp.insert(ft::make_pair<int, std::string>(5, "funny"));
+		mp.insert(ft::make_pair<int, std::string>(7, "bunny"));
+		mp.insert(ft::make_pair<int, std::string>(2, "buzz"));
+		mp.insert(ft::make_pair<int, std::string>(8, "fizz"));
+		mp.insert(ft::make_pair<int, std::string>(6, "buzz"));
+		mp.left_rot(5);
+		printSize(mp);
 	}
 
 //		it->second = ++i * 5;

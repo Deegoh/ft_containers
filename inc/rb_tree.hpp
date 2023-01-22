@@ -4,6 +4,7 @@
 //https://web.archive.org/web/20160731195009/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/TREE.H
 //https://cs.brown.edu/people/jwicks/libstdc++/html_user/stl__tree_8h-source.html
 //https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf
+
 # include <memory>
 # include "reverse_iterator.hpp"
 # include "utility.hpp"
@@ -21,7 +22,7 @@ namespace ft {
 	public:
 		typedef T					value_type;
 		typedef rb_node*			node_pointer;
-//		typedef const node_pointer	const_node_pointer;
+		typedef const node_pointer	const_node_pointer;
 
 		rb_node(const value_type &data, color_type color, node_pointer parent, node_pointer left, node_pointer right) :
 				value(data), color(color), parent(parent), left(left), right(right) {}
@@ -50,41 +51,6 @@ namespace ft {
 		node_pointer parent;
 		node_pointer left;
 		node_pointer right;
-
-//TODO find if fix infinit loop
-//		https://www.geeksforgeeks.org/deletion-in-red-black-tree/
-//		// returns pointer to uncle
-//		node_pointer uncle() {
-//			// If no parent or grandparent, then no uncle
-//			if (parent == NULL || parent->parent == NULL)
-//				return NULL;
-//
-//			if (parent->isOnLeft())
-//				// uncle on right
-//				return parent->parent->right;
-//			else
-//				// uncle on left
-//				return parent->parent->left;
-//		}
-//
-//		bool isOnLeft() { return this == parent->left; }
-//
-//		// returns pointer to sibling
-//		node_pointer sibling() {
-//			// sibling null if no parent
-//			if (parent == NULL)
-//				return NULL;
-//
-//			if (isOnLeft())
-//				return parent->right;
-//
-//			return parent->left;
-//		}
-//
-//		bool hasRedChild() {
-//			return (left != NULL and left->color == red) ||
-//					(right != NULL and right->color == red);
-//		}
 	};
 
 	//end node
@@ -211,19 +177,19 @@ namespace ft {
 
 		protected:
 			node_pointer maximum(node_pointer node) {
-				while (node->right != this->_nil)
+				while (node->right != _nil)
 					node = node->right;
 				return node;
 			}
 
 			node_pointer minimum(node_pointer node) {
-				while (node->left != this->_nil)
+				while (node->left != _nil)
 					node = node->left;
 				return node;
 			}
 
 			node_pointer predecessor(node_pointer node) {
-				if (node->left != this->_nil)
+				if (node->left != _nil)
 				{
 					return maximum(node->left);
 				}
@@ -231,7 +197,8 @@ namespace ft {
 				{
 					node_pointer tmp = node->parent;
 
-					while (tmp != NULL && node == tmp->left) {
+					while (tmp != _nil && node == tmp->left)//n
+					{
 						node = tmp;
 						tmp = tmp->parent;
 					}
@@ -240,7 +207,7 @@ namespace ft {
 			}
 
 			node_pointer successor(node_pointer node) {
-				if (node->right != this->_nil)
+				if (node->right != _nil)
 				{
 					return minimum(node->right);
 				}
@@ -248,12 +215,13 @@ namespace ft {
 				{
 					node_pointer tmp = node->parent;
 
-					while (tmp != NULL && node == tmp->right) {
+					while (tmp != _nil && node == tmp->right)//n
+					{
 						node = tmp;
 						tmp = tmp->parent;
 					}
 
-					if (tmp == NULL)
+					if (tmp == _nil)//n
 						return _nil;
 
 					return tmp;
@@ -303,13 +271,9 @@ namespace ft {
 
 		// accessors:
 
-		node_pointer get_root() const {
-			return _root;
-		}
+		node_pointer get_root() const { return (_root); }
 
-		node_pointer get_nil() const {
-			return _nil;
-		}
+		node_pointer get_nil() const { return (_nil); }
 
 		Compare key_comp() const { return Compare(); }
 
@@ -341,42 +305,16 @@ namespace ft {
 
 		size_type size() const { return _size; }
 
-		size_type max_size() const {
-			return _alloc.max_size();
-		}
+		size_type max_size() const { return _alloc.max_size(); }
 
 		// insert/erase
-
-//		void RedBlackTree::insert(int value) {
-//			Node *z = new Node(value);
-//			Node *y = nil;
-//			Node *x = root;
-//			while (x != nil) {
-//				y = x;
-//				if (z->value < x->value)
-//					x = x->left;
-//				else
-//					x = x->right;
-//			}
-//			z->parent = y;
-//			if (y == nil)
-//				root = z;
-//			else if (z->value < y->value)
-//				y->left = z;
-//			else
-//				y->right = z;
-//			z->left = nil;
-//			z->right = nil;
-//			z->color = RED;
-//			insertFixup(root, z);
-//		}
 
 		node_pointer insert_node(const value_type &value) {
 			node_pointer node;
 			node = _alloc.allocate(1);
-			_alloc.construct(node, node_type(value, red, _nil, _nil, _nil));
+			_alloc.construct(node, node_type(value, red, _nil, _nil, _nil)); //n
 
-			node_pointer y = _nil;
+			node_pointer y = _nil;//n
 			node_pointer x = _root;
 
 			while (x != _nil)
@@ -384,13 +322,9 @@ namespace ft {
 				y = x;
 
 				if (key_compare_type()(node->value.first, x->value.first))
-				{
 					x = x->left;
-				}
 				else if (key_compare_type()(x->value.first, node->value.first))
-				{
 					x = x->right;
-				}
 				else
 				{
 					_alloc.destroy(node);
@@ -401,7 +335,7 @@ namespace ft {
 
 			node->parent = y;
 
-			if (y == _nil)
+			if (y == _nil)//n
 				this->_root = node;
 			else if (key_compare_type()(node->value.first, y->value.first))
 				y->left = node;
@@ -410,14 +344,14 @@ namespace ft {
 
 			this->_size++;
 
-			if (y == _nil)
+			if (y == _nil)//n
 			{
 				node->color = black;
 				return (this->_root);
 			}
 
-			if (node->parent->parent == _nil)
-				return node;
+			if (node->parent->parent == _nil)//n
+				return (node);
 
 			fix_insert(node);
 
@@ -489,17 +423,17 @@ namespace ft {
 
 		node_pointer search_tree(node_pointer node, key_type key) const {
 			if (node == _nil)
-				return _nil;
+				return (_nil);
 
 			if (key == node->value.first)
-				return node;
+				return (node);
 
 			if (node != _nil)
 			{
 				if (key_compare_type()(key, node->value.first))
-					return search_tree(node->left, key);
+					return (search_tree(node->left, key));
 
-				return search_tree(node->right, key);
+				return (search_tree(node->right, key));
 			}
 			return (_nil);
 		}
@@ -507,11 +441,9 @@ namespace ft {
 		bool delete_node(key_type key) {
 			node_pointer x,y,z;
 
-			z = _nil;
 			z = search_tree(_root, key);
-
 			if (z == _nil)
-				return false;
+				return (false);
 
 			y = z;
 			color_type y_clr_save = y->color;
@@ -532,9 +464,7 @@ namespace ft {
 				y_clr_save = y->color;
 				x = y->right;
 				if (y->parent == z)
-				{
 					x->parent = y;
-				}
 				else
 				{
 					transplant(y, y->right);
@@ -555,7 +485,7 @@ namespace ft {
 			if (y_clr_save == black)
 				fix_delete(x);
 
-			return true;
+			return (true);
 		}
 
 		void fix_delete(node_pointer x) {
@@ -573,7 +503,8 @@ namespace ft {
 						left_rotate(x->parent);
 						w = x->parent->right;
 					}
-					if (w->left->color == black && w->right->color == black) {
+					if (w->left->color == black && w->right->color == black)
+					{
 						w->color = red;
 						x = x->parent;
 					}
@@ -676,7 +607,7 @@ namespace ft {
 			return (tmp);
 		}
 
-		void clear_tree(node_pointer node) {
+		void clear_tree(const node_pointer &node) {
 			if(node == _nil)
 				return;
 
@@ -695,24 +626,16 @@ namespace ft {
 			x->right = y->left;
 
 			if (y->left != _nil)
-			{
 				y->left->parent = x;
-			}
 
 			y->parent = x->parent;
 
-			if (x->parent == _nil)
-			{
+			if (x->parent == _nil)//n
 				_root = y;
-			}
 			else if (x == x->parent->left)
-			{
 				x->parent->left = y;
-			}
 			else
-			{
 				x->parent->right = y;
-			}
 
 			y->left = x;
 			x->parent = y;
@@ -723,31 +646,23 @@ namespace ft {
 			x->left = y->right;
 
 			if (y->right != _nil)
-			{
 				y->right->parent = x;
-			}
 
 			y->parent = x->parent;
 
-			if (x->parent == _nil)
-			{
+			if (x->parent == _nil)//n
 				_root = y;
-			}
 			else if (x == x->parent->right)
-			{
 				x->parent->right = y;
-			}
 			else
-			{
 				x->parent->left = y;
-			}
 
 			y->right = x;
 			x->parent = y;
 		}
 
 		void transplant(node_pointer u, node_pointer v) {
-			if (u->parent == _nil)
+			if (u->parent == _nil)//n
 				_root = v;
 			else if (u == u->parent->left)
 				u->parent->left = v;
