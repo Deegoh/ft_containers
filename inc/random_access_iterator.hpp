@@ -1,9 +1,7 @@
 #ifndef RANDOM_ACCESS_ITERATOR_HPP
 # define RANDOM_ACCESS_ITERATOR_HPP
 
-# include "iterator.hpp"
-
-//#include <iterator>
+# include "iterator_traits.hpp"
 
 namespace ft {
 
@@ -12,7 +10,7 @@ namespace ft {
 			  class Distance = std::ptrdiff_t,
 			  class Pointer = T*,
 			  class Reference = T&>
-	class random_access_iterator : public iterator<T, Category> {
+	class random_access_iterator : public iterator_traits<iterator<T, Category> > {
 	protected:
 		Pointer _ptr;
 

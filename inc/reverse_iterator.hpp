@@ -2,7 +2,7 @@
 # define REVERSE_ITERATOR_HPP
 
 #include "random_access_iterator.hpp"
-#include "iterator.hpp"
+#include "iterator_traits.hpp"
 
 namespace ft {
 

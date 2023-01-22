@@ -241,11 +241,11 @@ void testMap(int count) {
 
 		printSize(mp);
 
-//		mp.erase(25);
+		mp.erase(25);
 		std::cout << "25 erase\n";
 
 
-//		printSize(mp);
+		printSize(mp);
 
 	}
 
@@ -258,7 +258,7 @@ void testMap(int count) {
 		mp.insert(ft::make_pair<int, std::string>(2, "buzz"));
 		mp.insert(ft::make_pair<int, std::string>(8, "fizz"));
 		mp.insert(ft::make_pair<int, std::string>(6, "buzz"));
-		mp.left_rot(5);
+//		mp.left_rot(5);
 		printSize(mp);
 	}
 

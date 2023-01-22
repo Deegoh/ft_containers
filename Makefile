@@ -26,7 +26,8 @@ HEADER=	vector.hpp\
 		vector_tester.hpp\
 		utility.hpp\
 		map.hpp\
-		rb_tree.hpp
+		rb_tree.hpp\
+		rbt_iterator.hpp
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))

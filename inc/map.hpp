@@ -33,12 +33,13 @@ namespace ft {
 		typedef typename alloc_type::const_pointer			const_pointer;
 		typedef ft::rb_tree<value_type, key_type, Compare>	tree_type;
 
-		typedef typename tree_type::it						iterator;
-		typedef typename tree_type::const_it				const_iterator;
+		typedef typename tree_type::iterator				iterator;
+		typedef typename tree_type::const_iterator			const_iterator;
 		typedef typename tree_type::reverse_iterator		reverse_iterator;
 		typedef typename tree_type::const_reverse_iterator	const_reverse_iterator;
 		typedef typename tree_type::size_type				size_type;
 		typedef typename std::ptrdiff_t						difference_type;
+		typedef typename tree_type::node_pointer			node_pointer;
 
 
 
@@ -84,7 +85,6 @@ namespace ft {
 			_value_comp(comp),
 			_tree(),
 			_alloc(alloc) {
-//				clear();
 				insert(first, last);
 		}
 
@@ -151,20 +151,10 @@ namespace ft {
 
 //		access or insert specified element
 		mapped_type& operator[](const key_type& key) {
-//			typename tree_type::node_pointer node;
-//			node = _tree.search_tree(get_root(), key);
-//
-//			if (node != this->_tree.search_tree(get_root(), key))
-//				return node->value.second;
-//			else {
-//				_tree.insert_node(value_type(key, mapped_type()));
-//				node = _tree.search_tree(get_root(), key);
-//				return node->value.second;
-//			}
 			return((*((insert(ft::make_pair(key, T()))).first)).second);
 		}
 
-		typename tree_type::node_pointer get_root() {
+		node_pointer get_root() {
 			return (_tree.get_root());
 		}
 
@@ -198,17 +188,6 @@ namespace ft {
 				first++;
 			}
 		}
-
-//		void left_rot(key_type key) {
-//			typename tree_type::node_pointer x = _tree.search_tree(get_root(), key);
-//			_tree.left_rotate(x);
-//		}
-//
-//		void right_rot(key_type key) {
-//			typename tree_type::node_pointer x = _tree.search_tree(get_root(), key);
-//			_tree.right_rotate(x);
-//		}
-
 
 //		Erase elements
 		void erase(iterator position) {
@@ -252,54 +231,60 @@ namespace ft {
 
 //		Get iterator to element
 		iterator find(const key_type& key) {
-			return iterator(_tree.get_root(), _tree.search_tree(_tree.get_root(), key), _tree.get_nil());
+			node_pointer tmp = _tree.search_tree(_tree.get_root(), key);
+			if (tmp == _tree.get_nil())
+				return (end());
+			return (iterator(_tree.get_root(), tmp, _tree.get_nil()));
 		}
 //		Get iterator to element
 		const_iterator find(const key_type& key) const {
-			return const_iterator(_tree.get_root(), _tree.search_tree(_tree.get_root(), key), _tree.get_nil());
+			node_pointer tmp = _tree.search_tree(_tree.get_root(), key);
+			if (tmp == _tree.get_nil())
+				return (end());
+			return (const_iterator(_tree.get_root(), tmp, _tree.get_nil()));
 		}
 
 //		Count elements with a specific key
 		size_type count(const key_type& key) const {
 			if (find(key) != end())
-				return 1;
-			return 0;
+				return (1);
+			return (0);
 		}
 
 //		Return iterator to lower bound
 		iterator lower_bound(const key_type& key) {
-			return _tree.lower_bound(key);
+			return (_tree.lower_bound(key));
 		}
 //		Return iterator to lower bound
 		const_iterator lower_bound(const key_type& key) const {
-			return _tree.lower_bound(key);
+			return (_tree.lower_bound(key));
 		}
 
 //		Return iterator to upper bound
 		iterator upper_bound(const key_type& key) {
-			return _tree.upper_bound(key);
+			return (_tree.upper_bound(key));
 		}
 //		Return iterator to upper bound
 		const_iterator upper_bound(const key_type& key) const {
-			return _tree.upper_bound(key);
+			return (_tree.upper_bound(key));
 		}
 
 //		Get range of equal elements
 		typedef pair<iterator, iterator> pair_iterator_iterator;
 		// typedef done to get around compiler bug
 		pair_iterator_iterator equal_range(const key_type& key) {
-			return _tree.equal_range(key);
+			return (_tree.equal_range(key));
 		}
 		typedef pair<const_iterator, const_iterator> pair_citerator_citerator;
 		// typedef done to get around compiler bug
 
 //		Get range of equal elements
 		pair_citerator_citerator equal_range(const key_type& key) const {
-			return _tree.equal_range(key);
+			return (_tree.equal_range(key));
 		}
 
 		friend bool operator==(const map& lhs, const map& rhs) {
-			return rhs.size() == lhs.size() && equal(rhs.begin(), rhs.end(), lhs.begin());
+			return (rhs.size() == lhs.size() && equal(rhs.begin(), rhs.end(), lhs.begin()));
 		}
 
 		friend bool operator!=(const map& lhs, const map& rhs) {
@@ -307,7 +292,7 @@ namespace ft {
 		}
 
 		friend bool operator<(const map& lhs, const map& rhs) {
-			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 		}
 
 		friend bool operator>(const map& lhs, const map& rhs) {

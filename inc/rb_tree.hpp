@@ -6,6 +6,7 @@
 //https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf
 
 # include <memory>
+# include "rbt_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "utility.hpp"
 # include "comparators.hpp"
@@ -24,26 +25,8 @@ namespace ft {
 		typedef rb_node*			node_pointer;
 		typedef const node_pointer	const_node_pointer;
 
-		rb_node(const value_type &data, color_type color, node_pointer parent, node_pointer left, node_pointer right) :
-				value(data), color(color), parent(parent), left(left), right(right) {}
-
-		rb_node(const T& src) {
-			*this = src;
-		}
-
-		rb_node &operator=(const rb_node& rhs) {
-			if (&rhs != this)
-			{
-				value = rhs.value;
-				color = rhs.color;
-				parent = rhs.parent;
-				left = rhs.left;
-				right = rhs.right;
-			}
-			return (*this);
-		}
-
-		~rb_node() {}
+		rb_node(const value_type &pr, color_type color, node_pointer parent, node_pointer left, node_pointer right) :
+				value(pr), color(color), parent(parent), left(left), right(right) {}
 
 	public:
 		value_type value;
@@ -68,8 +51,14 @@ namespace ft {
 		typedef node_type*	node_pointer;
 
 		typedef Node_Alloc	alloc_type;
-		typedef	Compare		key_compare_type;
+		typedef	Compare		key_compare;
 		typedef	size_t		size_type;
+
+		//		iterator in tree
+		typedef ft::rbt_iterator<value_type, node_type>			iterator;
+		typedef ft::rbt_iterator<const value_type, node_type>	const_iterator;
+		typedef ft::reverse_iterator<iterator>					reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 
 	private:
@@ -77,189 +66,20 @@ namespace ft {
 		size_type _size;
 		alloc_type _alloc;
 		node_pointer _nil;
+		key_compare _comp;
 
 	public:
-//		iterator
-		template<typename T1>
-		class iterator {
-		public:
-			typedef T1							value_type;
-			typedef std::ptrdiff_t				difference_type;
-			typedef value_type*					pointer;
-			typedef value_type&					reference;
-			typedef bidirectional_iterator_tag	iterator_category;
-
-		private:
-			node_pointer _root;
-			node_pointer _current;
-			node_pointer _nil;
-
-		public:
-			iterator() : _root(NULL), _current(NULL), _nil(NULL) {}
-
-			iterator(node_pointer root, node_pointer current, node_pointer nil) :
-					_root(root), _current(current), _nil(nil) {}
-
-			iterator(const iterator& src) {
-				*this = src;
-			}
-
-			iterator& operator=(const iterator& rhs) {
-				if (this != &rhs) {
-					_root = rhs._root;
-					_current = rhs._current;
-					_nil = rhs._nil;
-				}
-				return *this;
-			}
-
-			~iterator() {}
-
-			operator iterator<const T1>() const {
-				return (iterator<const T1>(_root, _current, _nil));
-			}
-
-			bool operator==(const iterator &rhs) const {
-				return (_current == rhs._current);
-			}
-			bool operator!=(const iterator &rhs) const {
-				return (_current != rhs._current);
-			}
-
-			reference operator*() const {
-				if (_current == NULL)
-					throw std::exception();
-				return (_current->value);
-			}
-
-			reference operator*() {
-				if (_current == NULL)
-					throw std::exception();
-				return (_current->value);
-			}
-
-			pointer operator->() {
-				return (&_current->value);
-			}
-			pointer operator->() const {
-				return (&_current->value);
-			}
-
-			iterator& operator++() {
-				if (_current != _nil)
-					_current = successor(_current);
-				return (*this);
-			}
-
-			iterator operator++(int) {
-				iterator tmp = *this;
-				++*this;
-				return (tmp);
-			}
-
-			iterator& operator--() {
-				if (_current != _nil)
-					_current = predecessor(_current);
-				else
-					_current = maximum(_root);
-				return (*this);
-			}
-
-			iterator operator--(int) {
-				iterator tmp = *this;
-				--*this;
-				return (tmp);
-			}
-
-			node_pointer base() { return _current; }
-
-			node_pointer base() const { return _current; }
-
-		protected:
-			node_pointer maximum(node_pointer node) {
-				while (node->right != _nil)
-					node = node->right;
-				return node;
-			}
-
-			node_pointer minimum(node_pointer node) {
-				while (node->left != _nil)
-					node = node->left;
-				return node;
-			}
-
-			node_pointer predecessor(node_pointer node) {
-				if (node->left != _nil)
-				{
-					return maximum(node->left);
-				}
-				else
-				{
-					node_pointer tmp = node->parent;
-
-					while (tmp != _nil && node == tmp->left)//n
-					{
-						node = tmp;
-						tmp = tmp->parent;
-					}
-					return tmp;
-				}
-			}
-
-			node_pointer successor(node_pointer node) {
-				if (node->right != _nil)
-				{
-					return minimum(node->right);
-				}
-				else
-				{
-					node_pointer tmp = node->parent;
-
-					while (tmp != _nil && node == tmp->right)//n
-					{
-						node = tmp;
-						tmp = tmp->parent;
-					}
-
-					if (tmp == _nil)//n
-						return _nil;
-
-					return tmp;
-				}
-			}
-
-		};//end iterator
-
-	public:
-
-//		iterator in tree
-		typedef iterator<const value_type>		const_it;
-		typedef iterator<value_type>			it;
-		typedef ft::reverse_iterator<it>		reverse_iterator;
-		typedef ft::reverse_iterator<const_it>	const_reverse_iterator;
 
 		// default
-		rb_tree() : _size(0) {
+		rb_tree(const key_compare &comp = key_compare(),
+				const alloc_type &alloc = alloc_type()) :
+				_size(0),
+				_alloc(alloc),
+				_comp(comp) {
 			_nil = _alloc.allocate(1);
 			_alloc.construct(_nil, node_type(value_type(), black, NULL, NULL, NULL));
 			_root = _nil;
 		}
-
-//		//copy
-//		rb_tree(const rb_tree& other) : _root(NULL) {
-//			*this = other;
-//		}
-//
-//		// overload =
-//		rb_tree& operator=(const rb_tree& rhs) {
-//			if (this != &rhs) {
-//				_root = rhs._root;
-//				_size = rhs._size;
-//				_alloc = rhs._alloc;
-//				_nil = rhs._nil;
-//			}
-//			return (*this);
-//		}
 
 		// dectruct
 		~rb_tree() {
@@ -268,22 +88,19 @@ namespace ft {
 			_alloc.deallocate(_nil, 1);
 		}
 
-
-		// accessors:
-
 		node_pointer get_root() const { return (_root); }
 
 		node_pointer get_nil() const { return (_nil); }
 
-		Compare key_comp() const { return Compare(); }
+		Compare key_comp() const { return (Compare()); }
 
-		it begin() { return it(_root, most_left(), _nil); }
+		iterator begin() { return (iterator(_root, most_left(), _nil)); }
 
-		const_it begin() const { return const_it(_root, most_left(), _nil); }
+		const_iterator begin() const { return (const_iterator(_root, most_left(), _nil)); }
 
-		it end() { return it(_root, _nil, _nil); }
+		iterator end() { return (iterator(_root, _nil, _nil)); }
 
-		const_it end() const { return const_it(_root, _nil, _nil); }
+		const_iterator end() const { return (const_iterator(_root, _nil, _nil)); }
 
 		reverse_iterator rbegin() {
 			return (reverse_iterator(end()));
@@ -312,18 +129,18 @@ namespace ft {
 		node_pointer insert_node(const value_type &value) {
 			node_pointer node;
 			node = _alloc.allocate(1);
-			_alloc.construct(node, node_type(value, red, _nil, _nil, _nil)); //n
+			_alloc.construct(node, node_type(value, red, _nil, _nil, _nil));
 
-			node_pointer y = _nil;//n
+			node_pointer y = _nil;
 			node_pointer x = _root;
 
 			while (x != _nil)
 			{
 				y = x;
 
-				if (key_compare_type()(node->value.first, x->value.first))
+				if (_comp(node->value.first, x->value.first))
 					x = x->left;
-				else if (key_compare_type()(x->value.first, node->value.first))
+				else if (_comp(x->value.first, node->value.first))
 					x = x->right;
 				else
 				{
@@ -335,22 +152,22 @@ namespace ft {
 
 			node->parent = y;
 
-			if (y == _nil)//n
+			if (y == _nil)
 				this->_root = node;
-			else if (key_compare_type()(node->value.first, y->value.first))
+			else if (_comp(node->value.first, y->value.first))
 				y->left = node;
 			else
 				y->right = node;
 
 			this->_size++;
 
-			if (y == _nil)//n
+			if (y == _nil)
 			{
 				node->color = black;
 				return (this->_root);
 			}
 
-			if (node->parent->parent == _nil)//n
+			if (node->parent->parent == _nil)
 				return (node);
 
 			fix_insert(node);
@@ -430,7 +247,7 @@ namespace ft {
 
 			if (node != _nil)
 			{
-				if (key_compare_type()(key, node->value.first))
+				if (_comp(key, node->value.first))
 					return (search_tree(node->left, key));
 
 				return (search_tree(node->right, key));
@@ -559,10 +376,8 @@ namespace ft {
 			x->color = black;
 		}
 
-	public:
-
 		//get node with min value
-		node_pointer most_left(node_pointer &node) {
+		node_pointer most_left(node_pointer node) const {
 			if (node == _nil)
 				return (_root);
 
@@ -585,7 +400,7 @@ namespace ft {
 		}
 
 		//get node with max value
-		node_pointer most_right(node_pointer &node) {
+		node_pointer most_right(node_pointer node) const {
 			if (node == _nil)
 				return (_root);
 
@@ -630,7 +445,7 @@ namespace ft {
 
 			y->parent = x->parent;
 
-			if (x->parent == _nil)//n
+			if (x->parent == _nil)
 				_root = y;
 			else if (x == x->parent->left)
 				x->parent->left = y;
@@ -650,7 +465,7 @@ namespace ft {
 
 			y->parent = x->parent;
 
-			if (x->parent == _nil)//n
+			if (x->parent == _nil)
 				_root = y;
 			else if (x == x->parent->right)
 				x->parent->right = y;
@@ -662,7 +477,7 @@ namespace ft {
 		}
 
 		void transplant(node_pointer u, node_pointer v) {
-			if (u->parent == _nil)//n
+			if (u->parent == _nil)
 				_root = v;
 			else if (u == u->parent->left)
 				u->parent->left = v;
@@ -676,10 +491,11 @@ namespace ft {
 			std::swap(_nil, rhs._nil);
 			std::swap(_alloc, rhs._alloc);
 			std::swap(_size, rhs._size);
+			std::swap(_comp, rhs._comp);
 		}
 
-		it lower_bound (const key_type& key) {
-			it start = begin();
+		iterator lower_bound (const key_type& key) {
+			iterator start = begin();
 
 			for (; start != end() ; start++) {
 				if ((*start).first >= key)
@@ -689,8 +505,8 @@ namespace ft {
 			return end();
 		}
 
-		const_it lower_bound (const key_type& key) const{
-			const_it start = begin();
+		const_iterator lower_bound (const key_type& key) const{
+			const_iterator start = begin();
 
 			for (; start != end() ; start++) {
 				if ((*start).first >= key)
@@ -700,8 +516,8 @@ namespace ft {
 			return end();
 		}
 
-		it upper_bound (const key_type& key) {
-			it start = begin();
+		iterator upper_bound (const key_type& key) {
+			iterator start = begin();
 
 			for (; start != end() ; start++) {
 				if ((*start).first > key)
@@ -711,8 +527,8 @@ namespace ft {
 			return end();
 		}
 
-		const_it upper_bound (const key_type& key) const{
-			const_it start = begin();
+		const_iterator upper_bound (const key_type& key) const{
+			const_iterator start = begin();
 
 			for (; start != end() ; start++) {
 				if ((*start).first > key)
@@ -722,14 +538,13 @@ namespace ft {
 			return end();
 		}
 
-		pair<const_it,const_it> equal_range (const key_type& key) const {
-			return (ft::make_pair<const_it, const_it>(lower_bound(key), upper_bound(key)));
+		pair<const_iterator, const_iterator> equal_range (const key_type& key) const {
+			return (ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
 		}
 
-		pair<it,it> equal_range (const key_type& key) {
-			return (ft::make_pair<it , it>(lower_bound(key), upper_bound(key)));
+		pair<iterator, iterator> equal_range (const key_type& key) {
+			return (ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
 		}
-
 	};
 	// end rb_tree
 }
