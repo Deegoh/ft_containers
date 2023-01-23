@@ -14,7 +14,7 @@
 #else
 	#include <map.hpp>
 //	#include <test_map.h>
-//# include <stack.hpp>
+	#include <stack.hpp>
 	#include <vector.hpp>
 #endif
 #include "vector_tester.hpp"
@@ -289,6 +289,40 @@ void testMap(int count) {
 //	}
 }
 
+template <typename T_STACK>
+void	printSize(T_STACK &stck, bool print_content = 1)
+{
+	std::cout << "size: " << stck.size() << std::endl;
+	if (print_content)
+	{
+		std::cout << std::endl << "Content was:" << std::endl;
+		while (stck.size() != 0) {
+			std::cout << "- " << stck.top() << std::endl;
+			stck.pop();
+		}
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
+	typedef ft::stack<foo<int> >::container_type container_type;
+void testStack() {
+	{
+		ft::stack<foo<int> > stck;
+
+		std::cout << "empty: " << stck.empty() << std::endl;
+		std::cout << "size: " << stck.size() << std::endl;
+
+		stck.push(41);
+		stck.push(29);
+		stck.push(10);
+		stck.push(42);
+		std::cout << "Added some elements" << std::endl;
+
+		std::cout << "empty: " << stck.empty() << std::endl;
+		printSize(stck);
+	}
+}
+
 int main() {
 	#if STD //CREATE A REAL STL EXAMPLE
 		std::cout << "STD" << std::endl;
@@ -298,13 +332,6 @@ int main() {
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
 	srand(10);
 //	testVector(COUNT);
-	testMap(COUNT);
-//	ft::rb_tree<std::string, int> test;
-//	test._root->value = 10;
-//	std::cout << test._root->value << std::endl;
-
-//	ft::rb_tree<std::string, int> tree;
-//	tree = test;
-
-//	std::cout << tree._root->value << std::endl;
+//	testMap(COUNT);
+	testStack();
 }

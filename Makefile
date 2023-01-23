@@ -17,17 +17,18 @@ _SRC =	main.cpp\
 SRC = $(addprefix $(SRC_DIR), $(_SRC))
 
 INC_DIR = inc/
-HEADER=	vector.hpp\
-		comparators.hpp\
-		iterator.hpp\
+HEADER=	comparators.hpp\
+		iterator_traits.hpp\
 		random_access_iterator.hpp\
 		reverse_iterator.hpp\
-		base.hpp\
-		vector_tester.hpp\
+		rbt_iterator.hpp\
 		utility.hpp\
+		base.hpp\
+		vector.hpp\
+		vector_tester.hpp\
 		map.hpp\
 		rb_tree.hpp\
-		rbt_iterator.hpp
+		stack.hpp
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
