@@ -1,17 +1,13 @@
-//TODO check header of container
 #include <iostream>
 #include <string>
 #include <deque>
-#ifndef STD
-# define STD 0
-#endif
-#if STD //CREATE A REAL STL EXAMPLE
-	#include <map>
-	#include <stack>
-	#include <vector>
-	namespace ft = std;
+#if 1 //CREATE A REAL STL EXAMPLE
+#include <map>
+#include <stack>
+#include <vector>
+namespace ft = std;
 #else
-	#include <map.hpp>
+#include <map.hpp>
 	#include <stack.hpp>
 	#include <vector.hpp>
 #endif
@@ -27,7 +23,7 @@ struct Buffer
 };
 
 
-//#define COUNT (MAX_RAM / (int)sizeof(Buffer))
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
 class MutantStack : public ft::stack<T>
@@ -48,7 +44,7 @@ public:
 	iterator end() { return this->c.end(); }
 };
 
-int pdf(int argc, char** argv) {
+int main(int argc, char** argv) {
 	if (argc != 2)
 	{
 		std::cerr << "Usage: ./test seed" << std::endl;
@@ -57,7 +53,7 @@ int pdf(int argc, char** argv) {
 		return 1;
 	}
 	const int seed = atoi(argv[1]);
-	srand(10);
+	srand(seed);
 
 	ft::vector<std::string> vector_str;
 	ft::vector<int> vector_int;

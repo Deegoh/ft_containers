@@ -102,9 +102,9 @@ namespace ft {
 				return (*this);
 			if (rhs.size() > this->capacity()) {
 				cleanPointer();
-				this->_c = _alloc.allocate(rhs._size);
-				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 				_capacity = rhs._capacity;
+				this->_c = _alloc.allocate(_capacity);
+				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 			} else/*if (this->size() >= rhs.size())*/ {
 				std::uninitialized_copy(rhs.begin(), rhs.end(), _c);
 				for (size_type i = rhs.size() - 1; i < this->size(); ++i) {
@@ -221,8 +221,8 @@ namespace ft {
 				value_type *tmp = _alloc.allocate(n);
 				std::uninitialized_copy(this->begin(), this->end(), tmp);
 				cleanPointer();
-				_c = tmp;
 				_capacity = n;
+				_c = tmp;
 			}
 			else // should i do ?
 			{

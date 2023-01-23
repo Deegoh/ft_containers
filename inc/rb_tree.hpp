@@ -2,7 +2,7 @@
 # define RB_TREE_HPP
 
 //https://web.archive.org/web/20160731195009/http://www.stepanovpapers.com/butler.hpl.hp/stl/stl/TREE.H
-//https://cs.brown.edu/people/jwicks/libstdc++/html_user/stl__tree_8h-source.html
+//https://cs.brown.edu/people/jwicks/libc++/html_user/stl__tree_8h-source.html
 //https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf
 
 # include <memory>
@@ -487,11 +487,23 @@ namespace ft {
 		}
 
 		void swap(rb_tree &rhs) {
-			std::swap(_root, rhs._root);
-			std::swap(_nil, rhs._nil);
-			std::swap(_alloc, rhs._alloc);
-			std::swap(_size, rhs._size);
-			std::swap(_comp, rhs._comp);
+			node_pointer root = rhs._root;
+			node_pointer nil = rhs._nil;
+			alloc_type alloc = rhs._alloc;
+			size_type size = rhs._size;
+			key_compare comp = rhs._comp;
+
+			rhs._root = _root;
+			rhs._nil = _nil;
+			rhs._alloc = _alloc;
+			rhs._size = _size;
+			rhs._comp = _comp;
+
+			_root = root;
+			_nil = nil;
+			_alloc = alloc;
+			_size = size;
+			_comp = comp;
 		}
 
 		iterator lower_bound (const key_type& key) {
