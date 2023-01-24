@@ -29,7 +29,8 @@ HEADER=	comparators.hpp\
 		vector_tester.hpp\
 		map.hpp\
 		rb_tree.hpp\
-		stack.hpp
+		stack.hpp\
+		set.hpp
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))

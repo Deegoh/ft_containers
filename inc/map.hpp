@@ -73,8 +73,7 @@ namespace ft {
 					 _key_comp(comp),
 					 _value_comp(comp),
 					 _tree(),
-					 _alloc(alloc)
-					 {}
+					 _alloc(alloc) {}
 
 //		range constructor
 		template <class InputIt>
