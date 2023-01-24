@@ -25,8 +25,8 @@ namespace ft {
 		typedef typename alloc_type::const_reference		const_reference;
 		typedef typename alloc_type::pointer				pointer;
 		typedef typename alloc_type::const_pointer			const_pointer;
-		typedef ft::rb_tree<value_type, key_type, Compare>	tree_type;
-		typedef typename tree_type::iterator				iterator;
+		typedef ft::rb_tree<value_type, key_type, ft::select1stset<value_type, key_type> , Compare>	tree_type;
+		typedef typename tree_type::const_iterator			iterator;
 		typedef typename tree_type::const_iterator			const_iterator;
 		typedef typename tree_type::reverse_iterator		reverse_iterator;
 		typedef typename tree_type::const_reverse_iterator	const_reverse_iterator;
@@ -69,7 +69,7 @@ namespace ft {
 		}
 
 //		destructs the set
-		~set();
+		~set() {}
 //		assigns values to the container
 		set& operator= (const set& rhs) {
 			if (&rhs != this)
@@ -123,10 +123,14 @@ namespace ft {
 //		single element (1)
 		typedef  pair<iterator, bool> pair_iterator_bool;
 		pair_iterator_bool insert (const value_type& value) {
-			iterator it;
-			_tree.insert_node(value);
-			it = find(value);
-			return pair_iterator_bool(it, true);
+			iterator it = find(value);
+			if (it != end())
+				return ft::pair<iterator, bool>(it, false);
+			else {
+				this->_tree.insert_node(value);
+				it = find(value);
+				return ft::pair<iterator, bool>(it, true);
+			}
 		}
 //		with hint (2)
 		iterator insert (iterator position, const value_type& value) {
@@ -198,31 +202,100 @@ namespace ft {
 				return (1);
 			return (0);
 		}
+
 //		Return iterator to lower bound
-		iterator lower_bound(const value_type& value) {
-			return (_tree.lower_bound(value));
+		iterator lower_bound(const key_type& key) {
+			iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start) >= key)
+					break;
+			}
+
+			return start;
 		}
-		const_iterator lower_bound(const value_type& value) const {
-			return (_tree.lower_bound(value));
-		}
-//		Return iterator to upper bound
-		iterator upper_bound (const value_type& value) {
-			return (_tree.upper_bound(value));
-		}
-		const_iterator upper_bound(const value_type& value) const {
-			return (_tree.upper_bound(value));
-		}
-//		Get range of equal elements
-		pair<const_iterator, const_iterator> equal_range (const value_type& value) const {
-			return (_tree.equal_range(value));
+//		Return iterator to lower bound
+		const_iterator lower_bound(const key_type& key) const {
+			const_iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start) >= key)
+					break;
+			}
+
+			return start;
 		}
 
+//		Return iterator to upper bound
+		iterator upper_bound(const key_type& key) {
+			iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start) > key)
+					break;
+			}
+
+			return start;
+		}
+//		Return iterator to upper bound
+		const_iterator upper_bound(const key_type& key) const {
+			const_iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start) > key)
+					break;
+			}
+
+			return start;
+		}
+
+//		Get range of equal elements
+		typedef pair<iterator, iterator> pair_iterator_iterator;
+		// typedef done to get around compiler bug
+		pair_iterator_iterator equal_range(const key_type& key) {
+			return (ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
+		}
+		typedef pair<const_iterator, const_iterator> pair_citerator_citerator;
+		// typedef done to get around compiler bug
+
+//		Get range of equal elements
+		pair_citerator_citerator equal_range(const key_type& key) const {
+			return (ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
+		}
 
 //	Allocator:
 
 //		Get allocator
 		alloc_type get_allocator() const {
 			return (_alloc);
+		}
+
+		friend bool operator==(const set& lhs, const set& rhs) {
+			return (rhs.size() == lhs.size() && equal(rhs.begin(), rhs.end(), lhs.begin()));
+		}
+
+		friend bool operator!=(const set& lhs, const set& rhs) {
+			return (!(lhs == rhs));
+		}
+
+		friend bool operator<(const set& lhs, const set& rhs) {
+			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		}
+
+		friend bool operator>(const set& lhs, const set& rhs) {
+			return (rhs < lhs);
+		}
+
+		friend bool operator>=(const set& lhs, const set& rhs) {
+			return (!(lhs < rhs));
+		}
+
+		friend bool operator<=(const set& lhs, const set& rhs) {
+			return (!(rhs < lhs));
+		}
+
+		friend void swap(const set& lhs, const set& rhs) {
+			lhs.swap(rhs);
 		}
 
 	};

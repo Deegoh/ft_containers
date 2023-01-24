@@ -41,6 +41,7 @@ namespace ft {
 	// rb_tree
 	template<typename T, //pair
 			typename Key, // key of pair
+			class Get_key_value, // key of value
 			class Compare = std::less<Key>,
 			typename Node_Alloc = std::allocator<rb_node<T> > >
 	class rb_tree {
@@ -138,9 +139,9 @@ namespace ft {
 			{
 				y = x;
 
-				if (_comp(node->value.first, x->value.first))
+				if (_comp(Get_key_value()(node->value), Get_key_value()(x->value)))
 					x = x->left;
-				else if (_comp(x->value.first, node->value.first))
+				else if (_comp(Get_key_value()(x->value), Get_key_value()(node->value)))
 					x = x->right;
 				else
 				{
@@ -154,7 +155,7 @@ namespace ft {
 
 			if (y == _nil)
 				this->_root = node;
-			else if (_comp(node->value.first, y->value.first))
+			else if (_comp(Get_key_value()(node->value), Get_key_value()(y->value)))
 				y->left = node;
 			else
 				y->right = node;
@@ -242,12 +243,12 @@ namespace ft {
 			if (node == _nil)
 				return (_nil);
 
-			if (key == node->value.first)
+			if (key == Get_key_value()(node->value))
 				return (node);
 
 			if (node != _nil)
 			{
-				if (_comp(key, node->value.first))
+				if (_comp(key, Get_key_value()(node->value)))
 					return (search_tree(node->left, key));
 
 				return (search_tree(node->right, key));
@@ -504,58 +505,6 @@ namespace ft {
 			_alloc = alloc;
 			_size = size;
 			_comp = comp;
-		}
-
-		iterator lower_bound (const key_type& key) {
-			iterator start = begin();
-
-			for (; start != end() ; start++) {
-				if ((*start).first >= key)
-					return start;
-			}
-
-			return end();
-		}
-
-		const_iterator lower_bound (const key_type& key) const{
-			const_iterator start = begin();
-
-			for (; start != end() ; start++) {
-				if ((*start).first >= key)
-					return start;
-			}
-
-			return end();
-		}
-
-		iterator upper_bound (const key_type& key) {
-			iterator start = begin();
-
-			for (; start != end() ; start++) {
-				if ((*start).first > key)
-					return start;
-			}
-
-			return end();
-		}
-
-		const_iterator upper_bound (const key_type& key) const{
-			const_iterator start = begin();
-
-			for (; start != end() ; start++) {
-				if ((*start).first > key)
-					return start;
-			}
-
-			return end();
-		}
-
-		pair<const_iterator, const_iterator> equal_range (const key_type& key) const {
-			return (ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
-		}
-
-		pair<iterator, iterator> equal_range (const key_type& key) {
-			return (ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
 		}
 	};
 	// end rb_tree

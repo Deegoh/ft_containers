@@ -31,7 +31,7 @@ namespace ft {
 		typedef typename alloc_type::const_reference		const_reference;
 		typedef typename alloc_type::pointer				pointer;
 		typedef typename alloc_type::const_pointer			const_pointer;
-		typedef ft::rb_tree<value_type, key_type, Compare>	tree_type;
+		typedef ft::rb_tree<value_type, key_type, ft::select1stmap<value_type>, Compare>	tree_type;
 
 		typedef typename tree_type::iterator				iterator;
 		typedef typename tree_type::const_iterator			const_iterator;
@@ -252,34 +252,62 @@ namespace ft {
 
 //		Return iterator to lower bound
 		iterator lower_bound(const key_type& key) {
-			return (_tree.lower_bound(key));
+			iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start).first >= key)
+					break;
+			}
+
+			return start;
 		}
 //		Return iterator to lower bound
 		const_iterator lower_bound(const key_type& key) const {
-			return (_tree.lower_bound(key));
+			const_iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start).first >= key)
+					break;
+			}
+
+			return start;
 		}
 
 //		Return iterator to upper bound
 		iterator upper_bound(const key_type& key) {
-			return (_tree.upper_bound(key));
+			iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start).first > key)
+					break;
+			}
+
+			return start;
 		}
 //		Return iterator to upper bound
 		const_iterator upper_bound(const key_type& key) const {
-			return (_tree.upper_bound(key));
+			const_iterator start = begin();
+
+			for (; start != end() ; start++) {
+				if ((*start).first > key)
+					break;
+			}
+
+			return start;
 		}
 
 //		Get range of equal elements
 		typedef pair<iterator, iterator> pair_iterator_iterator;
 		// typedef done to get around compiler bug
 		pair_iterator_iterator equal_range(const key_type& key) {
-			return (_tree.equal_range(key));
+			return (ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
 		}
 		typedef pair<const_iterator, const_iterator> pair_citerator_citerator;
 		// typedef done to get around compiler bug
 
 //		Get range of equal elements
 		pair_citerator_citerator equal_range(const key_type& key) const {
-			return (_tree.equal_range(key));
+			return (ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
 		}
 
 		friend bool operator==(const map& lhs, const map& rhs) {
