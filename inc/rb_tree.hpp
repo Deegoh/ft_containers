@@ -55,13 +55,6 @@ namespace ft {
 		typedef	Compare		key_compare;
 		typedef	size_t		size_type;
 
-		//		iterator in tree
-		typedef ft::rbt_iterator<value_type, node_type>			iterator;
-		typedef ft::rbt_iterator<const value_type, node_type>	const_iterator;
-		typedef ft::reverse_iterator<iterator>					reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
-
-
 	private:
 		node_pointer _root;
 		size_type _size;
@@ -94,30 +87,6 @@ namespace ft {
 		node_pointer get_nil() const { return (_nil); }
 
 		Compare key_comp() const { return (Compare()); }
-
-		iterator begin() { return (iterator(_root, most_left(), _nil)); }
-
-		const_iterator begin() const { return (const_iterator(_root, most_left(), _nil)); }
-
-		iterator end() { return (iterator(_root, _nil, _nil)); }
-
-		const_iterator end() const { return (const_iterator(_root, _nil, _nil)); }
-
-		reverse_iterator rbegin() {
-			return (reverse_iterator(end()));
-		}
-
-		const_reverse_iterator rbegin() const {
-			return (const_reverse_iterator(end()));
-		}
-
-		reverse_iterator rend() {
-			return (reverse_iterator(begin()));
-		}
-
-		const_reverse_iterator rend() const {
-			return (const_reverse_iterator(begin()));
-		}
 
 		bool empty() const { return (_size == 0); }
 

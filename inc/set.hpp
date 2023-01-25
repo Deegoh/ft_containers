@@ -16,23 +16,25 @@ namespace ft {
 	class set {
 	public:
 //	typedef
-		typedef T											key_type;
-		typedef T											value_type;
-		typedef Compare										key_compare;
-		typedef Compare										value_compare;
-		typedef Alloc										alloc_type;
-		typedef typename alloc_type::reference				reference;
-		typedef typename alloc_type::const_reference		const_reference;
-		typedef typename alloc_type::pointer				pointer;
-		typedef typename alloc_type::const_pointer			const_pointer;
-		typedef ft::rb_tree<value_type, key_type, ft::select1stset<value_type, key_type> , Compare>	tree_type;
-		typedef typename tree_type::const_iterator			iterator;
-		typedef typename tree_type::const_iterator			const_iterator;
-		typedef typename tree_type::reverse_iterator		reverse_iterator;
-		typedef typename tree_type::const_reverse_iterator	const_reverse_iterator;
-		typedef typename std::ptrdiff_t						difference_type;
-		typedef typename tree_type::size_type				size_type;
-		typedef typename tree_type::node_pointer			node_pointer;
+		typedef T												key_type;
+		typedef T												value_type;
+		typedef Compare											key_compare;
+		typedef Compare											value_compare;
+		typedef Alloc											alloc_type;
+		typedef typename alloc_type::reference					reference;
+		typedef typename alloc_type::const_reference			const_reference;
+		typedef typename alloc_type::pointer					pointer;
+		typedef typename alloc_type::const_pointer				const_pointer;
+		typedef ft::rb_tree<value_type, key_type,
+			ft::select1stset<value_type, key_type> , Compare>	tree_type;
+		typedef typename tree_type::node_type					node_type;
+		typedef ft::rbt_iterator<const value_type, node_type>	iterator;
+		typedef ft::rbt_iterator<const value_type, node_type>	const_iterator;
+		typedef ft::reverse_iterator<iterator>					reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+		typedef typename std::ptrdiff_t							difference_type;
+		typedef typename tree_type::size_type					size_type;
+		typedef typename tree_type::node_pointer				node_pointer;
 
 	private:
 		key_compare _key_comp;
@@ -87,24 +89,40 @@ namespace ft {
 //	Iterators:
 
 //		Return iterator to beginning
-		iterator begin() { return _tree.begin(); }
+		iterator begin() {
+			return (iterator(_tree.get_root(), _tree.most_left(), _tree.get_nil()));
+		}
 //		Return iterator to beginning
-		const_iterator begin() const { return _tree.begin(); }
+		const_iterator begin() const {
+			return (const_iterator(_tree.get_root(), _tree.most_left(), _tree.get_nil()));
+		}
 
 //		Return iterator to end
-		iterator end() { return _tree.end(); }
+		iterator end() {
+			return (iterator(_tree.get_root(), _tree.get_nil(), _tree.get_nil()));
+		}
 //		Return iterator to end
-		const_iterator end() const { return _tree.end(); }
+		const_iterator end() const {
+			return (const_iterator(_tree.get_root(), _tree.get_nil(), _tree.get_nil()));
+		}
 
 //		Return reverse iterator to reverse beginning
-		reverse_iterator rbegin() { return _tree.rbegin(); }
+		reverse_iterator rbegin() {
+			return (reverse_iterator(end()));
+		}
 //		Return reverse iterator to reverse beginning
-		const_reverse_iterator rbegin() const { return _tree.rbegin(); }
+		const_reverse_iterator rbegin() const {
+			return (const_reverse_iterator(end()));
+		}
 
 //		Return reverse iterator to reverse end
-		reverse_iterator rend() { return _tree.rend(); };
+		reverse_iterator rend() {
+			return (reverse_iterator(begin()));
+		}
 //		Return reverse iterator to reverse end
-		const_reverse_iterator rend() const { return _tree.rend(); }
+		const_reverse_iterator rend() const {
+			return (const_reverse_iterator(begin()));
+		}
 
 //	Capacity:
 
@@ -150,7 +168,7 @@ namespace ft {
 //		Erase elements
 //		position (1)
 		void erase (iterator position) {
-			erase((*position).first);
+			erase((*position));
 		}
 //		single element (2)
 		size_type erase (const value_type& value) {
@@ -162,7 +180,7 @@ namespace ft {
 		void erase (iterator first, iterator last) {
 			while (first != last)
 			{
-				erase((*(first++)).first);
+				erase((*(first++)));
 			}
 		}
 

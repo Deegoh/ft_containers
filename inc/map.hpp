@@ -22,26 +22,25 @@ namespace ft {
 
 // typedefs:
 
-		typedef Key											key_type;
-		typedef T											mapped_type;
-		typedef ft::pair<const Key, T>						value_type;
-		typedef Compare										key_compare;
-		typedef Allocator									alloc_type;
-		typedef typename alloc_type::reference				reference;
-		typedef typename alloc_type::const_reference		const_reference;
-		typedef typename alloc_type::pointer				pointer;
-		typedef typename alloc_type::const_pointer			const_pointer;
-		typedef ft::rb_tree<value_type, key_type, ft::select1stmap<value_type>, Compare>	tree_type;
-
-		typedef typename tree_type::iterator				iterator;
-		typedef typename tree_type::const_iterator			const_iterator;
-		typedef typename tree_type::reverse_iterator		reverse_iterator;
-		typedef typename tree_type::const_reverse_iterator	const_reverse_iterator;
-		typedef typename tree_type::size_type				size_type;
-		typedef typename std::ptrdiff_t						difference_type;
-		typedef typename tree_type::node_pointer			node_pointer;
-
-
+		typedef Key												key_type;
+		typedef T												mapped_type;
+		typedef ft::pair<const Key, T>							value_type;
+		typedef Compare											key_compare;
+		typedef Allocator										alloc_type;
+		typedef typename alloc_type::reference					reference;
+		typedef typename alloc_type::const_reference			const_reference;
+		typedef typename alloc_type::pointer					pointer;
+		typedef typename alloc_type::const_pointer				const_pointer;
+		typedef ft::rb_tree<value_type, key_type,
+			ft::select1stmap<value_type>, Compare>				tree_type;
+		typedef typename tree_type::node_type					node_type;
+		typedef ft::rbt_iterator<value_type, node_type>			iterator;
+		typedef ft::rbt_iterator<const value_type, node_type>	const_iterator;
+		typedef ft::reverse_iterator<iterator>					reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+		typedef typename tree_type::size_type					size_type;
+		typedef typename std::ptrdiff_t							difference_type;
+		typedef typename tree_type::node_pointer				node_pointer;
 
 	private:
 //		compares objects of type value_type (class)
@@ -118,24 +117,40 @@ namespace ft {
 //	Iterators:
 
 //		Return iterator to beginning
-		iterator begin() { return _tree.begin(); }
+		iterator begin() {
+			return (iterator(_tree.get_root(), _tree.most_left(), _tree.get_nil()));
+		}
 //		Return const iterator to beginning
-		const_iterator begin() const { return _tree.begin(); }
-//
+		const_iterator begin() const {
+			return (const_iterator(_tree.get_root(), _tree.most_left(), _tree.get_nil()));
+		}
+
 //		Return iterator to end
-		iterator end() { return _tree.end(); }
+		iterator end() {
+			return (iterator(_tree.get_root(), _tree.get_nil(), _tree.get_nil()));
+		}
 //		Return const iterator to end
-		const_iterator end() const { return _tree.end(); }
+		const_iterator end() const {
+			return (const_iterator(_tree.get_root(), _tree.get_nil(), _tree.get_nil()));
+		}
 
 //		Returns a reverse iterator to the beginning
-		reverse_iterator rbegin() { return _tree.rbegin(); }
+		reverse_iterator rbegin() {
+			return (reverse_iterator(end()));
+		}
 //		Returns a const reverse iterator to the beginning
-		const_reverse_iterator rbegin() const { return _tree.rbegin(); }
+		const_reverse_iterator rbegin() const {
+			return (const_reverse_iterator(end()));
+		}
 
 //		Return reverse iterator to reverse end
-		reverse_iterator rend() { return _tree.rend(); }
+		reverse_iterator rend() {
+			return (reverse_iterator(begin()));
+		}
 //		Return const reverse iterator to reverse end
-		const_reverse_iterator rend() const { return _tree.rend(); }
+		const_reverse_iterator rend() const {
+			return (const_reverse_iterator(begin()));
+		}
 
 //	Capacity:
 

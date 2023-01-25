@@ -2,6 +2,7 @@
 # define RBT_ITERATOR_HPP
 
 # include "iterator_traits.hpp"
+# include "rb_tree.hpp"
 # include <exception>
 
 namespace ft {

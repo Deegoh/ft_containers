@@ -36,7 +36,7 @@ namespace ft {
 			return (*this);
 		}
 //		Destructor
-		~reverse_iterator() {}
+		virtual ~reverse_iterator() {}
 
 //		hack
 		operator reverse_iterator<ft::random_access_iterator<const value_type> >() const {

@@ -16,6 +16,7 @@
 //	#include <test_map.h>
 	#include <stack.hpp>
 	#include <vector.hpp>
+	#include <set.hpp>
 #endif
 #include "vector_tester.hpp"
 //#include "p.hpp"
@@ -368,4 +369,18 @@ int main() {
 //	testVector(COUNT);
 //	testMap(COUNT);
 //	testStack();
+
+	ft::set<int> st;
+	ft::set<int>::iterator it = st.begin();
+	ft::set<int>::const_iterator cit = st.begin();
+
+	ft::set<int>::reverse_iterator rit(it);
+
+	ft::set<int>::const_reverse_iterator crit(rit);
+	ft::set<int>::const_reverse_iterator crit_(it);
+	ft::set<int>::const_reverse_iterator crit_2(cit);
+
+	(void)crit;
+	(void)crit_;
+	(void)crit_2;
 }
