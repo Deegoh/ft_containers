@@ -1,5 +1,4 @@
 #include "vector_tester.hpp"
-#include <list>
 
 void testVector(int count) {
 //	srand(10);
