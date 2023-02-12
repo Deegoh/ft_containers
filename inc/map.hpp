@@ -11,6 +11,13 @@
 
 namespace ft {
 
+	template<class T, class Key>
+	struct select1stmap : public std::unary_function<T, Key> {
+		const Key& operator()(const T& x) const {
+			return x.first;
+		}
+	};
+
 	template<
 				class Key,//map::key_type
 				class T,//map::mapped_type
@@ -32,7 +39,7 @@ namespace ft {
 		typedef typename alloc_type::pointer					pointer;
 		typedef typename alloc_type::const_pointer				const_pointer;
 		typedef ft::rb_tree<value_type, key_type,
-			ft::select1stmap<value_type>, Compare>				tree_type;
+			ft::select1stmap<value_type, key_type>, Compare>				tree_type;
 		typedef typename tree_type::node_type					node_type;
 		typedef ft::rbt_iterator<value_type, node_type>			iterator;
 		typedef ft::rbt_iterator<const value_type, node_type>	const_iterator;

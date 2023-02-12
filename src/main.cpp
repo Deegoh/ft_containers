@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <deque>
+#include <stdlib.h>
 
 #ifndef STD
 # define STD 0
@@ -27,7 +28,7 @@ struct Buffer {
 	char buff[BUFFER_SIZE];
 };
 
-#define COUNT (20)
+#define COUNT (1000)
 //#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
@@ -63,7 +64,7 @@ int main(int argc, char** argv) {
 	#endif
 	const int seed = atoi(argv[1]);
 	srand(seed);
-	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
+	std::cout << "hello container - seed: " << seed << " - count: " << COUNT << std::endl;
 
 	ft::vector<std::string> vector_str;
 	ft::vector<int> vector_int;

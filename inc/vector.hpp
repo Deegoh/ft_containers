@@ -443,6 +443,10 @@ namespace ft {
 			return !(rhs < lhs);
 		}
 
+		friend void swap(const vector<T, Allocator>& lhs, const vector<T, Allocator>& rhs) {
+			lhs.swap(rhs);
+		}
+
 	};
 }
 

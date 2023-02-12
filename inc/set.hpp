@@ -8,6 +8,14 @@
 
 
 namespace ft {
+
+	template<class T, class Key>
+	struct select1stset : public std::unary_function<T, Key> {
+		const Key& operator()(const T& x) const {
+			return x;
+		}
+	};
+
 	template<
 			class T, // set::key_type/value_type
 			class Compare = std::less<T>, // set::key_compare/value_compare

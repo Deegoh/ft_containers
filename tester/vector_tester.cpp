@@ -1,7 +1,68 @@
 #include "vector_tester.hpp"
 
 void testVector(int count) {
-//	srand(10);
+
+	testPushBack(count);
+	testErase();
+	testResize();
+	testAssign();
+	testCopy();
+	testInsert();
+	testBidirect();
+	testIte();
+	testIteArrow();
+	testRelOp();
+	testRiteConstruct();
+	testRite();
+	testRite2();
+	testArrow();
+}
+
+template<typename T>
+void printVec(ft::vector<T> &vec, std::string str) {
+std::cout << str << "[";
+for (size_t i = 0; i < vec.size(); i++)
+{
+std::cout << vec[i];
+if (i < vec.size() - 1)
+std::cout << ", ";
+}
+std::cout << "]" << std::endl;
+}
+
+template<>
+void printVec(ft::vector<Buffer> &vec, std::string str) {
+	std::cout << str << "[";
+	for (size_t i = 0; i < vec.size(); i++)
+	{
+		std::cout << vec[i].idx;
+		if (i < vec.size() - 1)
+			std::cout << ", ";
+	}
+	std::cout << "]" << std::endl;
+}
+
+template <typename T>
+std::string NumberToS (T Number) {
+	std::ostringstream ss;
+	ss << Number;
+	return ss.str();
+}
+
+template <typename T>
+void printfComp(std::string str, T std_f) {
+	std::cout << str <<": " << std_f << std::endl;
+}
+
+template <typename T>
+void testMaxSize(T &vec, std::string str) {
+	std::cout << str << "\n";
+	std::cout << "size: " << vec.size() << "\n";
+	std::cout << "capacity: " << vec.capacity() << "\n";
+	std::cout << "max_size: " << vec.max_size() << "\n";
+}
+
+void testPushBack(int count) {
 	ft::vector<std::string> str_vec;
 	ft::vector<int> int_vec;
 	ft::vector<Buffer> buffer_vec;
@@ -50,77 +111,6 @@ void testVector(int count) {
 	std::cout << "end()" << *int_vec.end() << std::endl;
 
 	testMaxSize(int_vec, "int");
-	testErase();
-	testResize();
-	testAssign();
-	testCopy();
-	testInsert();
-//	testBidirect();
-	testIte();
-	testIteArrow();
-	testRelOp();
-	testRiteConstruct();
-	testRite();
-	testRite2();
-	testArrow();
-}
-
-template<typename T>
-void printVec(ft::vector<T> &vec, std::string str) {
-std::cout << str << "[";
-for (size_t i = 0; i < vec.size(); i++)
-{
-std::cout << vec[i];
-if (i < vec.size() - 1)
-std::cout << ", ";
-}
-std::cout << "]" << std::endl;
-}
-
-template<>
-void printVec(ft::vector<Buffer> &vec, std::string str) {
-	std::cout << str << "[";
-	for (size_t i = 0; i < vec.size(); i++)
-	{
-		std::cout << vec[i].idx;
-		if (i < vec.size() - 1)
-			std::cout << ", ";
-	}
-	std::cout << "]" << std::endl;
-}
-
-template <typename T>
-std::string NumberToS (T Number) {
-	std::ostringstream ss;
-	ss << Number;
-	return ss.str();
-}
-
-template <typename T>
-void printfComp(std::string str, T std_f) {
-	std::cout << str <<": " << std_f << std::endl;
-}
-
-template <typename T>
-void printTest(T &vec) {
-	std::cout << "size: " << vec.size() << std::endl;
-	std::cout << "capacity: " << vec.capacity() << " " << ((vec.size() <= vec.capacity()) ? "OK" : "KO") << std::endl;
-	std::cout << "max_size: " << vec.max_size() << std::endl;
-	std::cout << std::endl;
-	std::cout << "Content is:" << std::endl;
-	for (size_t i = 0; i < vec.size(); i++)
-	{
-		std::cout << "- " << vec[i] << std::endl;
-	}
-	std::cout << "###############################################" << std::endl;
-}
-
-template <typename T>
-void testMaxSize(T &vec, std::string str) {
-	std::cout << str << "\n";
-	std::cout << "size: " << vec.size() << "\n";
-	std::cout << "capacity: " << vec.capacity() << "\n";
-	std::cout << "max_size: " << vec.max_size() << "\n";
 }
 
 void testAssign() {
@@ -133,8 +123,8 @@ void testAssign() {
 		vct[i] = (vct.size() - i) * 3;
 	for (unsigned long int i = 0; i < vct_two.size(); ++i)
 		vct_two[i] = (vct_two.size() - i) * 5;
-	printTest(vct);
-	printTest(vct_two);
+	printSize(vct);
+	printSize(vct_two);
 
 	vct_three.assign(vct.begin(), vct.end());
 	vct.assign(vct_two.begin(), vct_two.end());
@@ -143,21 +133,21 @@ void testAssign() {
 
 	std::cout << "\t### After assign(): ###" << std::endl;
 
-	printTest(vct);
-	printTest(vct_two);
-	printTest(vct_three);
-	printTest(vct_four);
+	printSize(vct);
+	printSize(vct_two);
+	printSize(vct_three);
+	printSize(vct_four);
 
 	vct_four.assign(6, 84);
-	printTest(vct_four);
+	printSize(vct_four);
 
 	std::cout << "\t### assign() on enough capacity and low size: ###" << std::endl;
 
 	vct.assign(5, 53);
 	vct_two.assign(vct_three.begin(), vct_three.begin() + 3);
 
-	printTest(vct);
-	printTest(vct_two);
+	printSize(vct);
+	printSize(vct_two);
 }
 
 void testResize() {
@@ -206,7 +196,7 @@ void checkErase(ft::vector<std::string> const &vct,
 {
 	static int i = 0;
 	std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
-	printTest(vct);
+	printSize(vct);
 }
 
 void testErase(void)
@@ -215,7 +205,7 @@ void testErase(void)
 
 	for (unsigned long int i = 0; i < vct.size(); ++i)
 		vct[i] = std::string((vct.size() - i), i + 65);
-	printTest(vct);
+	printSize(vct);
 
 	checkErase(vct, vct.erase(vct.begin() + 2));
 
@@ -227,14 +217,14 @@ void testErase(void)
 
 	vct.push_back("Hello");
 	vct.push_back("Hi there");
-	printTest(vct);
+	printSize(vct);
 	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
 
 	vct.push_back("ONE");
 	vct.push_back("TWO");
 	vct.push_back("THREE");
 	vct.push_back("FOUR");
-	printTest(vct);
+	printSize(vct);
 	checkErase(vct, vct.erase(vct.begin(), vct.end()));
 }
 
@@ -259,18 +249,18 @@ void testCopy() {
 	vct_copy.push_back(21);
 
 	std::cout << "\t-- PART ONE --" << std::endl;
-	printTest(vct);
-	printTest(vct_range);
-	printTest(vct_copy);
+	printSize(vct);
+	printSize(vct_range);
+	printSize(vct_copy);
 
 	vct = vct_copy;
 	vct_copy = vct_range;
 	vct_range.clear();
 
 	std::cout << "\t-- PART TWO --" << std::endl;
-	printTest(vct);
-	printTest(vct_range);
-	printTest(vct_copy);
+	printSize(vct);
+	printSize(vct_range);
+	printSize(vct_copy);
 }
 
 void testInsert() {
@@ -280,31 +270,31 @@ void testInsert() {
 
 	for (unsigned long int i = 0; i < vct.size(); ++i)
 		vct[i] = (vct.size() - i) * 3;
-	printTest(vct);
+	printSize(vct);
 
 	vct2.insert(vct2.end(), 42);
 	vct2.insert(vct2.begin(), 2, 21);
-	printTest(vct2);
+	printSize(vct2);
 
 	vct2.insert(vct2.end() - 2, 42);
-	printTest(vct2);
+	printSize(vct2);
 
 	vct2.insert(vct2.end(), 2, 84); //segfault
-	printTest(vct2);
+	printSize(vct2);
 
 	vct2.resize(4);
-	printTest(vct2);
+	printSize(vct2);
 
 	vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
 	vct.clear();
-	printTest(vct2);
+	printSize(vct2);
 
-	printTest(vct);
+	printSize(vct);
 
 	for (int i = 0; i < 5; ++i)
 		vct3.insert(vct3.end(), i);
 	vct3.insert(vct3.begin() + 1, 2, 111);
-	printTest(vct3);
+	printSize(vct3);
 }
 
 void testBidirect() {
@@ -314,16 +304,16 @@ void testBidirect() {
 		lst.push_back(i * 3);
 
 	ft::vector<int> vct(lst.begin(), lst.end());
-	printTest(vct);
+	printSize(vct);
 
 	lst_it = lst.begin();
 	for (int i = 1; lst_it != lst.end(); ++i)
 		*lst_it++ = i * 5;
 	vct.assign(lst.begin(), lst.end());
-	printTest(vct);
+	printSize(vct);
 
 	vct.insert(vct.end(), lst.rbegin(), lst.rend());
-	printTest(vct);
+	printSize(vct);
 }
 
 void prepost_incdec(ft::vector<int> &vct) {
@@ -375,7 +365,7 @@ void testIte() {
 	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
 	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
 
-	printTest(vct);
+	printSize(vct);
 }
 
 void testIteArrow() {
@@ -386,7 +376,7 @@ void testIteArrow() {
 
 	for (int i = 1; it != ite; ++i)
 		*it++ = i;
-	printTest(vct);
+	printSize(vct);
 
 	it = vct.begin();
 	ite = vct.begin();
@@ -483,7 +473,7 @@ void testRite() {
 
 	for (int i = 0; i < size; ++i)
 		vct[i] = (i + 1) * 5;
-	printTest(vct);
+	printSize(vct);
 
 	std::cout << (it_ == it.base()) << std::endl; //1
 	std::cout << (it_ == (it + 3).base()) << std::endl; //0
@@ -530,7 +520,7 @@ void testRite2() {
 	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
 	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
 
-	printTest(vct);
+	printSize(vct);
 	std::cout << *it << std::endl;
 }
 
@@ -542,7 +532,7 @@ void testArrow() {
 
 	for (int i = 1; it != ite; ++i)
 		*it++ = (i * 7);
-	printTest(vct);
+	printSize(vct);
 
 	it = vct.rbegin();
 	ite = vct.rbegin();

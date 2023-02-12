@@ -10,16 +10,22 @@ CXXFLAGS = -Werror -Wall -Wextra -Wfatal-errors
 CXXFLAGS += -std=c++98 -pedantic
 CXXFLAGS += -g3 -fsanitize=address
 
-SRC_DIR = tester/
+SEED = 10
+
+SRC_DIR = ./
 _SRC =	main.cpp\
-		vector_tester.cpp
+		vector_tester.cpp\
+		map_tester.cpp\
+		stack_tester.cpp\
+		set_tester.cpp
 
 SRC = $(addprefix $(SRC_DIR), $(_SRC))
 
-INC_DIR = tester/
-HEADER=	test.hpp\
-		vector_tester.hpp\
-		test.hpp
+INC_DIR = ./
+HEADER=	vector_tester.hpp\
+		map_tester.hpp\
+		stack_tester.hpp\
+		set_tester.hpp
 
 
 INC = $(addprefix $(INC_DIR), $(HEADER))
@@ -28,7 +34,7 @@ STD = 0
 
 NAME = a.out
 
-OBJ_DIR = ./tester/obj/
+OBJ_DIR = ./obj/
 _OBJ = $(_SRC:.cpp=.o)
 OBJ = $(addprefix $(OBJ_DIR), $(_OBJ))
 
@@ -39,29 +45,28 @@ all: $(NAME)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(_OBJ): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
+$(OBJ): $(OBJ_DIR)%.o : $(SRC_DIR)%.cpp $(INC) ./Makefile | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -DSTD=$(STD) -I $(INC_DIR) -o $@ -c $<
-	echo "obj"
 
-$(NAME): $(_OBJ)
-	$(CXX) $(CXXFLAGS) $(_OBJ) -o $(NAME)
+$(NAME): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME)
 
 run:
 	./$(NAME)
 
 ft: re
-	./$(NAME) 10 > ft.txt
+	./$(NAME) SEED > ft.txt
 	cat ft.txt
 
 std: STD = 1
 std: re
-	./$(NAME) 10 > std.txt
+	./$(NAME) SEED > std.txt
 	cat std.txt
 
 comp:
 	$(MAKE) ft -C ./
 	$(MAKE) std -C ./
-	diff std.txt ft.txt
+	diff ./std.txt ./ft.txt
 
 leak: CFLAGS = -Werror -Wall -Wextra -std=c++98 -pedantic -g3
 leak: re

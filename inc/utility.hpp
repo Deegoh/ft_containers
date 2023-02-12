@@ -73,21 +73,6 @@ namespace ft {
 		return pair<T1, T2>(x, y);
 	}
 
-	//	select1st
-	template<typename Pair>
-	struct select1stmap : public std::unary_function<Pair, typename Pair::first_type> {
-		const typename Pair::first_type& operator()(const Pair& x) const {
-			return x.first;
-		}
-	};
-
-	template<class T, class Key>
-	struct select1stset : public std::unary_function<T, Key>
-	{
-		const Key& operator()(const T& x) const {
-			return x;
-		}
-	};
 }
 
 #endif

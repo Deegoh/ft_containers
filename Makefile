@@ -40,7 +40,7 @@ OBJ_DIR = obj/
 _OBJ = $(_SRC:.cpp=.o)
 OBJ = $(addprefix $(OBJ_DIR), $(_OBJ))
 
-.PHONY: all clean fclean re run debug std ft comp leak
+.PHONY: all clean fclean re run debug std ft comp leak tester
 
 all: $(NAME)
 
@@ -71,8 +71,8 @@ comp:
 	diff std.txt ft.txt
 
 tester:
-	$(MAKE) re -C tester/
-	$(MAKE) run -C tester/
+	$(MAKE) re -C ./tester
+	$(MAKE) comp -C ./tester
 
 leak: CFLAGS = -Werror -Wall -Wextra -std=c++98 -pedantic -g3
 leak: re
