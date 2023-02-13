@@ -34,12 +34,12 @@ int main() {
 	std::cout << "FT" << std::endl;
 #endif
 	std::cout << "hello container - seed: 10 - count: " << COUNT << std::endl;
-//	std::cout << "Vector tester" << std::endl;
-//	testVector(COUNT);
-//	std::cout << "Map tester" << std::endl;
-//	testMap(COUNT);
-//	std::cout << "Stack tester" << std::endl;
-//	testStack();
+	std::cout << "Vector tester" << std::endl;
+	testVector(COUNT);
+	std::cout << "Map tester" << std::endl;
+	testMap(COUNT);
+	std::cout << "Stack tester" << std::endl;
+	testStack();
 	std::cout << "Set tester" << std::endl;
 	testSet();
 

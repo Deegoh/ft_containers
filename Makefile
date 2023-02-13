@@ -10,6 +10,8 @@ CXXFLAGS = -Werror -Wall -Wextra -Wfatal-errors
 CXXFLAGS += -std=c++98 -pedantic
 CXXFLAGS += -g3 -fsanitize=address
 
+SEED = 10
+
 SRC_DIR = src/
 _SRC =	main.cpp
 
@@ -22,7 +24,6 @@ HEADER=	comparators.hpp\
 		reverse_iterator.hpp\
 		rbt_iterator.hpp\
 		utility.hpp\
-		base.hpp\
 		vector.hpp\
 		map.hpp\
 		rb_tree.hpp\
@@ -57,12 +58,12 @@ run:
 	./$(NAME)
 
 ft: re
-	./$(NAME) 10 > ft.txt
+	./$(NAME) $(SEED) > ft.txt
 	cat ft.txt
 
 std: STD = 1
 std: re
-	./$(NAME) 10 > std.txt
+	./$(NAME) $(SEED) > std.txt
 	cat std.txt
 
 comp:
